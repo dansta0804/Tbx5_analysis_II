@@ -1,0 +1,44 @@
+## Tbx5 transcription factor analysis (continuation)
+
+```{r Libraries}
+# Loading used libraries:
+library(pacman)
+p_load(data.table, rtracklayer, randomcoloR, ggplot2, ggthemes,
+       plyranges, ggpubr, BRGenomics, reshape2, plotly, heatmaply,
+       dplyr, gplots, genomation, ggseqlogo, BSgenome.Mmusculus.UCSC.mm10,
+       BSgenome, Biostrings, scales)
+```
+
+```{r Paths}
+# Declaring paths:
+INTERMEDIATE_FILES <- "../Intermediate_data_files/"
+INPUTS <- "../Inputs/"
+FIGURES <- "../Figures/"
+```
+
+```{r Peaks_in_samples, fig.width = 4, fig.height = 6, fig.align = "center"}
+# Creating Sample Key table:
+samples <- read.csv(file = paste0(INTERMEDIATE_FILES, "sample_key.csv"))
+
+# Importing BigBed format files:
+bbfiles <- list.files(path = paste0(INPUTS, "BigBed/"), "*bb")
+grl <- GRangesList()
+
+# Declaring what chromosomes are analyzed:
+chr_abr <- c(paste0("chr", 1:19), "chrX", "chrY")
+
+# Creating GRanges objects and extracting certain chromosomes:
+for (i in 1:length(bbfiles)) {
+    grl[[i]] <- import(paste0(INPUTS, "BigBed/", bbfiles[i])) %>%
+                       filter(seqnames %in% chr_abr)
+    names(grl)[i] <- samples$Graph_names[samples$Filename == bbfiles[i]]
+}
+
+# Creating peak dataframe that keeps data about total peak counts in
+# each sample:
+peaks <- lapply(grl, length) %>%
+            as.data.table()  %>%
+            melt() %>%
+            as.data.frame()  %>%
+            setnames(., c("Experiment", "Peak_count"))
+
