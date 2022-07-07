@@ -3,17 +3,14 @@
 ```{r Libraries}
 # Loading used libraries:
 library(pacman)
-p_load(data.table, rtracklayer, randomcoloR, ggplot2, ggthemes,
-       plyranges, ggpubr, BRGenomics, reshape2, plotly, heatmaply,
-       dplyr, gplots, genomation, ggseqlogo, BSgenome.Mmusculus.UCSC.mm10,
-       BSgenome, Biostrings, scales)
+p_load(data.table, rtracklayer, ggplot2, ggthemes, reshape2, dplyr, Biostrings)
 ```
 
 ```{r Paths}
 # Declaring paths:
-INTERMEDIATE_FILES <- "../Intermediate_data_files/"
-INPUTS <- "../Inputs/"
-FIGURES <- "../Figures/"
+INTERMEDIATE_FILES <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont/Intermediate_data_files/"
+INPUTS <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont/Inputs/"
+MOTIFS <- "/home/daniele/HOMER/bin/results/PEAKS054908_Tbx5_P70326_MACS2_12/knownResults/"
 ```
 
 ```{r Peaks_in_samples, fig.width = 4, fig.height = 6, fig.align = "center"}
@@ -21,24 +18,14 @@ FIGURES <- "../Figures/"
 samples <- read.csv(file = paste0(INTERMEDIATE_FILES, "sample_key.csv"))
 
 # Importing BigBed format files:
-bbfiles <- list.files(path = paste0(INPUTS, "BigBed/"), "*bb")
-grl <- GRangesList()
+FASTA <- list.files(path = paste0(INPUTS, "FASTA/"), "*fasta")
+PWMs <- vector(mode = 'list', length = 25)
 
-# Declaring what chromosomes are analyzed:
-chr_abr <- c(paste0("chr", 1:19), "chrX", "chrY")
-
-# Creating GRanges objects and extracting certain chromosomes:
-for (i in 1:length(bbfiles)) {
-    grl[[i]] <- import(paste0(INPUTS, "BigBed/", bbfiles[i])) %>%
-                       filter(seqnames %in% chr_abr)
-    names(grl)[i] <- samples$Graph_names[samples$Filename == bbfiles[i]]
+# Reading 25 Homer PWM matrix files from 'knownResults' directory:
+for (pwm_matrix in seq(25)) {
+    pwm <- read.table(paste0(MOTIFS, "known", pwm_matrix, ".motif"))
+    PWMs[[pwm_matrix]] <- t(pwm) %>% `rownames<-`(c("A", "C", "G", "T"))
 }
 
-# Creating peak dataframe that keeps data about total peak counts in
-# each sample:
-peaks <- lapply(grl, length) %>%
-            as.data.table()  %>%
-            melt() %>%
-            as.data.frame()  %>%
-            setnames(., c("Experiment", "Peak_count"))
-
+PWMs[[1]]
+```
