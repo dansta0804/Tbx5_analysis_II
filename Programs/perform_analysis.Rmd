@@ -4,28 +4,67 @@
 # Loading used libraries:
 library(pacman)
 p_load(data.table, rtracklayer, ggplot2, ggthemes, reshape2, dplyr, Biostrings)
+# title <- commandArgs(trailingOnly = T)[1]
+# author <- commandArgs(trailingOnly = T)[2]
+# print(paste0(title, " and ", author))
 ```
 
 ```{r Paths}
 # Declaring paths:
-INTERMEDIATE_FILES <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont/Intermediate_data_files/"
+INTERMEDIATE_FILES <- paste0("/home/daniele/Desktop/Darbas/",
+                             "Tbx5_analysis_cont/Intermediate_data_files/")
 INPUTS <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont/Inputs/"
-MOTIFS <- "/home/daniele/HOMER/bin/results/PEAKS054908_Tbx5_P70326_MACS2_12/knownResults/"
+FASTAs <- paste0(INPUTS, "FASTA/")
+MOTIFS <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont/Motifs/"
+CONTROL_SEQ <- paste0(INPUTS, "Shuffled_FASTA/")
+FASTA_LIST <- list.files(path = paste0(INPUTS, "FASTA/"), "*fasta")
 ```
 
-```{r Peaks_in_samples, fig.width = 4, fig.height = 6, fig.align = "center"}
-# Creating Sample Key table:
+```{r Samples}
+# Reading sample table:
 samples <- read.csv(file = paste0(INTERMEDIATE_FILES, "sample_key.csv"))
+```
 
-# Importing BigBed format files:
-FASTA <- list.files(path = paste0(INPUTS, "FASTA/"), "*fasta")
-PWMs <- vector(mode = 'list', length = 25)
+```{r Motif_hits}
+# Creating an empty matrix and setting it's row and column names:
+pwm_results <- matrix(ncol = 3, nrow = 10) %>%
+                `rownames<-`(paste0("motif_", seq(10))) %>%
+                `colnames<-`(c("motif_name", "target", "background"))
 
-# Reading 25 Homer PWM matrix files from 'knownResults' directory:
-for (pwm_matrix in seq(25)) {
-    pwm <- read.table(paste0(MOTIFS, "known", pwm_matrix, ".motif"))
-    PWMs[[pwm_matrix]] <- t(pwm) %>% `rownames<-`(c("A", "C", "G", "T"))
+# Iterating target sequence fasta files:
+fasta_file = FASTA_LIST[1]
+
+print(fasta_file)
+
+folder <- tools::file_path_sans_ext(fasta_file)
+
+MOTIF_LIST <- list.files(path = paste0(MOTIFS, folder, "/"), "*motif")
+for (motif in 1:length(MOTIF_LIST)) {
+    print(format(Sys.time(), "%b %d %X %Y"))
+    print(MOTIF_LIST[[motif]])
+    pwm <- read.table(paste0(MOTIFS, folder, "/", MOTIF_LIST[[motif]]))
+    PWM <- t(pwm) %>% `rownames<-`(c("A", "C", "G", "T"))
+
+    seq_object <- readDNAStringSet(paste0(FASTAs, fasta_file))
+    PWM_match <- 0
+
+    for (i in 1:length(seq_object)) {
+        target_hits <- matchPWM(as.matrix(PWM), seq_object[[i]],
+                    min.score = "80%", with.score = TRUE)
+        # PWM_score <- mcols(hits)$score
+        core_score <- min(mcols(target_hits)$score / maxScore(PWM))
+        if (is.finite(core_score)) {
+            PWM_match <- PWM_match + 1
+            if (PWM_match %% 800 == 0) { print(PWM_match) }
+        }
+        else { next }
+    }
+    print(format(Sys.time(), "%b %d %X %Y"))
+    pwm_results[motif, 1] <- MOTIF_LIST[[motif]]
+    pwm_results[motif, 2] <- PWM_match
+    write.table(pwm_results, paste0(INTERMEDIATE_FILES, "motifs_modified"))
 }
 
-PWMs[[1]]
+print(pwm_results)
+write.table(pwm_results, paste0(INTERMEDIATE_FILES, "motifs_modified"))
 ```
