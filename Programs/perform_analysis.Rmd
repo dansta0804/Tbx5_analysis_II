@@ -4,9 +4,6 @@
 # Loading used libraries:
 library(pacman)
 p_load(data.table, rtracklayer, ggplot2, ggthemes, reshape2, dplyr, Biostrings)
-# title <- commandArgs(trailingOnly = T)[1]
-# author <- commandArgs(trailingOnly = T)[2]
-# print(paste0(title, " and ", author))
 ```
 
 ```{r Paths}
@@ -32,8 +29,7 @@ pwm_results <- matrix(ncol = 3, nrow = 10) %>%
                 `colnames<-`(c("motif_name", "target", "background"))
 
 # Iterating target sequence fasta files:
-fasta_file = FASTA_LIST[1]
-
+fasta_file <- FASTA_LIST[1]
 print(fasta_file)
 
 folder <- tools::file_path_sans_ext(fasta_file)
@@ -45,7 +41,7 @@ for (motif in 1:length(MOTIF_LIST)) {
     pwm <- read.table(paste0(MOTIFS, folder, "/", MOTIF_LIST[[motif]]))
     PWM <- t(pwm) %>% `rownames<-`(c("A", "C", "G", "T"))
 
-    seq_object <- readDNAStringSet(paste0(FASTAs, fasta_file))
+    seq_object <- readDNAStringSet(paste0(CONTROL_SEQ, fasta_file))
     PWM_match <- 0
 
     for (i in 1:length(seq_object)) {
@@ -61,10 +57,23 @@ for (motif in 1:length(MOTIF_LIST)) {
     }
     print(format(Sys.time(), "%b %d %X %Y"))
     pwm_results[motif, 1] <- MOTIF_LIST[[motif]]
-    pwm_results[motif, 2] <- PWM_match
-    write.table(pwm_results, paste0(INTERMEDIATE_FILES, "motifs_modified"))
+    pwm_results[motif, 3] <- PWM_match
+    write.table(pwm_results, paste0(INTERMEDIATE_FILES, "con_motifs_modified"))
 }
 
 print(pwm_results)
-write.table(pwm_results, paste0(INTERMEDIATE_FILES, "motifs_modified"))
+write.table(pwm_results, paste0(INTERMEDIATE_FILES, "con_motifs_modified"))
+```
+
+```{r Chi-Square_Test}
+motif_hits <- read.csv(paste0(INTERMEDIATE_FILES, "motif_hits.csv"))
+rownames(motif_hits) <- motif_hits[, 1]
+motif_hits$motif_name <- NULL
+
+# H0: The two variables are independent.
+# H1: The two variables relate to each other.
+
+# If the p-value is below 0.05, the null hypothesis can be rejected:
+chi_test <- chisq.test(motif_hits)
+chi_test$p.value    # p-value < 2.2e-16 --- The two variables relate to each other.
 ```
