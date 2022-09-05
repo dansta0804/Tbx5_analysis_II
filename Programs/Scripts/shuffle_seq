@@ -2,7 +2,7 @@
 
 # The program takes as an input one fasta file and shuffles each sequence
 # in the data set. The program also expands the data set by running a loop
-# with 30 iterations.
+# with 5 iterations.
 
 # Program call: ./shuffle_seq fasta_filename
 
@@ -37,7 +37,7 @@ open(my $file_write, '>>', $PATH . $file ) or die;
 my $datetime = localtime();  
 print $datetime, "\n"; 
 
-foreach(1..30) {
+foreach(1..5) { # Previously used final iteration number was equal to 30
     my $sequence = '';
     open(my $file_read, '<', $filename) or die;
     while(<$file_read>) {

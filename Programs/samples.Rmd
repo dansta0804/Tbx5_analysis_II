@@ -1,0 +1,10 @@
+### Characteristics of ChIPs-seq samples
+```{r samples}
+library(pacman)
+p_load(data.table, dplyr, ggplot2, DT) 
+
+samples <- read.csv("../../Samples.csv") %>% 
+  setnames(., c("Organism", "Cells", "Treatment", "Antibody", "GTRD ID", "GSE", "GSM", "PMID"))
+
+DT::datatable(samples)
+```
