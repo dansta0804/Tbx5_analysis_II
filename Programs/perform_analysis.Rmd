@@ -8,11 +8,11 @@ p_load(data.table, rtracklayer, ggplot2, ggthemes, reshape2, dplyr, Biostrings)
 
 ```{r Paths}
 # Declaring paths:
-INTERMEDIATE_FILES <- paste0("/home/daniele/Desktop/Darbas/",
-                             "Tbx5_analysis_cont/Intermediate_data_files/")
-INPUTS <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont/Inputs/"
+TBX5_FOLDER <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont"
+INTERMEDIATE_FILES <- paste0(TBX5_FOLDER, "/Intermediate_data_files/")
+INPUTS <- paste0(TBX5_FOLDER, "/Inputs/")
 FASTAs <- paste0(INPUTS, "FASTA/")
-MOTIFS <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont/Motifs/"
+MOTIFS <- paste0(TBX5_FOLDER, "Motifs/"
 CONTROL_SEQ <- paste0(INPUTS, "Shuffled_FASTA/")
 FASTA_LIST <- list.files(path = paste0(INPUTS, "FASTA/"), "*fasta")
 ```
