@@ -76,4 +76,9 @@ motif_hits$motif_name <- NULL
 # If the p-value is below 0.05, the null hypothesis can be rejected:
 chi_test <- chisq.test(motif_hits)
 chi_test$p.value    # p-value < 2.2e-16 --- The two variables relate to each other.
+
+# A p-value is a probability, a number between 0 and 1, calculated after
+# running a statistical test on data. A small p-value (< 0.05 in general)
+# means that the observed results are so unusual assuming that they
+# were due to chance only.
 ```
