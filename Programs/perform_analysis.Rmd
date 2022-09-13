@@ -17,8 +17,7 @@ CONTROL_SEQ <- paste0(INPUTS, "Shuffled_FASTA/")                       # nolint
 FASTA_LIST <- list.files(path = FASTAs, "*fasta")                      # nolint
 MOTIF_HITS <- paste0(INTERMEDIATE_FILES, "Motif_hits_tables/")         # nolint
 TARGET_CONTROL <- c(FASTAs, CONTROL_SEQ)                               # nolint
-HITS_FOLDERS <- c(paste0(MOTIF_HITS, "Targets/"),                      # nolint
-                  paste0(MOTIF_HITS, "Control/"))
+COLUMN <- c("target", "background")                                    # nolint
 ```
 
 ```{r Samples}
@@ -27,18 +26,16 @@ samples <- read.csv(file = paste0(INTERMEDIATE_FILES, "sample_key.csv"))
 ```
 
 ```{r Motif_hits}
-# Performing calculations with files from 'Targets/' and 'Control/' directories:
-for (folder in seq(HITS_FOLDERS)) {
+# Calculating scores for each .fasta file:
+for (filename in seq(1, length(FASTA_LIST))) {
+    # Creating an empty matrix and setting it's column names:
+    pwm_results <- matrix(ncol = 2, nrow = 10) %>%
+                `colnames<-`(c("target", "background"))
 
-    # Calculating scores for each .fasta file:
-    for (filename in seq(1, length(FASTA_LIST))) {
-        # Creating an empty matrix and setting it's column names:
-        pwm_results <- matrix(ncol = 2, nrow = 10) %>%
-                    `colnames<-`(c("target", "background"))
-
+    # Performing calculations for both target and control sequence sets:
+    for (column in seq(COLUMN)) {
         # Basenaming .fasta file and declaring a full path of the file:
         file <- tools::file_path_sans_ext(FASTA_LIST[filename])
-        folder_name <- paste0(HITS_FOLDERS[folder], file)
         # write.table(pwm_results, folder_name) Is it needed?
 
         # Getting a list of the motif filenames:
@@ -58,7 +55,7 @@ for (folder in seq(HITS_FOLDERS)) {
             t_pwm <- t(pwm) %>% `rownames<-`(c("A", "C", "G", "T"))
 
             # Loading .fasta file sequences into an XStringSet object:
-            seq_object <- readDNAStringSet(paste0(TARGET_CONTROL[folder],
+            seq_object <- readDNAStringSet(paste0(TARGET_CONTROL[column],
                                                   FASTA_LIST[filename]))
             pwm_match <- 0
 
@@ -80,12 +77,12 @@ for (folder in seq(HITS_FOLDERS)) {
 
             # Storing total motif hit count at the particular matrix cell and
             # writing the result into a file:
-            pwm_results[motif, folder] <- pwm_match
-            write.table(pwm_results, paste0(HITS_FOLDERS[folder], file))
+            pwm_results[motif, column] <- pwm_match
+            write.table(pwm_results, paste0(MOTIF_HITS, file))
             print(paste("END TIME: ", format(Sys.time(), "%b %d %X %Y")))
         }
-        print(paste("END TIME: ", format(Sys.time(), "%b %d %X %Y")))
     }
+    print(paste("END TIME: ", format(Sys.time(), "%b %d %X %Y")))
 }
 ```
 
