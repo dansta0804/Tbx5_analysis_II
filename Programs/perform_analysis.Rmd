@@ -8,13 +8,17 @@ p_load(data.table, rtracklayer, ggplot2, ggthemes, reshape2, dplyr, Biostrings)
 
 ```{r Paths}
 # Declaring paths:
-TBX5_FOLDER <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont"
-INTERMEDIATE_FILES <- paste0(TBX5_FOLDER, "/Intermediate_data_files/")
-INPUTS <- paste0(TBX5_FOLDER, "/Inputs/")
-FASTAs <- paste0(INPUTS, "FASTA/")
-MOTIFS <- paste0(TBX5_FOLDER, "Motifs/"
-CONTROL_SEQ <- paste0(INPUTS, "Shuffled_FASTA/")
-FASTA_LIST <- list.files(path = paste0(INPUTS, "FASTA/"), "*fasta")
+TBX5_FOLDER <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont"       # nolint
+INTERMEDIATE_FILES <- paste0(TBX5_FOLDER, "/Intermediate_data_files/") # nolint
+INPUTS <- paste0(TBX5_FOLDER, "/Inputs/")                              # nolint
+FASTAs <- paste0(INPUTS, "FASTA/")                                     # nolint
+MOTIFS <- paste0(TBX5_FOLDER, "/Motifs/")                              # nolint
+CONTROL_SEQ <- paste0(INPUTS, "Shuffled_FASTA/")                       # nolint
+FASTA_LIST <- list.files(path = FASTAs, "*fasta")                      # nolint
+MOTIF_HITS <- paste0(INTERMEDIATE_FILES, "Motif_hits_tables/")         # nolint
+TARGET_CONTROL <- c(FASTAs, CONTROL_SEQ)                               # nolint
+HITS_FOLDERS <- c(paste0(MOTIF_HITS, "Targets/"),                      # nolint
+                  paste0(MOTIF_HITS, "Control/"))
 ```
 
 ```{r Samples}
@@ -23,46 +27,66 @@ samples <- read.csv(file = paste0(INTERMEDIATE_FILES, "sample_key.csv"))
 ```
 
 ```{r Motif_hits}
-# Creating an empty matrix and setting it's row and column names:
-pwm_results <- matrix(ncol = 3, nrow = 10) %>%
-                `rownames<-`(paste0("motif_", seq(10))) %>%
-                `colnames<-`(c("motif_name", "target", "background"))
+# Performing calculations with files from 'Targets/' and 'Control/' directories:
+for (folder in seq(HITS_FOLDERS)) {
 
-# Iterating target sequence fasta files:
-fasta_file <- FASTA_LIST[1]
-print(fasta_file)
+    # Calculating scores for each .fasta file:
+    for (filename in seq(1, length(FASTA_LIST))) {
+        # Creating an empty matrix and setting it's column names:
+        pwm_results <- matrix(ncol = 2, nrow = 10) %>%
+                    `colnames<-`(c("target", "background"))
 
-folder <- tools::file_path_sans_ext(fasta_file)
+        # Basenaming .fasta file and declaring a full path of the file:
+        file <- tools::file_path_sans_ext(FASTA_LIST[filename])
+        folder_name <- paste0(HITS_FOLDERS[folder], file)
+        # write.table(pwm_results, folder_name) Is it needed?
 
-MOTIF_LIST <- list.files(path = paste0(MOTIFS, folder, "/"), "*motif")
-for (motif in 1:length(MOTIF_LIST)) {
-    print(format(Sys.time(), "%b %d %X %Y"))
-    print(MOTIF_LIST[[motif]])
-    pwm <- read.table(paste0(MOTIFS, folder, "/", MOTIF_LIST[[motif]]))
-    PWM <- t(pwm) %>% `rownames<-`(c("A", "C", "G", "T"))
+        # Getting a list of the motif filenames:
+        MOTIF_LIST <- list.files(path = paste0(MOTIFS, file, "/"), "*motif")
 
-    seq_object <- readDNAStringSet(paste0(CONTROL_SEQ, fasta_file))
-    PWM_match <- 0
+        # Setting rownames for 'pwm_results' matrix:
+        rownames(pwm_results) <-
+                c(paste0(tools::file_path_sans_ext(MOTIF_LIST), ".m"))
 
-    for (i in 1:length(seq_object)) {
-        target_hits <- matchPWM(as.matrix(PWM), seq_object[[i]],
-                    min.score = "80%", with.score = TRUE)
-        # PWM_score <- mcols(hits)$score
-        core_score <- min(mcols(target_hits)$score / maxScore(PWM))
-        if (is.finite(core_score)) {
-            PWM_match <- PWM_match + 1
-            if (PWM_match %% 800 == 0) { print(PWM_match) }
+        # Iterating motif list:
+        for (motif in seq(MOTIF_LIST)) {
+            print(paste("START TIME: ", format(Sys.time(), "%b %d %X %Y"),
+                        ", MOTIF NAME: ", MOTIF_LIST[[motif]]))
+
+            # Reading a PWM matrix for certain motif:
+            pwm <- read.table(paste0(MOTIFS, file, "/", MOTIF_LIST[[motif]]))
+            t_pwm <- t(pwm) %>% `rownames<-`(c("A", "C", "G", "T"))
+
+            # Loading .fasta file sequences into an XStringSet object:
+            seq_object <- readDNAStringSet(paste0(TARGET_CONTROL[folder],
+                                                  FASTA_LIST[filename]))
+            pwm_match <- 0
+
+            # Iterating XStringSet object elements and counting motif hits:
+            for (i in seq(seq_object)) {
+                target_hits <- matchPWM(as.matrix(t_pwm), seq_object[[i]],
+                                min.score = "80%", with.score = TRUE)
+
+                # Getting motif hit score and checking whether it is finite.
+                # If the score is 'Inf' it means that the hit was not found
+                # and 'target_hits' variable outputs 'None' next to the label
+                # 'views' instead of printing hit start and end positions:
+                core_score <- min(mcols(target_hits)$score / maxScore(t_pwm))
+                if (is.finite(core_score)) {
+                    pwm_match <- pwm_match + 1
+                    if (pwm_match %% 800 == 0) { print(pwm_match) }
+                } else { next }
+            }
+
+            # Storing total motif hit count at the particular matrix cell and
+            # writing the result into a file:
+            pwm_results[motif, folder] <- pwm_match
+            write.table(pwm_results, paste0(HITS_FOLDERS[folder], file))
+            print(paste("END TIME: ", format(Sys.time(), "%b %d %X %Y")))
         }
-        else { next }
+        print(paste("END TIME: ", format(Sys.time(), "%b %d %X %Y")))
     }
-    print(format(Sys.time(), "%b %d %X %Y"))
-    pwm_results[motif, 1] <- MOTIF_LIST[[motif]]
-    pwm_results[motif, 3] <- PWM_match
-    write.table(pwm_results, paste0(INTERMEDIATE_FILES, "con_motifs_modified"))
 }
-
-print(pwm_results)
-write.table(pwm_results, paste0(INTERMEDIATE_FILES, "con_motifs_modified"))
 ```
 
 ```{r Chi-Square_Test}
