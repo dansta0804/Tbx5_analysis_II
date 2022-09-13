@@ -2,3 +2,10 @@ Inputs/BED
 Inputs/BigBed
 Inputs/FASTA
 Inputs/Shuffled_FASTA
+Programs/report/out_md/samples.md
+Programs/report/out_md/samples.knitmeta.RDS
+Programs/report/out_md/index.md
+Programs/report/out_md/_site.yml
+Programs/scikick.yml
+Programs/report/out_html/index.html
+Programs/report/out_html/samples.html
