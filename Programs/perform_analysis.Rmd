@@ -16,7 +16,7 @@ FASTAs <- paste0(INPUTS, "FASTA/")
 MOTIFS <- paste0(TBX5_FOLDER, "/Motifs/")                              
 CONTROL_SEQ <- paste0(INPUTS, "Shuffled_FASTA/")                       
 FASTA_LIST <- list.files(path = FASTAs, "*fasta")                      
-MOTIF_HITS <- paste0(INTERMEDIATE_FILES, "Motif_hits_tables/")         
+MOTIF_HITS <- paste0(INTERMEDIATE_FILES, "Motif_hits_tables")         
 TARGET_CONTROL <- c(FASTAs, CONTROL_SEQ)                               
 COLUMN <- c("target", "background")
 # nolint end
@@ -34,25 +34,24 @@ for (filename in seq(1, length(FASTA_LIST))) {
     # Creating an empty matrix and setting it's column names:
     pwm_results <- matrix(ncol = 2, nrow = 10) %>%
                 `colnames<-`(c("target", "background"))
+    
+    # Basenaming .fasta file and declaring a full path of the file:
+    file <- tools::file_path_sans_ext(FASTA_LIST[filename])
 
-    # Performing calculations for both target and control sequence sets:
-    for (column in seq(COLUMN)) {
-        # Basenaming .fasta file and declaring a full path of the file:
-        file <- tools::file_path_sans_ext(FASTA_LIST[filename])
-        # write.table(pwm_results, folder_name) Is it needed?
+    # Getting a list of the motif filenames:
+    MOTIF_LIST <- list.files(path = paste0(MOTIFS, file, "/"), "*motif")
 
-        # Getting a list of the motif filenames:
-        MOTIF_LIST <- list.files(path = paste0(MOTIFS, file, "/"), "*motif")
+    # Setting rownames for 'pwm_results' matrix:
+    rownames(pwm_results) <-
+            c(paste0(tools::file_path_sans_ext(MOTIF_LIST), ".m"))
 
-        # Setting rownames for 'pwm_results' matrix:
-        rownames(pwm_results) <-
-                c(paste0(tools::file_path_sans_ext(MOTIF_LIST), ".m"))
+    # Iterating motif list:
+    for (motif in seq(MOTIF_LIST)) {
+        print(paste("START TIME: ", format(Sys.time(), "%b %d %X %Y"),
+                    ", MOTIF NAME: ", MOTIF_LIST[[motif]]))
 
-        # Iterating motif list:
-        for (motif in seq(MOTIF_LIST)) {
-            print(paste("START TIME: ", format(Sys.time(), "%b %d %X %Y"),
-                        ", MOTIF NAME: ", MOTIF_LIST[[motif]]))
-
+        # Performing calculations for both target and control sequence sets:
+        for (column in seq(COLUMN)) {
             # Reading a PWM matrix for certain motif:
             pwm <- read.table(paste0(MOTIFS, file, "/", MOTIF_LIST[[motif]]))
             t_pwm <- t(pwm) %>% `rownames<-`(c("A", "C", "G", "T"))
@@ -74,14 +73,17 @@ for (filename in seq(1, length(FASTA_LIST))) {
                 core_score <- min(mcols(target_hits)$score / maxScore(t_pwm))
                 if (is.finite(core_score)) {
                     pwm_match <- pwm_match + 1
-                    if (pwm_match %% 800 == 0) { print(pwm_match) }
+                    if (pwm_match %% 800 == 0) {
+                        print(paste0("Column = ", column,
+                                     ". Value = ", pwm_match))
+                    }
                 } else { next }
             }
 
             # Storing total motif hit count at the particular matrix cell and
             # writing the result into a file:
             pwm_results[motif, column] <- pwm_match
-            write.table(pwm_results, paste0(MOTIF_HITS, file))
+            write.table(pwm_results, paste0(MOTIF_HITS, "/", file))
             print(paste("END TIME: ", format(Sys.time(), "%b %d %X %Y")))
         }
     }
@@ -92,18 +94,22 @@ for (filename in seq(1, length(FASTA_LIST))) {
 
 ```{r Chi-Square_Test}
 # nolint start
-# motif_hits <- read.csv(paste0(INTERMEDIATE_FILES, "motif_hits.csv"))
-# HIT_TABLES <- list.files(path = MOTIF_HITS, "*")    # nolint
-# rownames(motif_hits) <- motif_hits[, 1]
-# motif_hits$motif_name <- NULL
+# Running Chi-square test in order to determine if there is a significant
+# relationship between two categorical variables (target and background):
+for (filename in seq(1, length(FASTA_LIST))) {
+    file <- tools::file_path_sans_ext(FASTA_LIST[filename])
+    full_path <- file.path(MOTIF_HITS, paste0(file, ".csv"))
 
-# H0: The two variables are independent.
-# H1: The two variables relate to each other.
+    if (file.exists(full_path)) {
+        table <- read.csv(full_path)
+        rownames(table) <- table[, 1]
+        table$motif_name <- NULL
 
-# If the p-value is below 0.05, the null hypothesis can be rejected:
-# chi_test <- chisq.test(motif_hits)
-# chi_test$p.value    # p-value < 2.2e-16 --- The two variables relate to each other.
-
+        # If the p-value is below 0.05, the null hypothesis can be rejected:
+        chi_test <- chisq.test(table)
+        print(chi_test) # p-value < 2.2e-16
+    } else { next }    
+}
 # A p-value is a probability, a number between 0 and 1, calculated after
 # running a statistical test on data. A small p-value (< 0.05 in general)
 # means that the observed results are so unusual assuming that they
