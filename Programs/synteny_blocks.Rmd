@@ -7,16 +7,18 @@ p_load(data.table, rtracklayer, ggplot2, ggthemes,
 
 ```{r Paths}
 # nolint start
-PROJECT <- "/home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/Tbx5_analysis_cont/"
+PROJECT <- paste0("/home/daniele/Desktop/IV_course/I_semester/",
+                    "Kursinis_projektas/Tbx5_analysis_cont/")
 INPUTS <- paste0(PROJECT, "Inputs/")
+INTER_FILES <- paste0(PROJECT, "Intermediate_data_files/")
 FIGURES <- paste0(PROJECT, "Figures/")
 # nolint end
 ```
 
 ```{r Synteny_Blocks, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
-synteny_blocks <- read.csv(paste0(PROJECT, "Intermediate_data_files/", "synteny_blocks.csv"), skip = 1)
-samples <- read.csv(file = paste0(PROJECT, "Intermediate_data_files/", "sample_key.csv"))
+synteny_blocks <- read.csv(paste0(INTER_FILES, "synteny_blocks.csv"), skip = 1)
+samples <- read.csv(file = paste0(INTER_FILES, "sample_key.csv"))
 
 mouse_chr_pos <- synteny_blocks[, c(3:4, 6)]
 colnames(mouse_chr_pos) <- c("startpos", "endpos", "chr")
@@ -48,12 +50,15 @@ for (i in 1:length(bbfiles)) {
                        dplyr::filter(seqnames %in% chr_abr)
     names(grl)[i] <- samples$Graph_names[samples$Filename == bbfiles[i]]
 }
+```
 
+```{r}
 indicators <- c("synteny_overlaps", "peak_count")
 percentages <- c()
 
 df_final <- data.frame(matrix(ncol = 4, nrow = 0))
 colnames(df_final) <- c("names", "indicator", "value", "percentage")
+
 # Determining whether overlaps between synteny blocks and peaks exist:
 for (i in 1:length(grl)) {
     print(paste("Reading peak file:", i))
@@ -66,23 +71,23 @@ for (i in 1:length(grl)) {
     overlap_count = length(subsetByOverlaps(grl[[i]], syn_grange))
     print(paste("Overlap count:", overlap_count))
 
-    percentage = overlap_count / total_peaks
     values <- c(overlap_count, total_peaks)
 
     for (y in 1:length(indicators)) {
         row = c(samples$Graph_names[i], indicators[y], values[y],
-                percentage * 100)
+                (overlap_count / total_peaks) * 100)
         df_final[nrow(df_final) + 1, ] <- row
     }
-    
 }
 
-plot1 <- ggplot(df_final, aes(fill = indicator, y = as.numeric(value), x = names)) + 
-            geom_bar(width = 1, size = 0.2, colour = "#3f2704", stat = 'identity',
-                     position = position_dodge(0.8)) +
-            geom_text(aes(label = ifelse(indicator == "synteny_overlaps", paste0(round(as.numeric(percentage), digits = 2), "%"), ""),
-                                         fontface = 2), vjust = -1.2,
-                                         hjust = -0.5, size = 5) +
+plot1 <- ggplot(df_final, aes(fill = indicator, y = as.numeric(value),
+                          x = names)) + 
+            geom_bar(width = 1, size = 0.2, colour = "#3f2704",
+                     stat = 'identity', position = position_dodge(0.8)) +
+            geom_text(aes(label = ifelse(indicator == "synteny_overlaps",
+                                         paste0(round(as.numeric(percentage),
+                                                      digits = 2), "%"), ""),
+                          fontface = 2), vjust = -1.2, hjust = -0.5, size = 5) +
             labs(title = "", x = "", y = "") + 
             scale_fill_manual(values = c("#d37f02", "#f3bc47"),
                               labels = c("Pikų skaičius",
@@ -107,10 +112,10 @@ plot1 <- ggplot(df_final, aes(fill = indicator, y = as.numeric(value), x = names
                                    color = "black"),
                   axis.title.x = element_text(size = 2),
                   axis.title.y = element_text(size = 16),
-                  plot.title = element_text(hjust = 0.5, face = "bold"))+
+                  plot.title = element_text(hjust = 0.5, face = "bold")) +
             coord_flip()
 
-png(file = paste0(FIGURES, "synteny_blocks.png"), width = 700)
+png(file = paste0(FIGURES, "Synteny_blocks.png"), width = 700)
 plot1
 dev.off()
 plot1
