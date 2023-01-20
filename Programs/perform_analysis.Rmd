@@ -9,7 +9,7 @@ p_load(data.table, rtracklayer, ggplot2, ggthemes, reshape2, dplyr, Biostrings)
 ```{r Paths}
 # nolint start
 # Declaring paths:
-TBX5_FOLDER <- "/home/daniele/Desktop/Darbas/Tbx5_analysis_cont"       
+TBX5_FOLDER <- "/home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/Tbx5_analysis_cont"       
 INTERMEDIATE_FILES <- paste0(TBX5_FOLDER, "/Intermediate_data_files/") 
 INPUTS <- paste0(TBX5_FOLDER, "/Inputs/")                              
 FASTAs <- paste0(INPUTS, "FASTA/")                                     
