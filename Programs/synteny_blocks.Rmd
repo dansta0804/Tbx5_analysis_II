@@ -8,7 +8,7 @@ p_load(data.table, rtracklayer, ggplot2, ggthemes,
 ```{r Paths}
 # nolint start
 PROJECT <- paste0("/home/daniele/Desktop/IV_course/I_semester/",
-                    "Kursinis_projektas/Tbx5_analysis_cont/")
+                    "Kursinis_projektas/Tbx5_analysis_II/")
 INPUTS <- paste0(PROJECT, "Inputs/")
 INTER_FILES <- paste0(PROJECT, "Intermediate_data_files/")
 FIGURES <- paste0(PROJECT, "Figures/")
@@ -53,6 +53,10 @@ for (i in 1:length(bbfiles)) {
 ```
 
 ```{r}
+grl[[1]]
+
+
+
 indicators <- c("synteny_overlaps", "peak_count")
 percentages <- c()
 
@@ -94,8 +98,7 @@ plot1 <- ggplot(df_final, aes(fill = indicator, y = as.numeric(value),
                                          "Synteny blokų skaičius")) +
             scale_y_continuous(labels = label_number(suffix = " K",
                                                      scale = 1e-3)) +
-            guides(fill = guide_legend(title = "Spalvų paaiškinimas",
-                                       size = 6)) +
+            guides(fill = guide_legend(title = "Spalvų paaiškinimas")) +
             theme(panel.background = element_rect(fill = "#eeeef1",
                                                   colour = "#4c0001"),
                   panel.grid.major.y = element_line(colour = "#cab5b5",
@@ -112,12 +115,36 @@ plot1 <- ggplot(df_final, aes(fill = indicator, y = as.numeric(value),
                                    color = "black"),
                   axis.title.x = element_text(size = 2),
                   axis.title.y = element_text(size = 16),
-                  plot.title = element_text(hjust = 0.5, face = "bold")) +
+                  plot.title = element_text(hjust = 0.5, face = "bold"),
+                  legend.title = element_text(face = "bold", size = 10),
+                  legend.text = element_text(size = 10)) +
             coord_flip()
 
-png(file = paste0(FIGURES, "Synteny_blocks.png"), width = 700)
+png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"), width = 700)
 plot1
 dev.off()
 plot1
 # nolint end
+```
+
+```{r}
+library(BioCircos)
+
+links_start = c('X', '2', '9') # Chromosomes on which the links should start
+links_end = c('3', '18', '9') # Chromosomes on which the links should end
+
+links_pos_1 = c(155270560, 154978472, 42512974)
+links_pos_2 = c(102621477, 140253678, 20484611)
+links_labels = c("Link 1", "Link 2", "Link 3")
+
+tracklist = BioCircosBackgroundTrack("myBackgroundTrack", minRadius = 0, maxRadius = 0.55,
+  borderSize = 0, fillColors = "#EEFFEE")  
+
+tracklist = tracklist + BioCircosLinkTrack('myLinkTrack', links_chromosomes_1, links_pos_1,
+  links_pos_1 + 50000000, links_chromosomes_2, links_pos_2, links_pos_2 + 750000,
+  maxRadius = 0.55, labels = links_labels)
+
+BioCircos(tracklist, genomeFillColor = "PuOr",
+  chrPad = 0.02, displayGenomeBorder = FALSE, yChr =  FALSE,
+  genomeTicksDisplay = FALSE,  genomeLabelTextSize = "8pt", genomeLabelDy = 0)
 ```
