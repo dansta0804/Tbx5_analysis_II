@@ -16,7 +16,7 @@ FASTAs <- paste0(INPUTS, "FASTA/")
 MOTIFS <- paste0(TBX5_FOLDER, "/Motifs/")                              
 CONTROL_SEQ <- paste0(INPUTS, "Shuffled_FASTA/")                       
 FASTA_LIST <- list.files(path = FASTAs, "*fasta")                      
-MOTIF_HITS <- paste0(INTERMEDIATE_FILES, "Motif_hits_tables")         
+MOTIF_HITS <- paste0(INTERMEDIATE_FILES, "Motif_hits_tables/")         
 TARGET_CONTROL <- c(FASTAs, CONTROL_SEQ)                               
 COLUMN <- c("target", "background")
 # nolint end
@@ -83,7 +83,7 @@ for (filename in seq(1, length(FASTA_LIST))) {
             # Storing total motif hit count at the particular matrix cell and
             # writing the result into a file:
             pwm_results[motif, column] <- pwm_match
-            write.table(pwm_results, paste0(MOTIF_HITS, "/", file))
+            write.table(pwm_results, paste0(MOTIF_HITS, file))
             print(paste("END TIME: ", format(Sys.time(), "%b %d %X %Y")))
         }
     }

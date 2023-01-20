@@ -1,0 +1,118 @@
+```{r Libraries}
+library(pacman)
+p_load(data.table, rtracklayer, ggplot2, ggthemes,
+       plyranges, ggpubr, BRGenomics, reshape2, plotly,
+       dplyr, gplots, Biostrings, scales, viridis, hrbrthemes)
+```
+
+```{r Paths}
+# nolint start
+PROJECT <- "/home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/"
+INPUTS <- paste0(PROJECT, "Inputs/")
+FIGURES <- paste0(PROJECT, "Figures/")
+# nolint end
+```
+
+```{r Synteny_Blocks, echo=FALSE, message=FALSE, warning=FALSE}
+# nolint start
+synteny_blocks <- read.csv(paste0(PROJECT, "synteny_blocks.csv"), skip = 1)
+samples <- read.csv(file = paste0(PROJECT, "sample_key.csv"))
+
+mouse_chr_pos <- synteny_blocks[, c(3:4, 6)]
+colnames(mouse_chr_pos) <- c("startpos", "endpos", "chr")
+df <- data.frame(chr = paste0("chr", c(mouse_chr_pos[, 3])),
+       start = c(mouse_chr_pos[, 1]), end = c(mouse_chr_pos[, 2]),
+       strand = "+")
+
+# head(df[df$start > df$end,]) --> In case needs testing
+
+for (i in 1:length(rownames(df))) {
+    if (df[i, 2] > df[i, 3]) {
+        reverse1 = df[i, 2]
+        df[i, 2] = df[i, 3]
+        df[i, 3] = reverse1
+        df[i, 4] <- "-"
+    }
+}
+
+syn_grange <- makeGRangesFromDataFrame(df)
+bbfiles <- list.files(path = INPUTS, "*bb")
+grl <- GRangesList()
+
+# Declaring what chromosomes are analyzed:
+chr_abr <- c(paste0("chr", 1:19), "chrX", "chrY")
+
+# Creating GRanges objects and extracting certain chromosomes:
+for (i in 1:length(bbfiles)) {
+    grl[[i]] <- import(paste0(INPUTS, bbfiles[i])) %>%
+                       dplyr::filter(seqnames %in% chr_abr)
+    names(grl)[i] <- samples$Graph_names[samples$Filename == bbfiles[i]]
+}
+
+indicators <- c("synteny_overlaps", "peak_count")
+percentages <- c()
+
+df_final <- data.frame(matrix(ncol = 4, nrow = 0))
+colnames(df_final) <- c("names", "indicator", "value", "percentage")
+# Determining whether overlaps between synteny blocks and peaks exist:
+for (i in 1:length(grl)) {
+    print(paste("Reading peak file:", i))
+
+    total_peaks = length(grl[[i]])
+    print(paste("Total peak count:", total_peaks))
+    # print(paste("Overlap count:", length(subsetByOverlaps(syn_grange, grl[[i]]))))
+    # percentage = length(subsetByOverlaps(syn_grange, grl[[i]])) / length(grl[[i]])
+
+    overlap_count = length(subsetByOverlaps(grl[[i]], syn_grange))
+    print(paste("Overlap count:", overlap_count))
+
+    percentage = overlap_count / total_peaks
+    values <- c(overlap_count, total_peaks)
+
+    for (y in 1:length(totals)) {
+        row = c(samples$Graph_names[i], indicators[y], values[y],
+                percentage * 100)
+        df_final[nrow(df_final) + 1, ] <- row
+    }
+    
+}
+
+plot1 <- ggplot(df_final, aes(fill = indicator, y = as.numeric(value), x = names)) + 
+            geom_bar(width = 1, size = 0.2, colour = "#3f2704", stat = 'identity',
+                     position = position_dodge(0.8)) +
+            geom_text(aes(label = ifelse(indicator == "synteny_overlaps", paste0(round(as.numeric(percentage), digits = 2), "%"), ""),
+                                         fontface = 2), vjust = -1.2,
+                                         hjust = -0.5, size = 5) +
+            labs(title = "", x = "", y = "") + 
+            scale_fill_manual(values = c("#d37f02", "#f3bc47"),
+                              labels = c("Pikų skaičius",
+                                         "Synteny blokų skaičius")) +
+            scale_y_continuous(labels = label_number(suffix = " K",
+                                                     scale = 1e-3)) +
+            guides(fill = guide_legend(title = "Spalvų paaiškinimas",
+                                       size = 6)) +
+            theme(panel.background = element_rect(fill = "#eeeef1",
+                                                  colour = "#4c0001"),
+                  panel.grid.major.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.minor.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.major.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  panel.grid.minor.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  axis.text.x = element_text(angle = 0, hjust = 1, vjust = 1,
+                                   size = 11, face = "bold", color = "black"),
+                  axis.text.y = element_text(size = 11, face = "bold",
+                                   color = "black"),
+                  axis.title.x = element_text(size = 2),
+                  axis.title.y = element_text(size = 16),
+                  plot.title = element_text(hjust = 0.5, face = "bold"))+
+            coord_flip()
+
+png(file = paste0(FIGURES, "synteny_blocks.png"), width = 700)
+plot1
+dev.off()
+plot1
+# nolint end
+```
