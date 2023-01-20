@@ -7,7 +7,7 @@ p_load(data.table, rtracklayer, ggplot2, ggthemes,
 
 ```{r Paths}
 # nolint start
-PROJECT <- "/home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/"
+PROJECT <- "/home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/Tbx5_analysis_cont/"
 INPUTS <- paste0(PROJECT, "Inputs/")
 FIGURES <- paste0(PROJECT, "Figures/")
 # nolint end
