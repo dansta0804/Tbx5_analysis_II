@@ -1,0 +1,8 @@
+Code_variable,Experiment_no,Tissue,Replica,Graph_names,Filename
+mm1,1,heart,r1,heart_r1_1,PEAKS054910_Tbx5_P70326_MACS2_3053.bb
+mm2,2,cardiac muscle,r1,crdc_mscl_r1_2,PEAKS035687_Tbx5_P70326_MACS2_437.bb
+mm3,3,cardiac fibroblast,r1,crdc_fibr_r1_3,PEAKS057470_Tbx5_P70326_MACS2_4426.bb
+mm4,4,embryonic fibroblast,r1,emb_fibr_r1_1,PEAKS054901_Tbx5_P70326_MACS2_12.bb
+mm5,4,embryonic fibroblast,r2,emb_fibr_r2_2,PEAKS054905_Tbx5_P70326_MACS2_12.bb
+mm6,4,embryonic fibroblast,r3,emb_fibr_r3_3,PEAKS054908_Tbx5_P70326_MACS2_12.bb
+mm7,4,embryonic fibroblast,r4,emb_fibr_r4_4,PEAKS054914_Tbx5_P70326_MACS2_12.bb
