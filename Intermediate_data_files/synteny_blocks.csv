@@ -1,4 +1,4 @@
-# taxid,chr,startpos,endpos,,taxid,chr,startpos,endpos
+# taxid,chr,startpos,endpos,taxid,chr,startpos,endpos
 # Zebrafish vs Mouse,,,,,,,
 7955,2,30454838,30601395,10090,1,4847775,5592947
 7955,2,29960685,30039129,10090,1,16632846,17087879
