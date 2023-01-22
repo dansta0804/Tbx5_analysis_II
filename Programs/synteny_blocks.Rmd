@@ -1,8 +1,9 @@
 ```{r Libraries}
 library(pacman)
-p_load(data.table, rtracklayer, ggplot2, ggthemes,
-       plyranges, ggpubr, BRGenomics, reshape2, plotly,
-       dplyr, gplots, Biostrings, scales, viridis, hrbrthemes)
+p_load(data.table, rtracklayer, ggplot2, ggthemes, plyranges, ggpubr,
+       BRGenomics, reshape2, plotly, dplyr, gplots, Biostrings, scales,
+       ChIPseeker, TxDb.Mmusculus.UCSC.mm10.knownGene, org.Mm.eg.db,
+       annotables, gtools)
 ```
 
 ```{r Paths}
@@ -12,6 +13,8 @@ PROJECT <- paste0("/home/daniele/Desktop/IV_course/I_semester/",
 INPUTS <- paste0(PROJECT, "Inputs/")
 INTER_FILES <- paste0(PROJECT, "Intermediate_data_files/")
 FIGURES <- paste0(PROJECT, "Figures/")
+RESULTS <- paste0(PROJECT, "Peak_annotations/")
+GTF_FASTA <- paste0(PROJECT, "Seq_Annot/")
 # nolint end
 ```
 
@@ -20,12 +23,12 @@ FIGURES <- paste0(PROJECT, "Figures/")
 synteny_blocks <- read.csv(paste0(INTER_FILES, "synteny_blocks.csv"), skip = 1)
 samples <- read.csv(file = paste0(INTER_FILES, "sample_key.csv"))
 
-mouse_chr_pos <- synteny_blocks[, c(3:4, 6)]
+mouse_chr_pos <- synteny_blocks[, c(3:4, 2)]
 colnames(mouse_chr_pos) <- c("startpos", "endpos", "chr")
 df <- data.frame(chr = paste0("chr", c(mouse_chr_pos[, 3])),
        start = c(mouse_chr_pos[, 1]), end = c(mouse_chr_pos[, 2]),
        strand = "+")
-
+head(df)
 # head(df[df$start > df$end,]) --> In case needs testing
 
 for (i in 1:length(rownames(df))) {
@@ -52,11 +55,64 @@ for (i in 1:length(bbfiles)) {
 }
 ```
 
+```{r Synteny_Blocks, echo=FALSE, message=FALSE, warning=FALSE}
+# nolint start
+
+chr_syn <- as.data.frame(table(synteny_blocks[, 6]))
+colnames(chr_syn) <- c("Chr", "Freq")
+chr_syn$Chr <- sub("^", "Chr", chr_syn$Chr)
+chr_order <- c(paste0("Chr", 1:19), "ChrX")
+chr_syn$Chr <- factor(chr_syn$Chr, levels = chr_order)
+
+chr_syn <- chr_syn[order(chr_syn$Chr), ]
+max(chr_syn$Freq)
+
+colours <- ifelse(chr_syn$Freq >= 100, "#b61f1f","black")
+sizes <- ifelse(chr_syn$Freq >= 100, 6, 5)
+bold <- ifelse(chr_syn$Freq >= 100, 2, 0)
+
+plot0 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) + 
+            geom_bar(width = 0.8, size = 0.2, fill = "#be800d",
+                     color = "#523a0f", stat = 'identity',
+                     position = position_dodge(0.5)) +
+            geom_text(aes(label = Freq), colour = colours, vjust = -0.2,
+                    hjust = 0.5, size = sizes, fontface = bold) +
+            labs(title = "", x = "", y = "") + 
+            ylim(0, 2.5) +
+            scale_y_continuous(labels = label_number(suffix = " K",
+                                                     scale = 1e-2)) +
+            guides(fill = guide_legend(title = "Spalvų paaiškinimas")) +
+            theme(panel.background = element_rect(fill = "#eeeef1",
+                                                  colour = "#4c0001"),
+                  panel.grid.major.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.minor.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.major.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  panel.grid.minor.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1,
+                                   size = 11, face = "bold", color = "black"),
+                  axis.text.y = element_text(size = 11, face = "bold",
+                                   color = "black"),
+                  axis.title.x = element_text(size = 2),
+                  axis.title.y = element_text(size = 16),
+                  plot.title = element_text(hjust = 0.5, face = "bold"),
+                  legend.title = element_text(face = "bold", size = 10),
+                  legend.text = element_text(size = 10))
+
+png(file = paste0(FIGURES, "Synteny_blocks_chromosomes.png"), width = 700)
+plot0
+dev.off()
+plot0
+# nolint end
+```
+
+
+
 ```{r}
-grl[[1]]
-
-
-
+# nolint start
 indicators <- c("synteny_overlaps", "peak_count")
 percentages <- c()
 
@@ -127,24 +183,139 @@ plot1
 # nolint end
 ```
 
+```{r Peak_Annotations, echo=FALSE, message=FALSE, warning=FALSE}
+# nolint start
+mm_known_genes <- TxDb.Mmusculus.UCSC.mm10.knownGene
+
+dr_gtf <- paste0(GTF_FASTA, "Danio_rerio.GRCz11.108.chr.gtf")
+dr_object = rtracklayer::import(dr_gtf)
+dr_df = as.data.frame(dr_object)
+dr_df = unique(dr_df[ ,c("gene_id", "gene_name")])
+dr_genes <- c(unique(dr_df$gene_name))
+#write.table(dr_genes, file = paste0(RESULTS, "/dr_genes.txt"), sep = "\t",
+#            quote = FALSE, row.names = FALSE)
+
+sample_names <- c()
+annotated_genes <- c()
+intersect_genes <- c()
+plots <- c()
+
+for (object in 1:length(grl)) {
+    name <- gsub(" ", "_", names(grl[object]))
+    peak <- grl[[object]]
+    seqlengths(peak) <- seqlengths(peak) - 10001
+
+    peak_annotation <- annotatePeak(peak, tssRegion = c(-3000, 3000),
+                         TxDb = mm_known_genes, annoDb = "org.Mm.eg.db")
+
+    mm_annot <- as.data.frame(peak_annotation@anno)
+    entrezids <- unique(mm_annot$geneId)
+    entrez2gene <- grcm38 %>%
+        filter(entrez %in% entrezids) %>%
+        dplyr::select(entrez, symbol)
+
+    
+    m <- match(mm_annot$geneId, entrez2gene$entrez)
+    mm_annot <- cbind(mm_annot[, 1:14],
+                         gene_symbol = entrez2gene$symbol[m],
+                         mm_annot[, 15:16])
+
+#    write.table(mm_annot, file = paste0(RESULTS, "/", name, ".annot"),
+#                sep = "\t", quote = FALSE, row.names = FALSE)
+
+    mm_genes <- c(unique(tolower(mm_annot$gene_symbol)))
+    intersct_genes <- intersect(mm_genes, dr_genes)
+
+    sample_names <- c(sample_names, name)
+    annotated_genes <- c(annotated_genes, length(mm_genes))
+    intersect_genes <- c(intersect_genes, length(intersct_genes))
+
+#    write.table(mm_genes, file = paste0(RESULTS, "/", name, ".mm_genes"),
+#                sep = "\t", quote = FALSE, row.names = FALSE)
+#    write.table(intersct_genes, file = paste0(RESULTS, "/", name, ".intersect"),
+#                sep = "\t", quote = FALSE, row.names = FALSE)
+}
+
+# nolint end
+```
+
+Čia galima pavaizduoti diagramas, kiek iš viso buvo anotuota genų ir kiek
+persidengiančių genų buvo nustatyta tarp kiekvieno mėginio ir Danio rerio
+genų rinkinio.
+Danio rerio unikalių genų skaičius: ${length(dr_genes)}
+
+```{r Peak_Annotations_Visuals, echo=FALSE, message=FALSE, warning=FALSE}
+# nolint start
+annot_peaks <- data.frame(sample_names, annotated_genes, intersect_genes)
+colnames(annot_peaks) <- c("sample", "annotated_genes", "intersecting_genes")
+
+plot2 <- ggplot(annot_peaks, aes(x = sample_names, y = annotated_genes)) +
+            geom_bar(stat = "identity", fill = "#cc8b12", width = .6,
+                     color = "#8d5c00") +
+            labs(title = "", x = "", y = "Anotuotų pikų skaičius") +
+            ylim(0, max(annotated_genes) + 1000) +
+            geom_text(aes(label = annotated_genes), color = "#030101", size = 5,
+                          vjust = -1) +
+            theme(axis.text = element_text(size = 10, colour = "black"),
+                  axis.text.x = element_text(angle = 45, hjust = 1, size = 12,
+                                             vjust = 1, face = "bold"),
+                  axis.text.y = element_text(size = 12, face = "bold"),
+                  axis.title.x = element_text(size = 14, colour = "black"),
+                  axis.title.y = element_text(size = 14, colour = "black"),
+                  panel.grid.major = element_line(color = "#eeeeee"),
+                  plot.title = element_text(hjust = 0.5, size = 16,
+                                            face = "bold"),
+                  panel.background = element_rect(fill = "#eeeef1",
+                                                  colour = "#3a1010"),
+                  panel.grid.major.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.minor.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.major.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  panel.grid.minor.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  legend.position = c(0.777, 0.788))
+
+plot3 <- ggplot(annot_peaks, aes(x = sample_names, y = intersect_genes)) +
+            geom_bar(stat = "identity", fill = "#ac5809", width = .6,
+                     color = "#7e3d00") +
+            labs(title = "", x = "", y = "Persidengiančių genų skaičius") +
+            ylim(0, max(annotated_genes) + 1000) +
+            geom_text(aes(label = intersect_genes), color = "#030101", size = 5,
+                          vjust = -1) +
+            theme(axis.text = element_text(size = 10, colour = "black"),
+                  axis.text.x = element_text(angle = 45, hjust = 1, size = 12,
+                                             vjust = 1, face = "bold"),
+                  axis.text.y = element_text(size = 12, face = "bold"),
+                  axis.title.x = element_text(size = 14, colour = "black"),
+                  axis.title.y = element_text(size = 14, colour = "black"),
+                  panel.grid.major = element_line(color = "#eeeeee"),
+                  plot.title = element_text(hjust = 0.5, size = 16,
+                                            face = "bold"),
+                  panel.background = element_rect(fill = "#eeeef1",
+                                                  colour = "#3a1010"),
+                  panel.grid.major.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.minor.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.major.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  panel.grid.minor.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  legend.position = c(0.777, 0.788))
+
+png(file = paste0(FIGURES, "Annotated_genes.png"), width = 700)
+plot2 + plot3
+dev.off()
+plot2
+# nolint end
+```
+
 ```{r}
-library(BioCircos)
+grl <- lapply(grl, FUN = function(x) seqlengths(x) <- seqlengths(x) - 10001)
 
-links_start = c('X', '2', '9') # Chromosomes on which the links should start
-links_end = c('3', '18', '9') # Chromosomes on which the links should end
-
-links_pos_1 = c(155270560, 154978472, 42512974)
-links_pos_2 = c(102621477, 140253678, 20484611)
-links_labels = c("Link 1", "Link 2", "Link 3")
-
-tracklist = BioCircosBackgroundTrack("myBackgroundTrack", minRadius = 0, maxRadius = 0.55,
-  borderSize = 0, fillColors = "#EEFFEE")  
-
-tracklist = tracklist + BioCircosLinkTrack('myLinkTrack', links_chromosomes_1, links_pos_1,
-  links_pos_1 + 50000000, links_chromosomes_2, links_pos_2, links_pos_2 + 750000,
-  maxRadius = 0.55, labels = links_labels)
-
-BioCircos(tracklist, genomeFillColor = "PuOr",
-  chrPad = 0.02, displayGenomeBorder = FALSE, yChr =  FALSE,
-  genomeTicksDisplay = FALSE,  genomeLabelTextSize = "8pt", genomeLabelDy = 0)
+peakAnnoList <- lapply(grl, annotatePeak, TxDb=mm_known_genes,
+                       tssRegion=c(-3000, 3000), verbose=FALSE)
+lapply(d, FUN = function(x) x ^ 2)
 ```
