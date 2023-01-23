@@ -1,4 +1,27 @@
-```{r Libraries}
+## Homology determination between *Mus musculus* and *Danio rerio* analysis
+### Introduction
+
+This part of the work describes the analysis that was performed to continue
+analyzing Tbx5 transcription factor and it's impact to heart cells'
+regeneration.
+
+The main purpose of the analysis was to determine the similarity of
+*Mus musculus* and *Danio rerio* genomes by using various bioinformatical
+tools in order to identify synteny blocks between beforementioned organisms.
+
+The samples that were used in the analysis are described in the previous
+analysis and can be viewed
+[here](file:///home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/Tbx5_analysis_II/Programs/report/out_html/samples.html).
+The results of the Tbx5 transcription factor abundance in *Mus musculus*
+organism analysis can be found
+[here](file:///home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/Tbx5_analysis_II/Programs/report/out_html/peaks_MM.html).
+
+
+The analysis provides the following information:\
+ **1.** 
+ **2.** 
+
+```{r Libraries, echo=FALSE, message=FALSE, warning=FALSE}
 library(pacman)
 p_load(data.table, rtracklayer, ggplot2, ggthemes, plyranges, ggpubr,
        BRGenomics, reshape2, plotly, dplyr, gplots, Biostrings, scales,
@@ -6,8 +29,9 @@ p_load(data.table, rtracklayer, ggplot2, ggthemes, plyranges, ggpubr,
        annotables, gtools)
 ```
 
-```{r Paths}
+```{r Paths, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
+# Declaring paths:
 PROJECT <- paste0("/home/daniele/Desktop/IV_course/I_semester/",
                     "Kursinis_projektas/Tbx5_analysis_II/")
 INPUTS <- paste0(PROJECT, "Inputs/")
@@ -28,7 +52,7 @@ colnames(mouse_chr_pos) <- c("startpos", "endpos", "chr")
 df <- data.frame(chr = paste0("chr", c(mouse_chr_pos[, 3])),
        start = c(mouse_chr_pos[, 1]), end = c(mouse_chr_pos[, 2]),
        strand = "+")
-head(df)
+
 # head(df[df$start > df$end,]) --> In case needs testing
 
 for (i in 1:length(rownames(df))) {
@@ -55,7 +79,9 @@ for (i in 1:length(bbfiles)) {
 }
 ```
 
-```{r Synteny_Blocks_MM, echo=FALSE, message=FALSE, warning=FALSE}
+### Synteny blocks by chromosome in *Mus musculus*
+
+```{r Synteny_Blocks_MM, fig.width = 6, fig.height = 5, fig.align = "center"}
 # nolint start
 chr_syn <- as.data.frame(table(synteny_blocks[, 6]))
 colnames(chr_syn) <- c("Chr", "Freq")
@@ -64,8 +90,6 @@ chr_order <- c(paste0("Chr", 1:19), "ChrX")
 chr_syn$Chr <- factor(chr_syn$Chr, levels = chr_order)
 
 chr_syn <- chr_syn[order(chr_syn$Chr), ]
-max(chr_syn$Freq)
-
 colours <- ifelse(chr_syn$Freq >= 100, "#b61f1f","black")
 sizes <- ifelse(chr_syn$Freq >= 100, 6, 5)
 bold <- ifelse(chr_syn$Freq >= 100, 2, 0)
@@ -100,13 +124,16 @@ plot0 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) +
                   legend.title = element_text(face = "bold", size = 10),
                   legend.text = element_text(size = 10))
 
-png(file = paste0(FIGURES, "Synteny_blocks_MM_chr.png"), width = 700)
+# png(file = paste0(FIGURES, "Synteny_blocks_MM_chr.png"), width = 700)
+# plot0
+# dev.off()
 plot0
-dev.off()
 # nolint end
 ```
 
-```{r Synteny_Blocks_MM, echo=FALSE, message=FALSE, warning=FALSE}
+### Synteny blocks by chromosome in *Danio rerio*
+
+```{r Synteny_Blocks_DR, fig.width = 6, fig.height = 5, fig.align = "center"}
 # nolint start
 chr_syn <- as.data.frame(table(synteny_blocks[, 2]))
 colnames(chr_syn) <- c("Chr", "Freq")
@@ -115,8 +142,6 @@ chr_order <- c(paste0("Chr", 1:25))
 chr_syn$Chr <- factor(chr_syn$Chr, levels = chr_order)
 
 chr_syn <- chr_syn[order(chr_syn$Chr), ]
-max(chr_syn$Freq)
-
 colours <- ifelse(chr_syn$Freq >= 70, "#b61f1f","black")
 sizes <- ifelse(chr_syn$Freq >= 70, 6, 5)
 bold <- ifelse(chr_syn$Freq >= 70, 2, 0)
@@ -150,15 +175,16 @@ plot1 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) +
           legend.title = element_text(face = "bold", size = 10),
           legend.text = element_text(size = 10))
 
-png(file = paste0(FIGURES, "Synteny_blocks_DR_chr.png"), width = 700)
+# png(file = paste0(FIGURES, "Synteny_blocks_DR_chr.png"), width = 700)
+# plot1
+# dev.off()
 plot1
-dev.off()
 # nolint end
 ```
 
+### Synteny blocks percentage in sample peaks
 
-
-```{r}
+```{r Synteny_percentage, fig.width = 6, fig.height = 5, fig.align = "center"}
 # nolint start
 indicators <- c("synteny_overlaps", "peak_count")
 percentages <- c()
@@ -168,15 +194,15 @@ colnames(df_final) <- c("names", "indicator", "value", "percentage")
 
 # Determining whether overlaps between synteny blocks and peaks exist:
 for (i in 1:length(grl)) {
-    print(paste("Reading peak file:", i))
+    #print(paste("Reading peak file:", i))
 
     total_peaks = length(grl[[i]])
-    print(paste("Total peak count:", total_peaks))
+    #print(paste("Total peak count:", total_peaks))
     # print(paste("Overlap count:", length(subsetByOverlaps(syn_grange, grl[[i]]))))
     # percentage = length(subsetByOverlaps(syn_grange, grl[[i]])) / length(grl[[i]])
 
     overlap_count = length(subsetByOverlaps(grl[[i]], syn_grange))
-    print(paste("Overlap count:", overlap_count))
+    #print(paste("Overlap count:", overlap_count))
 
     values <- c(overlap_count, total_peaks)
 
@@ -223,11 +249,14 @@ plot2 <- ggplot(df_final, aes(fill = indicator, y = as.numeric(value),
                   legend.text = element_text(size = 10)) +
             coord_flip()
 
-png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"), width = 700)
+# png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"), width = 700)
+# plot2
+# dev.off()
 plot2
-dev.off()
 # nolint end
 ```
+
+### Peak annotation
 
 ```{r Peak_Annotations, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
@@ -244,7 +273,6 @@ dr_genes <- c(unique(dr_df$gene_name))
 sample_names <- c()
 annotated_genes <- c()
 intersect_genes <- c()
-plots <- c()
 
 for (object in 1:length(grl)) {
     name <- gsub(" ", "_", names(grl[object]))
@@ -290,7 +318,7 @@ persidengiančių genų buvo nustatyta tarp kiekvieno mėginio ir Danio rerio
 genų rinkinio.
 Danio rerio unikalių genų skaičius: ${length(dr_genes)}
 
-```{r Peak_Annotations_Visuals, echo=FALSE, message=FALSE, warning=FALSE}
+```{r Peak_Annotations_Visuals, fig.width = 8, fig.height = 6, fig.align = "center"}
 # nolint start
 annot_peaks <- data.frame(sample_names, annotated_genes, intersect_genes)
 colnames(annot_peaks) <- c("sample", "annotated_genes", "intersecting_genes")
@@ -351,16 +379,12 @@ plot4 <- ggplot(annot_peaks, aes(x = sample_names, y = intersect_genes)) +
                                            size = 0.2, linetype = "longdash"),
                   legend.position = c(0.777, 0.788))
 
-png(file = paste0(FIGURES, "Annotated_genes.png"), width = 700)
+# png(file = paste0(FIGURES, "Annotated_genes.png"), width = 700)
+# plot3 + plot4
+# dev.off()
 plot3 + plot4
-dev.off()
 # nolint end
 ```
 
 ```{r}
-grl <- lapply(grl, FUN = function(x) seqlengths(x) <- seqlengths(x) - 10001)
-
-peakAnnoList <- lapply(grl, annotatePeak, TxDb=mm_known_genes,
-                       tssRegion=c(-3000, 3000), verbose=FALSE)
-lapply(d, FUN = function(x) x ^ 2)
 ```
