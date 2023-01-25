@@ -80,6 +80,8 @@ for (i in 1:length(bbfiles)) {
 ```
 
 ### Synteny blocks by chromosome in *Mus musculus*
+The barchart bellow shows how many fragments in each *Mus musculus* chromosome
+belong to synteny blocks.
 
 ```{r Synteny_Blocks_MM, fig.width = 6, fig.height = 5, fig.align = "center"}
 # nolint start
@@ -131,7 +133,14 @@ plot0
 # nolint end
 ```
 
+As it can be seen from the diagram the greatest number of fragments has been
+detected in the 1, 2 and 11 chromosomes (104, 132 and 112 fragments,
+respectively). The smallest number of fragments has been detected in the 18th
+chromosome (39 fragments).
+
 ### Synteny blocks by chromosome in *Danio rerio*
+The barchart bellow shows how many fragments in each *Danio rerio* chromosome
+belong to synteny blocks.
 
 ```{r Synteny_Blocks_DR, fig.width = 6, fig.height = 5, fig.align = "center"}
 # nolint start
@@ -182,12 +191,19 @@ plot1
 # nolint end
 ```
 
+In comparison with the *Mus musculus* results, the number of fragments in
+chromosomes apparently varies between the chromosomes. According to the diagram,
+the greatest number of fragments has been detected in the 5, 7, 9 and 17
+chromosomes (75, 74, 76, 74 and 76 fragments, respectively). The smallest number
+of fragments has been detected in the 22nd chromosome (28 fragments).
+
 ### Synteny blocks percentage in sample peaks
 
 ```{r Synteny_percentage, fig.width = 6, fig.height = 5, fig.align = "center"}
 # nolint start
 indicators <- c("synteny_overlaps", "peak_count")
 percentages <- c()
+grl_smlr <- GRangesList()
 
 df_final <- data.frame(matrix(ncol = 4, nrow = 0))
 colnames(df_final) <- c("names", "indicator", "value", "percentage")
@@ -211,7 +227,11 @@ for (i in 1:length(grl)) {
                 (overlap_count / total_peaks) * 100)
         df_final[nrow(df_final) + 1, ] <- row
     }
+
+    grl_smlr[[i]] <- subsetByOverlaps(grl[[i]], syn_grange)
+    names(grl_smlr)[i] <- names(grl[i])
 }
+
 
 plot2 <- ggplot(df_final, aes(fill = indicator, y = as.numeric(value),
                           x = names)) + 
@@ -261,22 +281,13 @@ plot2
 ```{r Peak_Annotations, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
 mm_known_genes <- TxDb.Mmusculus.UCSC.mm10.knownGene
-
-dr_gtf <- paste0(GTF_FASTA, "Danio_rerio.GRCz11.108.chr.gtf")
-dr_object = rtracklayer::import(dr_gtf)
-dr_df = as.data.frame(dr_object)
-dr_df = unique(dr_df[ ,c("gene_id", "gene_name")])
-dr_genes <- c(unique(dr_df$gene_name))
-#write.table(dr_genes, file = paste0(RESULTS, "/dr_genes.txt"), sep = "\t",
-#            quote = FALSE, row.names = FALSE)
-
 sample_names <- c()
-annotated_genes <- c()
-intersect_genes <- c()
+grl_synteny <- GRangesList()
 
-for (object in 1:length(grl)) {
+# 1. Anotuoti pikus, priklausančius sintenijos blokui:
+for (object in 1:length(grl_smlr)) {
     name <- gsub(" ", "_", names(grl[object]))
-    peak <- grl[[object]]
+    peak <- grl_smlr[[object]]
     seqlengths(peak) <- seqlengths(peak) - 10001
 
     peak_annotation <- annotatePeak(peak, tssRegion = c(-3000, 3000),
@@ -288,30 +299,131 @@ for (object in 1:length(grl)) {
         filter(entrez %in% entrezids) %>%
         dplyr::select(entrez, symbol)
 
-    
     m <- match(mm_annot$geneId, entrez2gene$entrez)
     mm_annot <- cbind(mm_annot[, 1:14],
                          gene_symbol = entrez2gene$symbol[m],
                          mm_annot[, 15:16])
 
-#    write.table(mm_annot, file = paste0(RESULTS, "/", name, ".annot"),
-#                sep = "\t", quote = FALSE, row.names = FALSE)
-
-    mm_genes <- c(unique(tolower(mm_annot$gene_symbol)))
-    intersct_genes <- intersect(mm_genes, dr_genes)
-
-    sample_names <- c(sample_names, name)
-    annotated_genes <- c(annotated_genes, length(mm_genes))
-    intersect_genes <- c(intersect_genes, length(intersct_genes))
-
-#    write.table(mm_genes, file = paste0(RESULTS, "/", name, ".mm_genes"),
-#                sep = "\t", quote = FALSE, row.names = FALSE)
-#    write.table(intersct_genes, file = paste0(RESULTS, "/", name, ".intersect"),
-#                sep = "\t", quote = FALSE, row.names = FALSE)
+    grl_synteny[[object]] <- mm_annot
+    names(grl_synteny)[object] <- names(grl)[object]
 }
+# Next day: pateikti diagramą, vaizduojančią, kiek gali būti nustatyta genų,
+# priklausančių sintenijos blokui (unikalių genų kiekvienam mėginiui).
+# nolint end
+```
+
+```{r}
+# nolint start
+# grl_synteny - yra GRanges objektas, kuriame yra pridėtas geno simbolis,
+#            geno pradžios pozicija ir kita informacija.
+
+library(TxDb.Drerio.UCSC.danRer11.refGene)
+library(BSgenome.Mmusculus.UCSC.mm10)
+library(BSgenome.Drerio.UCSC.danRer11)
+library(org.Dr.eg.db)
+library(org.Mm.eg.db)
+seq_dataset <- c()
+
+# 2. Išgauti šių Mus musculus genų sekas:
+gene_ranges <- genes(TxDb.Mmusculus.UCSC.mm10.knownGene)
+gene_ranges$gene_symbol <- mapIds(org.Mm.eg.db, keys = gene_ranges$gene_id,
+                                column = "SYMBOL", keytype = "ENTREZID",
+                                multiVals = "first")
+
+for (object in 1:length(grl_synteny)) {
+    select_genes <- tolower(gene_ranges$gene_symbol) %in%
+                        tolower(grl_synteny[[object]]$gene_symbol)
+    gene_r <- gene_ranges[select_genes]
+    gene_sequences <- getSeq(BSgenome.Mmusculus.UCSC.mm10, gene_r)
+    names(gene_sequences) <- gene_r$gene_symbol
+    seq_dataset <- c(seq_dataset, gene_sequences)
+    names(seq_dataset)[object] <- names(grl_synteny)[object]
+}
+
+# seq_dataset <- visų mėginių, kurių pikai priklauso sintenijos blokui,
+# genų sekų rinkinys
+# nolint end
+```
+
+```{r}
+# nolint start
+# 3. Nustatyti, keliose genų sekose yra nustatomi atitikimai PWM matricai:
+mpwm <- read.table(paste0(INTER_FILES, "TBX5_MOUSE.H11MO.0.D.pwm"))
+mpwm <- t(mpwm)
+
+# Setting matrix rownames:
+rownames(mpwm) <- c("A", "C", "G", "T")
+
+nchar(as.character(seq_dataset[[1]]))
+
+gene_hits <- data.frame(matrix(ncol = 3, nrow = 0))
+colnames(gene_hits) <- c("Gene", "Hits", "Length")
+
+for (gene in 1:length(seq_dataset[[1]])) {
+
+    hits <- countPWM(as.matrix(mpwm), as.character(seq_dataset[[1]][gene]),
+        min.score = "75%")
+    #matchPWM(as.matrix(mpwm), as.character(seq_dataset[[gene]]]), min.score = "75%")
+    row = c(names(seq_dataset[[1]][gene]), hits, length(seq_dataset[[1]][[gene]]))
+    gene_hits[nrow(gene_hits) + 1, ] <- row
+
+}
+library(car)
+scatterplot(as.numeric(Hits) ~ as.numeric(Length) , data=gene_hits,
+   xlab="Weight of Car", ylab="Miles Per Gallon",
+   main="Enhanced Scatter Plot")
+
+
+# matchPWM(as.matrix(mpwm), as.character(seq_dataset[[1]][[3]]), min.score = "75%")
+
+# Next day: paskaičiuoti, kiek vidutiniškai yra vienoje geno sekoje Tbx5
+# transkripcijos faktoriaus prisijungimo vietų.
+# Atrinkti tik tuos grafikus, kuriuose gaunamas geriausias Scatterplot grafikas.
 
 # nolint end
 ```
+
+```{r}
+# nolint start
+# Nustatyti, kurie anotuoti genai yra nustatomi ir Danio rerio organizme:
+
+
+dr_gtf <- paste0(GTF_FASTA, "Danio_rerio.GRCz11.108.chr.gtf")
+dr_object = rtracklayer::import(dr_gtf)
+dr_df = as.data.frame(dr_object)
+dr_df = unique(dr_df[ ,c("gene_id", "gene_name")])
+dr_genes <- c(unique(dr_df$gene_name))
+
+common_genes <- intersect(mm_annot$gene_symbol, dr_genes)
+
+
+# Next day: surasti Danio rerio genome tuos pačius genus ir nustatyti, kiek yra
+# Tbx5 motyvo atitikimų. Sukurti Scatterplot grafiką ir perdengti su Mus
+# musculus Scatterplot.
+# Nustatyti, kokia yra vidutinė motyvų reikšmė ir pateikti nesutampančių genų
+# pavyzdį.
+# Pagal synteny blokams priklausančias Danio rerio genomo fragmentų pozicijas
+# nustatyti Danio rerio genus, kurie patenka į sintenijos bloką.
+# Patikrinti su PWM matrica, ar tose genų sekose yra regionų, prie kurių gali
+# jungtis Tbx5 transkripcijos faktorius.
+# nolint end
+```
+
+
+```{r}
+# nolint start
+
+dr_gtf <- paste0(GTF_FASTA, "Danio_rerio.GRCz11.108.chr.gtf")
+dr_object = rtracklayer::import(dr_gtf)
+dr_df = as.data.frame(dr_object)
+dr_df = unique(dr_df[ ,c("gene_id", "gene_name")])
+dr_genes <- c(unique(dr_df$gene_name))
+#write.table(dr_genes, file = paste0(RESULTS, "/dr_genes.txt"), sep = "\t",
+#            quote = FALSE, row.names = FALSE)
+
+# nolint end
+```
+
 
 Čia galima pavaizduoti diagramas, kiek iš viso buvo anotuota genų ir kiek
 persidengiančių genų buvo nustatyta tarp kiekvieno mėginio ir Danio rerio
@@ -384,7 +496,4 @@ plot4 <- ggplot(annot_peaks, aes(x = sample_names, y = intersect_genes)) +
 # dev.off()
 plot3 + plot4
 # nolint end
-```
-
-```{r}
 ```
