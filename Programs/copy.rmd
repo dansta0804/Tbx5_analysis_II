@@ -1,0 +1,439 @@
+## Homology determination between *Mus musculus* and *Danio rerio* analysis
+### Introduction
+
+This part of the work describes the analysis that was performed to continue
+analyzing Tbx5 transcription factor and it's impact to heart cells'
+regeneration.
+
+The main purpose of the analysis was to determine the similarity of
+*Mus musculus* and *Danio rerio* genomes by using various bioinformatical
+tools in order to identify synteny blocks between beforementioned organisms.
+
+The samples that were used in the analysis are described in the previous
+analysis and can be viewed
+[here](file:///home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/Tbx5_analysis_II/Programs/report/out_html/samples.html).
+The results of the Tbx5 transcription factor abundance in *Mus musculus*
+organism analysis can be found
+[here](file:///home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/Tbx5_analysis_II/Programs/report/out_html/peaks_MM.html).
+
+
+The analysis provides the following information:\
+ **1.** 
+ **2.** 
+
+```{r Libraries, echo=FALSE, message=FALSE, warning=FALSE}
+library(pacman)
+p_load(data.table, rtracklayer, ggplot2, ggthemes, plyranges, ggpubr,
+       BRGenomics, reshape2, plotly, dplyr, gplots, Biostrings, scales,
+       ChIPseeker, TxDb.Mmusculus.UCSC.mm10.knownGene, org.Mm.eg.db,
+       annotables, gtools)
+```
+
+```{r Paths, echo=FALSE, message=FALSE, warning=FALSE}
+# nolint start
+# Declaring paths:
+PROJECT <- paste0("/home/daniele/Desktop/IV_course/I_semester/",
+                    "Kursinis_projektas/Tbx5_analysis_II/")
+INPUTS <- paste0(PROJECT, "Inputs/")
+INTER_FILES <- paste0(PROJECT, "Intermediate_data_files/")
+FIGURES <- paste0(PROJECT, "Figures/")
+RESULTS <- paste0(PROJECT, "Peak_annotations/")
+GTF_FASTA <- paste0(PROJECT, "Seq_Annot/")
+# nolint end
+```
+
+```{r Synteny_Blocks, echo=FALSE, message=FALSE, warning=FALSE}
+# nolint start
+synteny_blocks <- read.csv(paste0(INTER_FILES, "synteny_blocks.csv"), skip = 1)
+samples <- read.csv(file = paste0(INTER_FILES, "sample_key.csv"))
+
+mouse_chr_pos <- synteny_blocks[, c(3:4, 2)]
+colnames(mouse_chr_pos) <- c("startpos", "endpos", "chr")
+df <- data.frame(chr = paste0("chr", c(mouse_chr_pos[, 3])),
+       start = c(mouse_chr_pos[, 1]), end = c(mouse_chr_pos[, 2]),
+       strand = "+")
+
+# head(df[df$start > df$end,]) --> In case needs testing
+
+for (i in 1:length(rownames(df))) {
+    if (df[i, 2] > df[i, 3]) {
+        reverse1 = df[i, 2]
+        df[i, 2] = df[i, 3]
+        df[i, 3] = reverse1
+        df[i, 4] <- "-"
+    }
+}
+
+syn_grange <- makeGRangesFromDataFrame(df)
+bbfiles <- list.files(path = paste0(INPUTS, "BigBed/"), "*bb")
+grl <- GRangesList()
+
+# Declaring what chromosomes are analyzed:
+chr_abr <- c(paste0("chr", 1:19), "chrX", "chrY")
+
+# Creating GRanges objects and extracting certain chromosomes:
+for (i in 1:length(bbfiles)) {
+    grl[[i]] <- import(paste0(paste0(INPUTS, "BigBed/"), bbfiles[i])) %>%
+                       dplyr::filter(seqnames %in% chr_abr)
+    names(grl)[i] <- samples$Graph_names[samples$Filename == bbfiles[i]]
+}
+```
+
+### Synteny blocks by chromosome in *Mus musculus*
+The barchart bellow shows how many fragments in each *Mus musculus* chromosome
+belong to synteny blocks.
+
+```{r Synteny_Blocks_MM, fig.width = 6, fig.height = 5, fig.align = "center"}
+# nolint start
+chr_syn <- as.data.frame(table(synteny_blocks[, 6]))
+colnames(chr_syn) <- c("Chr", "Freq")
+chr_syn$Chr <- sub("^", "Chr", chr_syn$Chr)
+chr_order <- c(paste0("Chr", 1:19), "ChrX")
+chr_syn$Chr <- factor(chr_syn$Chr, levels = chr_order)
+
+chr_syn <- chr_syn[order(chr_syn$Chr), ]
+colours <- ifelse(chr_syn$Freq >= 100, "#b61f1f","black")
+sizes <- ifelse(chr_syn$Freq >= 100, 6, 5)
+bold <- ifelse(chr_syn$Freq >= 100, 2, 0)
+
+plot0 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) + 
+            geom_bar(width = 0.8, size = 0.2, fill = "#be800d",
+                     color = "#523a0f", stat = 'identity',
+                     position = position_dodge(0.5)) +
+            geom_text(aes(label = Freq), colour = colours, vjust = -0.2,
+                    hjust = 0.5, size = sizes, fontface = bold) +
+            labs(title = "", x = "", y = "") + 
+            ylim(0, 2.5) +
+            scale_y_continuous(labels = label_number(suffix = " K",
+                                                     scale = 1e-2)) +
+            theme(panel.background = element_rect(fill = "#eeeef1",
+                                                  colour = "#4c0001"),
+                  panel.grid.major.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.minor.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.major.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  panel.grid.minor.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1,
+                                   size = 11, face = "bold", color = "black"),
+                  axis.text.y = element_text(size = 11, face = "bold",
+                                   color = "black"),
+                  axis.title.x = element_text(size = 2),
+                  axis.title.y = element_text(size = 16),
+                  plot.title = element_text(hjust = 0.5, face = "bold"),
+                  legend.title = element_text(face = "bold", size = 10),
+                  legend.text = element_text(size = 10))
+
+# png(file = paste0(FIGURES, "Synteny_blocks_MM_chr.png"), width = 700)
+# plot0
+# dev.off()
+plot0
+# nolint end
+```
+
+As it can be seen from the diagram the greatest number of fragments has been
+detected in the 1, 2 and 11 chromosomes (104, 132 and 112 fragments,
+respectively). The smallest number of fragments has been detected in the 18th
+chromosome (39 fragments).
+
+### Synteny blocks by chromosome in *Danio rerio*
+The barchart bellow shows how many fragments in each *Danio rerio* chromosome
+belong to synteny blocks.
+
+```{r Synteny_Blocks_DR, fig.width = 6, fig.height = 5, fig.align = "center"}
+# nolint start
+chr_syn <- as.data.frame(table(synteny_blocks[, 2]))
+colnames(chr_syn) <- c("Chr", "Freq")
+chr_syn$Chr <- sub("^", "Chr", chr_syn$Chr)
+chr_order <- c(paste0("Chr", 1:25))
+chr_syn$Chr <- factor(chr_syn$Chr, levels = chr_order)
+
+chr_syn <- chr_syn[order(chr_syn$Chr), ]
+colours <- ifelse(chr_syn$Freq >= 70, "#b61f1f","black")
+sizes <- ifelse(chr_syn$Freq >= 70, 6, 5)
+bold <- ifelse(chr_syn$Freq >= 70, 2, 0)
+
+plot1 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) + 
+    geom_bar(width = 0.8, size = 0.2, fill = "#611d02", color = "#310f01",
+             stat = 'identity', position = position_dodge(0.5)) +
+    geom_text(aes(label = Freq), colour = colours, vjust = -0.2, hjust = 0.5,
+              size = sizes, fontface = bold) +
+    labs(title = "", x = "", y = "") + 
+    ylim(0, 2.5) +
+    scale_y_continuous(labels = label_number(suffix = " K", scale = 1e-2)) +
+    theme(panel.background = element_rect(fill = "#eeeef1",
+                                          colour = "#4c0001"),
+          panel.grid.major.y = element_line(colour = "#cab5b5", size = 0.3,
+                                            linetype = "dashed"),
+          panel.grid.minor.y = element_line(colour = "#cab5b5", size = 0.3,
+                                            linetype = "dashed"),
+          panel.grid.major.x = element_line(colour = "#cab5b5", size = 0.2,
+                                            linetype = "longdash"),
+          panel.grid.minor.x = element_line(colour = "#cab5b5", size = 0.2,
+                                            linetype = "longdash"),
+          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1,
+                                     size = 11, face = "bold",
+                                     color = "black"),
+          axis.text.y = element_text(size = 11, face = "bold",
+                                     color = "black"),
+          axis.title.x = element_text(size = 2),
+          axis.title.y = element_text(size = 16),
+          plot.title = element_text(hjust = 0.5, face = "bold"),
+          legend.title = element_text(face = "bold", size = 10),
+          legend.text = element_text(size = 10))
+
+# png(file = paste0(FIGURES, "Synteny_blocks_DR_chr.png"), width = 700)
+# plot1
+# dev.off()
+plot1
+# nolint end
+```
+
+In comparison with the *Mus musculus* results, the number of fragments in
+chromosomes apparently varies between the chromosomes. According to the diagram,
+the greatest number of fragments has been detected in the 5, 7, 9 and 17
+chromosomes (75, 74, 76, 74 and 76 fragments, respectively). The smallest number
+of fragments has been detected in the 22nd chromosome (28 fragments).
+
+### Synteny blocks percentage in sample peaks
+
+```{r Synteny_percentage, fig.width = 6, fig.height = 5, fig.align = "center"}
+# nolint start
+indicators <- c("synteny_overlaps", "peak_count")
+percentages <- c()
+grl_smlr <- GRangesList()
+
+df_final <- data.frame(matrix(ncol = 4, nrow = 0))
+colnames(df_final) <- c("names", "indicator", "value", "percentage")
+
+# Determining whether overlaps between synteny blocks and peaks exist:
+for (i in 1:length(grl)) {
+    #print(paste("Reading peak file:", i))
+
+    total_peaks = length(grl[[i]])
+    #print(paste("Total peak count:", total_peaks))
+    # print(paste("Overlap count:", length(subsetByOverlaps(syn_grange, grl[[i]]))))
+    # percentage = length(subsetByOverlaps(syn_grange, grl[[i]])) / length(grl[[i]])
+
+    overlap_count = length(subsetByOverlaps(grl[[i]], syn_grange))
+    #print(paste("Overlap count:", overlap_count))
+
+    values <- c(overlap_count, total_peaks)
+
+    for (y in 1:length(indicators)) {
+        row = c(samples$Graph_names[i], indicators[y], values[y],
+                (overlap_count / total_peaks) * 100)
+        df_final[nrow(df_final) + 1, ] <- row
+    }
+
+    grl_smlr[[i]] <- subsetByOverlaps(grl[[i]], syn_grange)
+    names(grl_smlr)[i] <- names(grl[i])
+}
+
+
+
+plot2 <- ggplot(df_final, aes(fill = indicator, y = as.numeric(value),
+                          x = names)) + 
+            geom_bar(width = 1, size = 0.2, colour = "#3f2704",
+                     stat = 'identity', position = position_dodge(0.8)) +
+            geom_text(aes(label = ifelse(indicator == "synteny_overlaps",
+                                         paste0(round(as.numeric(percentage),
+                                                      digits = 2), "%"), ""),
+                          fontface = 2), vjust = -1.2, hjust = -0.5, size = 5) +
+            labs(title = "", x = "", y = "") + 
+            scale_fill_manual(values = c("#d37f02", "#f3bc47"),
+                              labels = c("Pikų skaičius",
+                                         "Synteny blokų skaičius")) +
+            scale_y_continuous(labels = label_number(suffix = " K",
+                                                     scale = 1e-3)) +
+            guides(fill = guide_legend(title = "Spalvų paaiškinimas")) +
+            theme(panel.background = element_rect(fill = "#eeeef1",
+                                                  colour = "#4c0001"),
+                  panel.grid.major.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.minor.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.major.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  panel.grid.minor.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  axis.text.x = element_text(angle = 0, hjust = 1, vjust = 1,
+                                   size = 11, face = "bold", color = "black"),
+                  axis.text.y = element_text(size = 11, face = "bold",
+                                   color = "black"),
+                  axis.title.x = element_text(size = 2),
+                  axis.title.y = element_text(size = 16),
+                  plot.title = element_text(hjust = 0.5, face = "bold"),
+                  legend.title = element_text(face = "bold", size = 10),
+                  legend.text = element_text(size = 10)) +
+            coord_flip()
+
+# png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"), width = 700)
+# plot2
+# dev.off()
+plot2
+# nolint end
+```
+
+### Peak annotation
+
+```{r Peak_Annotations, echo=FALSE, message=FALSE, warning=FALSE}
+# nolint start
+mm_known_genes <- TxDb.Mmusculus.UCSC.mm10.knownGene
+
+
+dr_gtf <- paste0(GTF_FASTA, "Danio_rerio.GRCz11.108.chr.gtf")
+dr_object = rtracklayer::import(dr_gtf)
+dr_df = as.data.frame(dr_object)
+dr_df = unique(dr_df[ ,c("gene_id", "gene_name")])
+dr_genes <- c(unique(dr_df$gene_name))
+#write.table(dr_genes, file = paste0(RESULTS, "/dr_genes.txt"), sep = "\t",
+#            quote = FALSE, row.names = FALSE)
+
+sample_names <- c()
+annotated_genes <- c()
+intersect_genes <- c()
+
+for (object in 1:length(grl_smlr)) {
+    name <- gsub(" ", "_", names(grl[object]))
+    peak <- grl_smlr[[object]]
+    seqlengths(peak) <- seqlengths(peak) - 10001
+
+    peak_annotation <- annotatePeak(peak, tssRegion = c(-3000, 3000),
+                         TxDb = mm_known_genes, annoDb = "org.Mm.eg.db")
+
+    mm_annot <- as.data.frame(peak_annotation@anno)
+    entrezids <- unique(mm_annot$geneId)
+    entrez2gene <- grcm38 %>%
+        filter(entrez %in% entrezids) %>%
+        dplyr::select(entrez, symbol)
+
+    
+    m <- match(mm_annot$geneId, entrez2gene$entrez)
+    mm_annot <- cbind(mm_annot[, 1:14],
+                         gene_symbol = entrez2gene$symbol[m],
+                         mm_annot[, 15:16])
+
+#    write.table(mm_annot, file = paste0(RESULTS, "/", name, ".annot"),
+#                sep = "\t", quote = FALSE, row.names = FALSE)
+
+    mm_genes <- c(unique(tolower(mm_annot$gene_symbol)))
+    intersct_genes <- intersect(mm_genes, dr_genes)
+    gene_list <- intersct_genes
+    sample_names <- c(sample_names, name)
+    annotated_genes <- c(annotated_genes, length(mm_genes))
+    intersect_genes <- c(intersect_genes, length(intersct_genes))
+
+#    write.table(mm_genes, file = paste0(RESULTS, "/", name, ".mm_genes"),
+#                sep = "\t", quote = FALSE, row.names = FALSE)
+#    write.table(intersct_genes, file = paste0(RESULTS, "/", name, ".intersect"),
+#                sep = "\t", quote = FALSE, row.names = FALSE)
+}
+
+
+
+library(TxDb.Drerio.UCSC.danRer11.refGene, org.Dr.eg.db)
+library(BSgenome.Drerio.UCSC.danRer11)
+
+gene_ranges <- genes(TxDb.Drerio.UCSC.danRer11.refGene)
+
+gene_ranges$gene_symbol <- mapIds(org.Dr.eg.db, keys = gene_ranges$gene_id, column = "SYMBOL", keytype = "ENTREZID", multiVals = "first")
+selectGenes <- toupper(gene_ranges$gene_symbol) %in% gene_list
+gene_ranges <- gene_ranges[selectGenes]
+geneSequences <- getSeq(BSgenome.Drerio.UCSC.danRer11, gene_ranges)
+names(geneSequences) <- gene_ranges$gene_symbol
+
+
+
+
+mpwm <- read.table(paste0(INTER_FILES, "TBX5_MOUSE.H11MO.0.D.pwm"))
+mpwm <- t(mpwm)
+
+# Setting matrix rownames:
+rownames(mpwm) <- c("A", "C", "G", "T")
+
+drosophila.genome <- BSgenome.Drerio.UCSC.danRer11
+get_sequence(gene_ranges, drosophila.genome)
+
+
+get_sequence(, BSgenome.Mmusculus.UCSC.mm10)
+
+
+# nolint end
+```
+
+
+Čia galima pavaizduoti diagramas, kiek iš viso buvo anotuota genų ir kiek
+persidengiančių genų buvo nustatyta tarp kiekvieno mėginio ir Danio rerio
+genų rinkinio.
+Danio rerio unikalių genų skaičius: ${length(dr_genes)}
+
+```{r Peak_Annotations_Visuals, fig.width = 8, fig.height = 6, fig.align = "center"}
+# nolint start
+annot_peaks <- data.frame(sample_names, annotated_genes, intersect_genes)
+colnames(annot_peaks) <- c("sample", "annotated_genes", "intersecting_genes")
+
+plot3 <- ggplot(annot_peaks, aes(x = sample_names, y = annotated_genes)) +
+            geom_bar(stat = "identity", fill = "#cc8b12", width = .6,
+                     color = "#8d5c00") +
+            labs(title = "", x = "", y = "Anotuotų pikų skaičius") +
+            ylim(0, max(annotated_genes) + 1000) +
+            geom_text(aes(label = annotated_genes), color = "#030101", size = 5,
+                          vjust = -1) +
+            theme(axis.text = element_text(size = 10, colour = "black"),
+                  axis.text.x = element_text(angle = 45, hjust = 1, size = 12,
+                                             vjust = 1, face = "bold"),
+                  axis.text.y = element_text(size = 12, face = "bold"),
+                  axis.title.x = element_text(size = 14, colour = "black"),
+                  axis.title.y = element_text(size = 14, colour = "black"),
+                  panel.grid.major = element_line(color = "#eeeeee"),
+                  plot.title = element_text(hjust = 0.5, size = 16,
+                                            face = "bold"),
+                  panel.background = element_rect(fill = "#eeeef1",
+                                                  colour = "#3a1010"),
+                  panel.grid.major.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.minor.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.major.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  panel.grid.minor.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  legend.position = c(0.777, 0.788))
+
+plot4 <- ggplot(annot_peaks, aes(x = sample_names, y = intersect_genes)) +
+            geom_bar(stat = "identity", fill = "#ac5809", width = .6,
+                     color = "#7e3d00") +
+            labs(title = "", x = "", y = "Persidengiančių genų skaičius") +
+            ylim(0, max(annotated_genes) + 1000) +
+            geom_text(aes(label = intersect_genes), color = "#030101", size = 5,
+                          vjust = -1) +
+            theme(axis.text = element_text(size = 10, colour = "black"),
+                  axis.text.x = element_text(angle = 45, hjust = 1, size = 12,
+                                             vjust = 1, face = "bold"),
+                  axis.text.y = element_text(size = 12, face = "bold"),
+                  axis.title.x = element_text(size = 14, colour = "black"),
+                  axis.title.y = element_text(size = 14, colour = "black"),
+                  panel.grid.major = element_line(color = "#eeeeee"),
+                  plot.title = element_text(hjust = 0.5, size = 16,
+                                            face = "bold"),
+                  panel.background = element_rect(fill = "#eeeef1",
+                                                  colour = "#3a1010"),
+                  panel.grid.major.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.minor.y = element_line(colour = "#cab5b5",
+                                           size = 0.3, linetype = "dashed"),
+                  panel.grid.major.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  panel.grid.minor.x = element_line(colour = "#cab5b5",
+                                           size = 0.2, linetype = "longdash"),
+                  legend.position = c(0.777, 0.788))
+
+# png(file = paste0(FIGURES, "Annotated_genes.png"), width = 700)
+# plot3 + plot4
+# dev.off()
+plot3 + plot4
+# nolint end
+```

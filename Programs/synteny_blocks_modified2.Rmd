@@ -49,10 +49,12 @@ GTF_FASTA <- paste0(PROJECT, "Seq_Annot/")
 synteny_blocks <- read.csv(paste0(INTER_FILES, "synteny_blocks.csv"), skip = 1)
 samples <- read.csv(file = paste0(INTER_FILES, "sample_key.csv"))
 
+# Mouse vs. Zebrafish
 # Getting synteny block positions and chromosome number for mouse:
-mouse_chr_pos <- synteny_blocks[, c(7:8, 6)]
-colnames(mouse_chr_pos) <- c("startpos", "endpos", "chr")
-
+mouse_chr_pos <- synteny_blocks[, c(7:8, 6, 3:4, 2)]
+colnames(mouse_chr_pos) <- c("startpos_MM", "endpos_MM", "chr_MM",
+                             "startpos_DR", "endpos_DR", "chr_DR")
+head(mouse_chr_pos)
 # Creating a dataframe that stores data:
 df_mm <- data.frame(chr = paste0("chr", c(mouse_chr_pos[, 3])),
        start = c(mouse_chr_pos[, 1]), end = c(mouse_chr_pos[, 2]), strand = "+")
@@ -98,7 +100,7 @@ of fragments has been detected in the 22nd chromosome (28 fragments).
 # nolint start
 indicators <- c("synteny_overlaps", "peak_count")
 percentages <- c()
-grl_smlr <- GRangesList()
+grl_reduced <- GRangesList()
 
 # Creating an empty dataframe and naming it's columns:
 df_final <- data.frame(matrix(ncol = 4, nrow = 0))
@@ -116,10 +118,14 @@ for (i in 1:length(grl)) {
         df_final[nrow(df_final) + 1, ] <- row
     }
 
-    grl_smlr[[i]] <- subsetByOverlaps(grl[[i]], syn_grange)
-    names(grl_smlr)[i] <- names(grl[i])
+    grl_reduced[[i]] <- subsetByOverlaps(grl[[i]], syn_grange)
+    names(grl_reduced)[i] <- names(grl[i])
 }
+# nolint end
+```
 
+```{r}
+# nolint start
 plot2 <- ggplot(df_final, aes(fill = indic, y = as.numeric(value), x = names)) + 
     geom_bar(width = 1, size = 0.2, colour = "#3f2704", stat = 'identity',
              position = position_dodge(0.8)) +
@@ -169,9 +175,9 @@ sample_names <- c()
 grl_synteny <- GRangesList()
 
 # Annotating Mus musculus peaks that belong to synteny block:
-for (object in 1:length(grl_smlr)) {
+for (object in 1:length(grl_reduced)) {
     name <- gsub(" ", "_", names(grl[object]))
-    peak <- grl_smlr[[object]]
+    peak <- grl_reduced[[object]]
     seqlengths(peak) <- seqlengths(peak) - 10001
     peak_annotation <- annotatePeak(peak, tssRegion = c(-3000, 3000),
                          TxDb = mm_known_genes, annoDb = "org.Mm.eg.db")
@@ -300,60 +306,131 @@ for (smpl3 in 1:length(grl_synteny)) {
     names(commons)[smpl3] <- names(grl)[smpl3]
 }
 
-plot3 <- ggplot(genes_synteny, aes(x = Sample, y = as.numeric(Gene_count))) +
-    geom_bar(stat = "identity", fill = "#cc8b12", width = .6,
-             color = "#8d5c00") +
-    labs(title = "", x = "", y = "Anotuotų pikų skaičius M. Musculus") +
-    geom_text(aes(label = Gene_count), color = "#030101", size = 5,
-              just = -1, fontface = 2) +
-    theme(axis.text = element_text(size = 10, colour = "black"),
-          axis.text.x = element_text(angle = 45, hjust = 1, size = 12,
-                                     vjust = 1, face = "bold"),
-          axis.text.y = element_text(size = 12, face = "bold"),
-          axis.title.x = element_text(size = 14, colour = "black"),
-          axis.title.y = element_text(size = 14, colour = "black"),
-          panel.grid.major = element_line(color = "#eeeeee"),
-          plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
-          panel.background = element_rect(fill = "#eeeef1", colour = "#3a1010"),
-          panel.grid.major.y = element_line(colour = "#cab5b5", size = 0.3,
-                                            linetype = "dashed"),
-          panel.grid.minor.y = element_line(colour = "#cab5b5", size = 0.3,
-                                            linetype = "dashed"),
-          panel.grid.major.x = element_line(colour = "#cab5b5", size = 0.2,
-                                            linetype = "longdash"),
-          panel.grid.minor.x = element_line(colour = "#cab5b5", size = 0.2,
-                                            linetype = "longdash"),
-          legend.position = c(0.777, 0.788))
 
-# png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"), width = 700)
-# plot3
-# dev.off()
-plot3
+
+head(mouse_chr_pos)
+
+grl_mm <- GRangesList()
+for (object in 1:length(grl)) {
+    name <- gsub(" ", "_", names(grl[object]))
+    peak <- grl[[object]]
+    seqlengths(peak) <- seqlengths(peak) - 10001
+    peak_annotation <- annotatePeak(peak, tssRegion = c(-3000, 3000),
+                         TxDb = mm_known_genes, annoDb = "org.Mm.eg.db")
+
+    mm_annot <- as.data.frame(peak_annotation@anno)
+    entrezids <- unique(mm_annot$geneId)
+    entrez2gene <- grcm38 %>% filter(entrez %in% entrezids) %>%
+                                dplyr::select(entrez, symbol)
+
+    m <- match(mm_annot$geneId, entrez2gene$entrez)
+    mm_annot <- cbind(mm_annot[, 1:14], gene_symbol = entrez2gene$symbol[m],
+                        mm_annot[, 15:16])
+
+    # Defining the same grl_smlr object that has two extra columns with
+    # gene id and gene symbol:
+    grl_mm[[object]] <- mm_annot
+    names(grl_mm)[object] <- names(grl)[object]
+}
+
+
+mm <- grl_mm[[1]]       # Mus musculus
+dr <- gene_ranges       # Danio rerio
+
+c <- as.data.frame(na.omit(dr))
+d <- as.data.frame(na.omit(mm))
+69069755  68683113
+head(c)
+
+intersecting_genes <- data.frame(matrix(ncol = 7, nrow = 0))
+colnames(intersecting_genes) <- c("Gene", "Chr_MM", "Start_MM", "End_MM",
+                                  "Chr_DR", "Start_DR", "End_DR")
+
+for (i in 1:length(rownames(mouse_chr_pos))) {
+    k <- mouse_chr_pos[664, ]
+    a_dr <- na.omit(c[c$seqnames == paste0("chr", k$"chr_DR") &
+              c$start >= k$"startpos_DR" & c$end <= k$"endpos_DR", ])
+    a_mm <- na.omit(d[d$seqnames == paste0("chr", k$"chr_MM") &
+              d$start >= k$"startpos_MM" & d$end <= k$"endpos_MM", ])
+    if (length(rownames(a_dr)) != 0 & length(rownames(a_mm)) != 0 &
+        length(intersect(tolower(a_dr[,"gene_symbol"]),
+                         tolower(a_mm[,"gene_symbol"]))) != 0) {
+        print(paste0("i value = ", i))
+        # print(a_dr[,c("seqnames", "start", "end", "gene_symbol")])
+        # print(a_mm[,c("seqnames", "start", "end", "gene_symbol")])
+
+        l <- intersect(tolower(a_dr[,"gene_symbol"]),
+                       tolower(a_mm[,"gene_symbol"]))
+        dr_genes <- a_dr[a_dr$"gene_symbol" %in% l, c("seqnames", "start", "end", "gene_symbol")]
+
+        dplc <- (a_mm[tolower(a_mm$"gene_symbol") %in% l,
+                      c("seqnames", "start", "end", "gene_symbol")])
+        # mm_genes <- dplc[!duplicated(dplc[ , "gene_symbol"]), c("seqnames", "start", "end", "gene_symbol")]
+        # mm_genes$"gene_symbol" <- tolower(mm_genes$"gene_symbol")
+        # print(dr_genes)
+        # print(mm_genes)
+
+        # merged <- merge(mm_genes, dr_genes, by = "gene_symbol")
+        # intersecting_genes[nrow(intersecting_genes) + 1, ] <- merged
+
+        write.table(dr_genes, file = paste0(INTER_FILES, "/dr_genes.txt"), sep = "\t",
+            quote = FALSE, row.names = FALSE,append=TRUE)
+        write.table(dplc, file = paste0(INTER_FILES, "/dplc.txt"), sep = "\t",
+            quote = FALSE, row.names = FALSE,append=TRUE)
+    }
+}
+
+
 # nolint end
 ```
 
-```{r Danio_rerio_sequences, echo=FALSE, message=FALSE, warning=FALSE}
+```{r Sequences, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
 seq_dataset_dr <- c()
 
-# Creating a sequence dataset that stores Danio rerio gene sequences:
-for (object in 1:length(grl_synteny)) {
-    common_genes <- subsetByOverlaps(dr_genes[[object]], syn_grange_dr)
-    gene_sequences <- getSeq(BSgenome.Drerio.UCSC.danRer11, common_genes)
-    names(gene_sequences) <- common_genes$gene_symbol
+# Creating a sequence dataset that stores Mus musculus gene sequences:
+mm_gr <- d
+mm_gr <- mm_gr[mm_gr$start %in% intersecting_genes$"Start_MM" &
+        mm_gr$end %in% intersecting_genes$"End_MM" &
+        mm_gr$seqnames %in% paste0("chr", intersecting_genes$"Chr_MM"),
+        c("seqnames", "start", "end", "gene_symbol")]
 
-    # Creating a sequence set:
-    seq_dataset_dr <- c(seq_dataset_dr, gene_sequences)
-    names(seq_dataset_dr)[object] <- names(grl_synteny)[object]
-}
-# nolint end
-```
+mm_gr <- makeGRangesFromDataFrame(mm_gr, keep.extra.columns=TRUE)
 
-Tikrinama, kiek yra galimų atitikimų PWM.
 
-```{r Danio_rerio_PWM, echo=FALSE, message=FALSE, warning=FALSE}
-# nolint start
-# Loading a Tbx5 PWM matrix:
+dr_gr <- c
+dr_gr <- dr_gr[dr_gr$start %in% intersecting_genes$"Start_DR" &
+        dr_gr$end %in% intersecting_genes$"End_DR" &
+        dr_gr$seqnames %in% paste0("chr", intersecting_genes$"Chr_DR"),
+        c("seqnames", "start", "end", "gene_symbol")]
+
+dr_gr <- makeGRangesFromDataFrame(dplc, keep.extra.columns=TRUE)
+
+gene_seq_mm <- getSeq(BSgenome.Mmusculus.UCSC.mm10, dr_gr)
+names(gene_seq_mm) <- dr_gr$gene_symbol
+
+gene_seq_dr <- getSeq(BSgenome.Drerio.UCSC.danRer11, dr_gr)
+names(gene_seq_dr) <- dr_gr$gene_symbol
+
+
+######################################################################
+
+# Ar tai reiškia, kad sintenijos blokai leidžia surasti panašius
+# regionus, tačiau nustatytose pozicijose gali jungtis tik labai
+# mažas Tbx5 transkripcijos faktoriaus procentas?
+
+# Patikrinti:
+#   kaip yra su kiekvienu mėginiu?
+#   sukurti grafikus, leidžiančius vizualizuoti procento skirtumus?
+
+######################################################################
+
+
+
+# as.character(gene_seq_mm[names(gene_seq_mm) == "Ccn6"])
+# gene_seq_dr[names(gene_seq_dr) == "ccn6"]
+# nchar(as.character(gene_seq_dr[1]))
+
 mpwm <- read.table(paste0(INTER_FILES, "TBX5_MOUSE.H11MO.0.D.pwm"))
 mpwm <- t(mpwm)
 rownames(mpwm) <- c("A", "C", "G", "T")
@@ -362,154 +439,34 @@ gene_hits_dr <- data.frame(matrix(ncol = 3, nrow = 0))
 colnames(gene_hits_dr) <- c("Gene", "Hits", "Length")
 
 # Determining the number of Tbx5 binding hits:
-for (gene in 1:length(seq_dataset_dr[[6]])) {
-    hits <- countPWM(as.matrix(mpwm), as.character(seq_dataset_dr[[1]][gene]),
+for (gene in 1:length(gene_seq_mm)) {
+    hits <- countPWM(as.matrix(mpwm), as.character(gene_seq_mm[gene]),
                      min.score = "75%")
     # matchPWM(as.matrix(mpwm), as.character(seq_dataset[[gene]]]),
             #   min.score = "75%")
-    row = c(names(seq_dataset_dr[[6]][gene]), hits,
-            length(seq_dataset_dr[[6]][[gene]]))
+    row = c(names(gene_seq_mm[gene]), hits,
+            nchar(as.character(gene_seq_mm[gene])))
     gene_hits_dr[nrow(gene_hits_dr) + 1, ] <- row
 }
 
-# Writing the results into a file:
-write.table(gene_hits_dr, file = paste0(INTER_FILES, "/Dr_Hits.txt"),
-            sep = "\t", quote = FALSE, row.names = FALSE)
+gene_hits_dr[order(gene_hits_dr$Gene),]
 
-scatterplot(as.numeric(Hits) ~ as.numeric(Length), data = gene_hits_dr,
-            xlab="Weight of Car", ylab="Miles Per Gallon",
-            main="Enhanced Scatter Plot")
 
-# Next day: paskaičiuoti, kiek vidutiniškai yra vienoje geno sekoje Tbx5
-#           transkripcijos faktoriaus prisijungimo vietų.
-#           Atrinkti tik tuos grafikus, kuriuose gaunamas geriausias
-#           Scatterplot grafikas.
-# nolint end
-```
-
-Čia išgaunamos Mus musculus genų sekos, kurios priklauso sintenijos blokui.
-
-```{r Mus_musculus_genes, echo=FALSE, message=FALSE, warning=FALSE}
-# nolint start
-seq_dataset_mm <- c()
-
-# Getting positions of Mus musculus genes:
-gene_ranges <- genes(TxDb.Mmusculus.UCSC.mm10.knownGene)
-
-# Adding 'gene_symbol' column to gene_ranges GRange:
-gene_ranges$gene_symbol <- mapIds(org.Mm.eg.db, keys = gene_ranges$gene_id,
-                column = "SYMBOL", keytype = "ENTREZID", multiVals = "first")
-
-select_genes <- tolower(gene_ranges$gene_symbol) %in%
-                    tolower(grl_synteny[[6]]$gene_symbol)
-gene_r <- gene_ranges[select_genes]
-gene_sequences <- getSeq(BSgenome.Mmusculus.UCSC.mm10, gene_r)
-names(gene_sequences) <- gene_r$gene_symbol
-seq_dataset_mm <- c(seq_dataset_mm, gene_sequences)
-names(seq_dataset_mm)[6] <- names(grl_synteny)[6]
-
-# Writing the results into a file:
-write.table(seq_dataset_mm, file = paste0(RESULTS, "/seq_dataset_mm.txt"),
-            sep = "\t", quote = FALSE, row.names = FALSE)
-
-# nolint end
-```
-
-Čia tikrinama Mus musculus organizme, kiek yra pozicijų, kuriose gali
-jungtis Tbx5 transkripcijos faktorius.
-
-```{r Mus_musculus_PWM, echo=FALSE, message=FALSE, warning=FALSE}
-# nolint start
 gene_hits_mm <- data.frame(matrix(ncol = 3, nrow = 0))
 colnames(gene_hits_mm) <- c("Gene", "Hits", "Length")
 
 # Determining the number of Tbx5 binding hits:
-for (gene in 1:length(seq_dataset_mm[[1]])) {
-    hits <- countPWM(as.matrix(mpwm), as.character(seq_dataset_mm[[1]][gene]),
+for (gene in 1:length(gene_seq_mm)) {
+    hits <- countPWM(as.matrix(mpwm), as.character(gene_seq_mm[gene]),
                      min.score = "75%")
     # matchPWM(as.matrix(mpwm), as.character(seq_dataset[[gene]]]),
-    #           min.score = "75%")
-    row = c(names(seq_dataset_mm[[1]][gene]), hits,
-            length(seq_dataset_mm[[1]][[gene]]))
+            #   min.score = "75%")
+    row = c(names(gene_seq_mm[gene]), hits,
+            nchar(as.character(gene_seq_mm[gene])))
     gene_hits_mm[nrow(gene_hits_mm) + 1, ] <- row
 }
 
-# Writing the results into a file:
-write.table(gene_hits_mm, file = paste0(RESULTS, "/Mm_Hits.txt"), sep = "\t",
-           quote = FALSE, row.names = FALSE)
+gene_hits_mm[order(gene_hits_mm$Gene),]
 
-scatterplot(as.numeric(Hits) ~ as.numeric(Length) , data = gene_hits_mm,
-            xlab = "Weight of Car", ylab = "Miles Per Gallon",
-            main = "Enhanced Scatter Plot")
-# nolint end
-```
-
-```{r Compare_MM_DR, echo=FALSE, message=FALSE, warning=FALSE}
-# nolint start
-# Determining common genes:
-intersects <- intersect(gene_hits_dr$Gene,tolower(gene_hits_mm$Gene))
-
-data_about_intersects <- data.frame(matrix(ncol = 5, nrow = 0))
-colnames(data_about_intersects) <- c("Gene", "Hits_MM", "Length_MM",
-                                     "Hits_DR", "Length_DR")
-
-# Modifying the data and extracting needed gene data:
-DR <- na.omit(gene_hits_dr[gene_hits_dr$Gene %in% intersects, ])
-MM <- na.omit(gene_hits_mm[tolower(gene_hits_mm$Gene) %in% intersects, ])
-
-# Ordering the data by Gene name:
-DR <- DR[order(DR$Gene), ]
-MM <- MM[order(MM$Gene), ]
-
-MM$Gene <- tolower(MM$Gene)
-na.omit(MM[order(MM$Gene), ])
-
-# Combining Mus musculus and Danio rerio dataframes to compare the data:
-merged_MM_DR <- merge(MM, DR, by = "Gene")
-
-DR[DR$Gene == "acaa2",]
-MM[MM$Gene == "acaa2",]
-
-gene_hits_dr
-a <- names(seq_dataset_mm[[1]]) == "Umad1"
-as.character(seq_dataset_mm[[1]]["Acaa2"])
-seq_dataset_dr[[1]]["acaa2"]
-
-
-hits <- countPWM(as.matrix(mpwm), as.character(seq_dataset_mm[[1]]["Acaa2"]),
-                     min.score = "75%")
-
-hits2 <- countPWM(as.matrix(mpwm), as.character(seq_dataset_dr[[1]]["acaa2"]),
-                     min.score = "75%")
-matchPWM(as.matrix(mpwm), as.character(seq_dataset_dr[[1]]["acaa2"]),
-            min.score = "75%")
-
-
-# nolint end
-```
-
-```{r}
-# nolint start
-# Nustatyti, kurie anotuoti genai yra nustatomi ir Danio rerio organizme:
-
-
-dr_gtf <- paste0(GTF_FASTA, "Danio_rerio.GRCz11.108.chr.gtf")
-dr_object = rtracklayer::import(dr_gtf)
-dr_df = as.data.frame(dr_object)
-dr_df = unique(dr_df[ ,c("gene_id", "gene_name")])
-dr_genes <- c(unique(dr_df$gene_name))
-
-common_genes <- intersect(mm_annot$gene_symbol, dr_genes)
-
-
-# Next day: surasti Danio rerio genome tuos pačius genus ir nustatyti, kiek yra
-# Tbx5 motyvo atitikimų. Sukurti Scatterplot grafiką ir perdengti su Mus
-# musculus Scatterplot.
-# Nustatyti, kokia yra vidutinė motyvų reikšmė ir pateikti nesutampančių genų
-# pavyzdį.
-# Pagal synteny blokams priklausančias Danio rerio genomo fragmentų pozicijas
-# nustatyti Danio rerio genus, kurie patenka į sintenijos bloką.
-# Patikrinti su PWM matrica, ar tose genų sekose yra regionų, prie kurių gali
-# jungtis Tbx5 transkripcijos faktorius.
 # nolint end
 ```
