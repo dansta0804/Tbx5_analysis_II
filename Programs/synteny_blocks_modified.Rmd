@@ -269,9 +269,9 @@ plot2 <- ggplot(df_final, aes(fill = indic, y = as.numeric(value), x = names)) +
           legend.text = element_text(size = 10)) +
     coord_flip()
 
-# png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"), width = 700)
-# plot2
-# dev.off()
+png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"), width = 700)
+plot2
+dev.off()
 plot2
 # nolint end
 ```
@@ -352,9 +352,9 @@ plot3 <- ggplot(genes_samples, aes(x = Sample, y = as.numeric(Percentage))) +
                                             size = 0.2, linetype = "longdash"),
           legend.position = c(0.777, 0.788))
 
-# png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"), width = 700)
-# plot3
-# dev.off()
+png(file = paste0(FIGURES, "Unique_genes_MM.png"), width = 700)
+plot3
+dev.off()
 plot3
 # nolint end
 ```
