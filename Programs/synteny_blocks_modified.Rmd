@@ -472,10 +472,9 @@ for (smpl3 in 1:length(grl_synteny)) {
 ```
 
 ```{r Range_Annotations_DR_Plot, echo=FALSE, message=FALSE, warning=FALSE}
-as.numeric(max(genes_synteny$Percentage))
 plot4 <- ggplot(genes_synteny, aes(x = Sample, y = as.numeric(Percentage))) +
-    geom_bar(stat = "identity", fill = "#cc8b12",
-            width = .5, color = "#8d5c00") +
+    geom_bar(stat = "identity", fill = "#611d02",
+            width = .5, color = "#310f01") +
     labs(title = "", x = "", y = "Anotuotų pikų % D. rerio") +
     geom_text(aes(label = paste0(round(as.numeric(Percentage), digit = 2), "%")),
               color = "#030101", size = 5, vjust = -1, fontface = 2) +
