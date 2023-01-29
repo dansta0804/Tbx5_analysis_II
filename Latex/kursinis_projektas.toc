@@ -1,0 +1,23 @@
+\babel@toc {lithuanian}{}
+\babel@toc {lithuanian}{}
+\babel@toc {lithuanian}{}
+\contentsline {section}{\numberline {1}\IeC {\k I}vadas}{4}{section.1}%
+\contentsline {section}{\numberline {2}Pasirinkt\IeC {\k u} m\IeC {\.e}gini\IeC {\k u} charakteristika}{5}{section.2}%
+\contentsline {section}{\numberline {3}Sintenijos blokai ir j\IeC {\k u} nustatymo metodai}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Sintenijos bloko apib\IeC {\=u}dinimas}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Identifikavimo metodai}{7}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Gimining\IeC {\k u} organizm\IeC {\k u} genom\IeC {\k u} lyginimas}{7}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Ma\IeC {\v z}ai gimining\IeC {\k u} arba negimining\IeC {\k u} organizm\IeC {\k u} genom\IeC {\k u} lyginimas}{8}{subsubsection.3.2.2}%
+\contentsline {section}{\numberline {4}Tyrimo metodai}{10}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Sintenijos blok\IeC {\k u} nustatymas ir vizualizavimas}{10}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Sintenijos blok\IeC {\k u} pozicij\IeC {\k u} gavimas}{10}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Sintenijos blok\IeC {\k u} persidengimas su pikais}{10}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Pik\IeC {\k u} anotavimas}{10}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Persidengian\IeC {\v c}i\IeC {\k u} gen\IeC {\k u} nustatymas}{10}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Naudot\IeC {\k u} \IeC {\k i}ranki\IeC {\k u} metod\IeC {\k u} apra\IeC {\v s}ymas}{12}{section.5}%
+\contentsline {subsection}{\numberline {5.1}\textbf {Cinteny} \IeC {\k i}rankio metodas}{12}{subsection.5.1}%
+\contentsline {section}{\numberline {6}Rezultatai ir j\IeC {\k u} aptarimas}{14}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Sintenijos blok\IeC {\k u} nustatymas ir vizualizavimas}{14}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Sintenijos blok\IeC {\k u} pasiskirstymas chromosomose}{15}{subsection.6.2}%
+\contentsline {section}{\numberline {7}I\IeC {\v s}vados}{19}{section.7}%
+\contentsline {section}{\numberline {8}Priedas}{23}{section.8}%
