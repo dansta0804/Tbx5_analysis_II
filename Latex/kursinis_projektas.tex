@@ -5,6 +5,7 @@
 \usepackage[english,lithuanian]{babel}
 \usepackage{array}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{makecell}
 \usepackage[euler]{textgreek}
 \usepackage{multirow}
@@ -228,7 +229,7 @@ tipai:
 
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.7\linewidth]{../Tbx5_analysis_II/Figures/Synteny_blocks.png}
+        \includegraphics[width=0.7\linewidth]{../Figures/Synteny_block_definition.png}
         \vspace{-2\baselineskip}
         \caption*{\small\textbf{1 pav. Sintenijos blokų tipai}}
         %\href{https://bmcbioinformatics.biomedcentral.com/articles/\
@@ -277,7 +278,7 @@ metodai išskaidyti pagal lyginamų genomų giminingumą:
 
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.9\linewidth]{../Tbx5_analysis_II/Figures/Methods_tools.png}
+        \includegraphics[width=0.9\linewidth]{../Figures/Methods_tools.png}
         \vspace{-2\baselineskip}
         \caption*{\small\textbf{2 pav. Sintenijos blokų identifikavimo
         metodai ir populiariausių įrankių pavyzdžiai}}
@@ -456,7 +457,7 @@ markerių „perėjimus“. Šie markeriai gali būti apibūdinti kaip ortologin
 
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.5\linewidth]{../Tbx5_analysis_II/Figures/TTS_data_structure.png}
+        \includegraphics[width=0.5\linewidth]{../Figures/TTS_data_structure.png}
         \vspace{-0.5\baselineskip}
         \caption*{\small\textbf{4 pav. TST medžio struktūra su perėjimais}}
         \label{fig:birds}
@@ -515,7 +516,7 @@ genomų vizualizuoti \emph{circo} diagramoje (3 pav.).
 
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.8\linewidth]{../Tbx5_analysis_II/Figures/SynCircos.png}
+        \includegraphics[width=0.8\linewidth]{../Figures/SynCircos.png}
         \vspace{-1\baselineskip}
         \caption*{\small\textbf{3 pav. Sintenijos blokų \emph{circo}
         diagrama}}
@@ -542,70 +543,133 @@ fragmentų buvo nustatyta skirtingose zebražuvės chromosomose bei pozicijose,
 neatsižvelgus į sekų fragmentų ilgį.
 
 \begin{figure}[htb]
-    \begin{center}
-        \includegraphics[width=0.6\linewidth]{../Tbx5_analysis_II/Figures/Synteny_blocks_MM_chr.png}
-        \vspace{-1\baselineskip}
-        \caption*{\small\textbf{4 pav. Fragmentų skaičius \emph{Mus musculus}
-        chromosomose}}
-        \label{fig:birds}
-    \end{center}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../Figures/Synteny_Chr_MM.png}
+        \caption*{\centering\small\textbf{a) Fragmentų skaičius \emph{Mus musculus} chromosomose}}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../Figures/Synteny_Chr_DR.png}
+        \caption*{\centering\small\textbf{b) Fragmentų skaičius \emph{Danio rerio} chromosomose}}
+    \end{subfigure}
+    \caption*{\small\textbf{4 pav. Sekų fragmentų pasiskirstymas chromosomose}}
+    \label{fig:birds}
 \end{figure}
 
-Pateiktoje stulpelinėje diagramoje išskirtos trys chromosomos (\emph{Chr1},
+Pateiktoje stulpelinėje diagramoje išsiskiria trys chromosomos (\emph{Chr1},
 \emph{Chr2} ir \emph{Chr11}). Šių naminės pelės chromosomų fragmentai
 pasitaikydavo zebražuvės genome dažniausiai. Atsižvelgus į šių chromosomų
 dydžius, kur vienuolikta chromosoma yra mažesnė nei kitos išskirtos chromosomos
 (ją sudaro 122 Mbp\cite{MGI}), buvo nustatyta sąlyginai didelė dalis fragmentų,
 turinčių homologijų su zebražuvės genomo sekų fragmentais.
 
-\begin{figure}[htb]
-    \begin{center}
-        \includegraphics[width=0.6\linewidth]{../Tbx5_analysis_II/Figures/Synteny_blocks_DR_chr.png}
-        \vspace{-1\baselineskip}
-        \caption*{\small\textbf{5 pav. Fragmentų skaičius \emph{Danio rerio}
-        chromosomose}}
-        \label{fig:birds}
-    \end{center}
-\end{figure}
+Patikrinus, kiek yra \emph{Danio rerio} chromosomų fragmentų, kurie patenka į
+sintenijos blokus, gauti rezultatai vizualizuoti ketvirto paveikslo b) dalyje.
+Galima pastebėti, kad sintenijos blokams priklausančių chromosomų fragmentų
+skaičius buvo itin nevienodas, palyginus su \emph{Mus musculus} rezultatais.
+Chromosomose, kuriose esantys fragmentai buvo dažniausiai homologiški naminės
+pelės genomui (\emph{Chr9} ir \emph{Chr17}), buvo nustatyta po 76 sintenijos
+blokui priklausančius fragmentus. Mažiausias sintenijos blokui priklausančių
+fragmentų skaičius nustatytas 22 chromosomoje (28 fragmentai).
 
-Tuo tarpu patikrinus, kiek yra \emph{Danio rerio} chromosomų fragmentų, kurie
-sudaro sintenijos blokus, gauti rezultatai vizualizuoti penktame paveiksle
-(5 pav.). Galima pastebėti, kad sintenijos blokams priklausančių chromosomų
-fragmentų skaičius buvo itin nevienodas, palyginus su \emph{Mus musculus}
-rezultatais. Chromosomose, kuriose esantys fragmentai buvo dažniausiai
-homologiški naminės pelės genomui (\emph{Chr9} ir \emph{Chr7}), buvo nustatyta
-po 76 sintenijos blokui priklausančius fragmentus. Mažiausias sintenijos blokui
-priklausančių fragmentų skaičius nustatytas 22 chromosomoje (28 fragmentai).
+\newpage
 
-\subsubsection*{\textbf{Cinteny} įrankio rezultatas}
-Įrankio pateikta sintenijos blokų informacija buvo panaudota, siekiant
-išsiaiškinti, kokia pikų dalis turi persidengimų su \emph{Cinteny} programos
-nustatytais sintenijos blokais. Iš viso buvo nustatyti 1403 blokai.
-Gauti rezultatai pateikti 5 pav.
+\subsection{Sintenijos blokų dalis pikuose}
+\emph{Cinteny} įrankio pateikta sintenijos blokų informacija buvo panaudota,
+siekiant išsiaiškinti, kokia pikų dalis patenka į įrankio nustatytų sintenijos
+blokų intervalus, kurių buvo nustatyta 1403. Penktame paveiksle (5 pav.)
+pavaizduota, kiek kiekviename analizuotame naminių pelių širdžių ląstelių
+mėginyje nustatyta pikų, kurie patenka į sintenijos blokų intervalą.
 
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.9\linewidth]{../Tbx5_analysis_II/Figures/Synteny_blocks_peaks.png}
+        \includegraphics[width=0.8\linewidth]{../Figures/Synteny_blocks_peaks.png}
         \vspace{-2\baselineskip}
         \caption*{\small\textbf{5 pav. Sintenijos blokų procentinė dalis}}
         \label{fig:birds}
     \end{center}
 \end{figure}
 
-Remiantis gautu rezultatu galima pastebėti, kad didžiausias nustatytų
-sintenijos blokų skaičius (11.04\%), palyginus su bendru pikų skaičiumi,
-būdingas \emph{emb\_fibr\_r3\_3} mėginiui, kuriame naminių pelių embrionų
-fibroblastų ląstelės buvo GMT (GATA4, MEF2C ir Tbx5) kardiogeniniais
-transkripcijos faktoriais. Mažiausias sintenijos blokų skaičius
-nustatytas \emph{heart\_r1\_1} mėginyje, kuriame naminės pelės prieširdžių
-ląstelės buvo du kartus po 24 valandas laikytos mišinyje su retrovirusais,
-tačiau netaikant papildomų poveikių.
+Remiantis gautu rezultatu galima pastebėti, kad didžiausias nustatytų sintenijos
+blokų skaičius (34.84\%), palyginus su bendru pikų skaičiumi, būdingas
+\emph{emb\_fibr\_r4\_4} mėginiui, kuriame naminių pelių embrionų fibroblastų
+ląstelės buvo veiktos tik Tbx5 kardiogeniniu transkripcijos faktoriumi.
+Mažiausias sintenijos blokų skaičius (33.27\%) nustatytas
+\emph{emb\_fibr\_r3\_3} mėginyje, kuriame pelių embrionų fibroblastų ląstelės
+veiktos GATA4, MEF2C ir Tbx5 transkripcijos faktoriaus, ir mėginyje
+\emph{emb\_fibr\_r1\_1}, kur embrionų fibroblastai veikti pilnu kargdiogeninių
+transkripcijos faktorių komplektu (AHGMT) (33.28\%). Nepaisant to, kad
+pastaruosiuose mėginiuose bendras pikų skaičius skyrėsi daug, bendras sintenijos
+blokams priklausančių pikų procentas skyrėsi vos 0.01\%.
+
+Apibendrinus visus gautus mėginių rezultatus galima daryti išvadą, kad visiems
+mėginiams būdingas panašus skaičius pikų, kurie priklauso sintenijos blokams,
+todėl turint šią informaciją galima detaliau tyrinėti pikus, priklausančius
+blokams.
+
+\subsection{Pikų anotavimas}
+Šeštame paveiksle pavaizduotoje diagrama nurodyta, kiek unikalių genų buvo
+priskirta kiekvieno mėginio pikams, patenkantiems į sintenijos blokus.
 
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.7\linewidth]{../Tbx5_analysis_II/Figures/Unique_genes_MM.png}
+        \includegraphics[width=0.7\linewidth]{../Figures/Unique_genes_MM.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{}}
+        \caption*{\small\textbf{6 pav. Anotuotų pikų dalis mėginiuose}}
+        \label{fig:birds}
+    \end{center}
+\end{figure}
+
+Remiantis diagramos duomenimis pastebėta, kad daugiausiai unikalių genų
+nustatyta \emph{emb\_fibr\_r1\_1} mėginyje (26.53\%). Ankstesniame paveiksle
+(5 pav.) šiame mėginyje buvo nustatyta nedaug sintenijos blokams priklausančių
+pikų, tačiau nebuvo atsižvelgta į sintenijos blokų ilgį. Gautas rezultatas rodo,
+kad pikai galėjo patekti į ilgesnį sintenijos bloką.
+
+Mažiausiai unikalių genų nustatyta \emph{emb\_fibr\_r4\_4} mėginyje (8.71\%).
+Rezultatas gali rodyti, kad pikai priklausė didesniam sintenijos blokų skaičiui,
+tačiau blokai buvo trumpi.
+
+Anotuojant mėginių sintenijos blokams priklausančius pikus taip pat buvo
+nustatyta, kokiems genominiams elementams priklauso kiekvienas pikas. Gauti
+rezultatai pateikti antroje lentelėje (lentelė 2).
+
+\begin{table}[htb]
+    \newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+    \small
+    \caption*{\small\textbf{2 lentelė. Genominių elementų procentinė dalis
+                            mėginiuose}}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{\thead{Mėginys}} & \textbf{\thead{Blokų\\skaičius}} &
+            \textbf{\thead{Procentinė\\dalis}} \\
+        \hline
+        \emph{crdc\_mscl\_r1\_2} & \thead{39} & \thead{2.78\%}\\ 
+        \hline
+        \emph{emb\_fibr\_r1\_1} & \thead{41} & \thead{2.92\%}\\ 
+        \hline
+        \emph{emb\_fibr\_r2\_2} & \thead{40} & \thead{2.85\%}\\ 
+        \hline
+        \emph{emb\_fibr\_r3\_3} & \thead{40} & \thead{2.85\%}\\ 
+        \hline
+        \emph{heart\_r1\_1} & \thead{39} & \thead{2.78\%}\\ 
+        \hline
+        \emph{emb\_fibr\_r4\_4} & \thead{18} & \thead{1.28\%}\\ 
+        \hline
+        \emph{crdc\_fibr\_r1\_3} & \thead{25} & \thead{1.78\%}\\ 
+        \hline
+    
+    \end{tabular}
+\end{table}
+
+\begin{figure}[htb]
+    \begin{center}
+        \includegraphics[width=0.7\linewidth]{../Figures/Unique_genes_DR.png}
+        \vspace{-2\baselineskip}
+        \caption*{\small\textbf{6 pav. Anotuotų pikų dalis mėginiuose}}
         \label{fig:birds}
     \end{center}
 \end{figure}
@@ -617,7 +681,7 @@ nurodyta, koks procentas yra Exon, Intron, Intergenic ir t.t.?
 
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.7\linewidth]{../Tbx5_analysis_II/Figures/PWM_matches_all.png}
+        \includegraphics[width=0.9\linewidth]{../Figures/PWM_matches_all.png}
         \vspace{-2\baselineskip}
         \caption*{\small\textbf{}}
         \label{fig:birds}
