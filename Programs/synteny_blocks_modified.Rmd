@@ -43,7 +43,7 @@ GTF_FASTA <- paste0(PROJECT, "Seq_Annot/")
 # nolint end
 ```
 
-```{r Synteny_Blocks, echo=FALSE, message=FALSE, warning=FALSE}
+```{r Synteny_Blocks, message=FALSE, warning=FALSE}
 # nolint start
 # Reading a file that describes synteny between organisms:
 synteny_blocks <- read.csv(paste0(INTER_FILES, "synteny_blocks.csv"), skip = 1)
@@ -51,13 +51,14 @@ samples <- read.csv(file = paste0(INTER_FILES, "sample_key.csv"))
 
 # Mouse vs. Zebrafish
 # Getting synteny block positions and chromosome number for mouse:
-synteny_chr_pos <- synteny_blocks[, c(7:8, 6, 3:4, 2)]
+synteny_chr_pos <<- synteny_blocks[, c(7:8, 6, 3:4, 2)]
 colnames(synteny_chr_pos) <- c("startpos_MM", "endpos_MM", "chr_MM",
-                             "startpos_DR", "endpos_DR", "chr_DR")
-head(synteny_chr_pos)
+                                "startpos_DR", "endpos_DR", "chr_DR")
+
 # Creating a dataframe that stores data:
 df_mm <- data.frame(chr = paste0("chr", c(synteny_chr_pos[, 3])),
-       start = c(synteny_chr_pos[, 1]), end = c(synteny_chr_pos[, 2]), strand = "+")
+                    start = c(synteny_chr_pos[, 1]),
+                    end = c(synteny_chr_pos[, 2]), strand = "+")
 
 # Checking whether the starting region position is bigger than end position:
 for (i in 1:length(rownames(df_mm))) {
@@ -69,7 +70,8 @@ for (i in 1:length(rownames(df_mm))) {
     }
 }
 
-# Creating a GRanges object for created dataframe:
+# Creating a GRanges object for created dataframe (GRange object for
+# synteny blocks):
 syn_grange <- makeGRangesFromDataFrame(df_mm)
 
 # Reading bigBed files:
@@ -92,7 +94,7 @@ for (i in 1:length(bbfiles)) {
 The barchart bellow shows how many fragments in each *Mus musculus* chromosome
 belong to synteny blocks.
 
-```{r Synteny_Blocks_MM, fig.width = 6, fig.height = 5, fig.align = "center"}
+```{r Synteny_Chr_MM, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
 chr_syn <- as.data.frame(table(synteny_blocks[, 6]))
 colnames(chr_syn) <- c("Chr", "Freq")
@@ -104,7 +106,11 @@ chr_syn <- chr_syn[order(chr_syn$Chr), ]
 colours <- ifelse(chr_syn$Freq >= 100, "#b61f1f","black")
 sizes <- ifelse(chr_syn$Freq >= 100, 6, 5)
 bold <- ifelse(chr_syn$Freq >= 100, 2, 0)
+# nolint end
+```
 
+```{r Synteny_Chr_MM_Plot, fig.width = 6, fig.height = 5, fig.align = "center"}
+# nolint start
 plot0 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) + 
     geom_bar(width = 0.8, size = 0.2, fill = "#be800d", color = "#523a0f",
              stat = 'identity', position = position_dodge(0.5)) +
@@ -123,7 +129,7 @@ plot0 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) +
                                             linetype = "longdash"),
           panel.grid.minor.x = element_line(colour = "#cab5b5", size = 0.2,
                                             linetype = "longdash"),
-          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, ize = 11,
+          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 11,
                                      face = "bold", color = "black"),
           axis.text.y = element_text(size = 11, face = "bold", color = "black"),
           axis.title.x = element_text(size = 2),
@@ -132,9 +138,9 @@ plot0 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) +
           legend.title = element_text(face = "bold", size = 10),
           legend.text = element_text(size = 10))
 
-# png(file = paste0(FIGURES, "Synteny_blocks_MM_chr.png"), width = 700)
-# plot0
-# dev.off()
+png(file = paste0(FIGURES, "Synteny_Chr_MM.png"))
+plot0
+dev.off()
 plot0
 # nolint end
 ```
@@ -148,7 +154,7 @@ chromosome (39 fragments).
 The barchart bellow shows how many fragments in each *Danio rerio* chromosome
 belong to synteny blocks.
 
-```{r Synteny_Blocks_DR, fig.width = 6, fig.height = 5, fig.align = "center"}
+```{r Synteny_Chr_DR, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
 chr_syn <- as.data.frame(table(synteny_blocks[, 2]))
 colnames(chr_syn) <- c("Chr", "Freq")
@@ -190,13 +196,50 @@ plot1 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) +
           legend.title = element_text(face = "bold", size = 10),
           legend.text = element_text(size = 10))
 
-# png(file = paste0(FIGURES, "Synteny_blocks_DR_chr.png"), width = 700)
-# plot1
-# dev.off()
+png(file = paste0(FIGURES, "Synteny_Chr_DR.png"))
+plot1
+dev.off()
 plot1
 # nolint end
 ```
 
+```{r Synteny_Chr_DR_Plot, fig.width = 6, fig.height = 5, fig.align = "center"}
+# nolint start
+plot1 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) + 
+    geom_bar(width = 0.8, size = 0.2, fill = "#611d02", color = "#310f01",
+             stat = 'identity', position = position_dodge(0.5)) +
+    geom_text(aes(label = Freq), colour = colours, vjust = -0.2, hjust = 0.5,
+              size = sizes, fontface = bold) +
+    labs(title = "", x = "", y = "") + 
+    ylim(0, 2.5) +
+    scale_y_continuous(labels = label_number(suffix = " K", scale = 1e-2)) +
+    theme(panel.background = element_rect(fill = "#eeeef1",
+                                          colour = "#4c0001"),
+          panel.grid.major.y = element_line(colour = "#cab5b5", size = 0.3,
+                                            linetype = "dashed"),
+          panel.grid.minor.y = element_line(colour = "#cab5b5", size = 0.3,
+                                            linetype = "dashed"),
+          panel.grid.major.x = element_line(colour = "#cab5b5", size = 0.2,
+                                            linetype = "longdash"),
+          panel.grid.minor.x = element_line(colour = "#cab5b5", size = 0.2,
+                                            linetype = "longdash"),
+          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1,
+                                     size = 11, face = "bold",
+                                     color = "black"),
+          axis.text.y = element_text(size = 11, face = "bold",
+                                     color = "black"),
+          axis.title.x = element_text(size = 2),
+          axis.title.y = element_text(size = 16),
+          plot.title = element_text(hjust = 0.5, face = "bold"),
+          legend.title = element_text(face = "bold", size = 10),
+          legend.text = element_text(size = 10))
+
+png(file = paste0(FIGURES, "Synteny_Chr_DR.png"))
+plot1
+dev.off()
+plot1
+# nolint end
+```
 
 In comparison with the *Mus musculus* results, the number of fragments in
 chromosomes apparently varies between the chromosomes. According to the diagram,
@@ -206,7 +249,7 @@ of fragments has been detected in the 22nd chromosome (28 fragments).
 
 ### Synteny blocks percentage in sample peaks
 
-```{r Synteny_percentage, fig.width = 6, fig.height = 5, fig.align = "center"}
+```{r Synteny_Percentage, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
 indicators <- c("synteny_overlaps", "peak_count")
 percentages <- c()
@@ -234,7 +277,7 @@ for (i in 1:length(grl)) {
 # nolint end
 ```
 
-```{r}
+```{r Synteny_Percentage_Plot, fig.width = 6, fig.height = 5, fig.align = "center"}
 # nolint start
 plot2 <- ggplot(df_final, aes(fill = indic, y = as.numeric(value), x = names)) + 
     geom_bar(width = 1, size = 0.2, colour = "#3f2704", stat = 'identity',
@@ -269,7 +312,7 @@ plot2 <- ggplot(df_final, aes(fill = indic, y = as.numeric(value), x = names)) +
           legend.text = element_text(size = 10)) +
     coord_flip()
 
-png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"), width = 700)
+png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"))
 plot2
 dev.off()
 plot2
@@ -281,7 +324,6 @@ plot2
 ```{r Peak_Annotations_MM, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
 mm_known_genes <- TxDb.Mmusculus.UCSC.mm10.knownGene
-sample_names <- c()
 grl_synteny <- GRangesList()
 
 # Annotating Mus musculus peaks that belong to synteny block:
@@ -292,7 +334,10 @@ for (object in 1:length(grl_reduced)) {
     peak_annotation <- annotatePeak(peak, tssRegion = c(-3000, 3000),
                          TxDb = mm_known_genes, annoDb = "org.Mm.eg.db")
 
+    print(peak_annotation)
+    
     mm_annot <- as.data.frame(peak_annotation@anno)
+    print(length(rownames(mm_annot)))
     entrezids <- unique(mm_annot$geneId)
     entrez2gene <- grcm38 %>% filter(entrez %in% entrezids) %>%
                                 dplyr::select(entrez, symbol)
@@ -307,10 +352,16 @@ for (object in 1:length(grl_reduced)) {
     names(grl_synteny)[object] <- names(grl)[object]
 }
 
-write.table(grl_synteny, file = paste0(RESULTS, "/grl_synteny.txt"), sep = "\t",
-            quote = FALSE, row.names = FALSE)
+write.table(grl_synteny, file = paste0(INTER_FILES, "/grl_synteny.txt"),
+            sep = "\t", quote = FALSE, row.names = FALSE)
+
+# Šitoj vietoj paleisti ciklą ir suskaičiuoti procentinę dalį 'Promoter',
+# 'Intron' ir etc. --> sudaryti lentelę su šia informacija.
 # nolint end
 ```
+
+A diagram that shows how many unique genes were identified for each sample
+belonging to the synteny block.
 
 ```{r Peak_Annotations_MM_Plot, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
@@ -329,10 +380,11 @@ for (smpl in 1:length(grl_synteny)) {
 # sample belonging to the synteny block:
 plot3 <- ggplot(genes_samples, aes(x = Sample, y = as.numeric(Percentage))) +
     geom_bar(stat = "identity", fill = "#cc8b12",
-            width = .6, color = "#8d5c00") +
-    labs(title = "", x = "", y = "Anotuotų pikų skaičius M. Musculus") +
-    geom_text(aes(label = round(as.numeric(Percentage), digits = 2)),
-              color = "#030101", size = 5,vjust = -1, fontface = 2) +
+             width = .5, color = "#8d5c00") +
+    labs(title = "", x = "", y = "Anotuotų pikų % M. musculus") +
+    geom_text(aes(label = paste0(round(as.numeric(Percentage), digit = 2), "%")),
+              color = "#030101", size = 5, vjust = -1, fontface = 2) +
+    coord_cartesian(ylim = c(0, as.numeric(max(genes_samples$Percentage)) + 20)) +
     theme(axis.text = element_text(size = 10, colour = "black"),
           axis.text.x = element_text(angle = 45, hjust = 1, size = 12,
                                      vjust = 1, face = "bold"),
@@ -352,16 +404,17 @@ plot3 <- ggplot(genes_samples, aes(x = Sample, y = as.numeric(Percentage))) +
                                             size = 0.2, linetype = "longdash"),
           legend.position = c(0.777, 0.788))
 
-png(file = paste0(FIGURES, "Unique_genes_MM.png"), width = 700)
+png(file = paste0(FIGURES, "Unique_genes_MM.png"))
 plot3
 dev.off()
 plot3
 # nolint end
 ```
 
-Čia bandom surasti tuos pačius genus Danio rerio genome.
+A diagram that shows how many unique genes were identified for each sample
+belonging to the synteny block.
 
-```{r Danio_rerio_genes, echo=FALSE, message=FALSE, warning=FALSE}
+```{r Range_Annotations_DR, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
 # Getting positions of Danio rerio genes:
 gene_ranges <- genes(TxDb.Drerio.UCSC.danRer11.refGene)
@@ -370,6 +423,91 @@ gene_ranges <- genes(TxDb.Drerio.UCSC.danRer11.refGene)
 gene_ranges$gene_symbol <- mapIds(org.Dr.eg.db, keys = gene_ranges$gene_id,
                 column = "SYMBOL", keytype = "ENTREZID", multiVals = "first")
 
+# Getting synteny block positions and chromosome number for zebrafish:
+fish_chr_pos <- synteny_blocks[, c(3:4, 2)]
+colnames(fish_chr_pos) <- c("startpos", "endpos", "chr")
+
+# Creating a dataframe that stores data:
+df_dr <- data.frame(chr = paste0("chr", c(fish_chr_pos[, 3])),
+                    start = c(fish_chr_pos[, 1]),
+                    end = c(fish_chr_pos[, 2]), strand = "+")
+
+for (i in 1:length(rownames(df_dr))) {
+    if (df_dr[i, 2] > df_dr[i, 3]) {
+        reverse1 = df_dr[i, 2]
+        df_dr[i, 2] = df_dr[i, 3]
+        df_dr[i, 3] = reverse1
+        df_dr[i, 4] <- "-"
+    }
+}
+
+# Creating a GRanges object for created dataframe:
+syn_grange_dr <- makeGRangesFromDataFrame(df_dr)
+
+dr_genes <- GRangesList()
+
+# Getting the genes that overlap with Mus musculus genes:
+for (smpl2 in 1:length(grl_synteny)) {
+    selected_genes <- tolower(gene_ranges$gene_symbol) %in%
+                            tolower(unique(grl_synteny[[smpl2]]$gene_symbol))
+    genes <- gene_ranges[selected_genes]
+
+    dr_genes[[smpl2]] <- genes
+    names(dr_genes)[smpl2] <- names(grl_synteny[smpl2])
+}
+
+# Creating an empty dataframe to store data about gene counts:
+genes_synteny <- data.frame(matrix(ncol = 3, nrow = 0))
+colnames(genes_synteny) <- c("Sample", "Gene_count", "Percentage")
+
+# Finding genes that belong to synteny block:
+for (smpl3 in 1:length(grl_synteny)) {
+    common_genes <- subsetByOverlaps(dr_genes[[smpl3]], syn_grange_dr)
+    total_gene_length <- length(tolower(gene_ranges$gene_symbol))
+    row = c(names(grl_synteny[smpl3]), length(common_genes),
+            (length(common_genes) / total_gene_length) * 100)
+    genes_synteny[nrow(genes_synteny) + 1, ] <- row
+}
+# nolint end
+```
+
+```{r Range_Annotations_DR_Plot, echo=FALSE, message=FALSE, warning=FALSE}
+as.numeric(max(genes_synteny$Percentage))
+plot4 <- ggplot(genes_synteny, aes(x = Sample, y = as.numeric(Percentage))) +
+    geom_bar(stat = "identity", fill = "#cc8b12",
+            width = .5, color = "#8d5c00") +
+    labs(title = "", x = "", y = "Anotuotų pikų % D. rerio") +
+    geom_text(aes(label = paste0(round(as.numeric(Percentage), digit = 2), "%")),
+              color = "#030101", size = 5, vjust = -1, fontface = 2) +
+    coord_cartesian(ylim = c(0, as.numeric(max(genes_synteny$Percentage)) + 3)) +
+    theme(axis.text = element_text(size = 10, colour = "black"),
+          axis.text.x = element_text(angle = 45, hjust = 1, size = 12,
+                                     vjust = 1, face = "bold"),
+          axis.text.y = element_text(size = 12, face = "bold"),
+          axis.title.x = element_text(size = 14, colour = "black"),
+          axis.title.y = element_text(size = 14, colour = "black"),
+          panel.grid.major = element_line(color = "#eeeeee"),
+          plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+          panel.background = element_rect(fill = "#eeeef1", colour = "#3a1010"),
+          panel.grid.major.y = element_line(colour = "#cab5b5",
+                                            size = 0.3, linetype = "dashed"),
+          panel.grid.minor.y = element_line(colour = "#cab5b5",
+                                            size = 0.3, linetype = "dashed"),
+          panel.grid.major.x = element_line(colour = "#cab5b5",
+                                            size = 0.2, linetype = "longdash"),
+          panel.grid.minor.x = element_line(colour = "#cab5b5",
+                                            size = 0.2, linetype = "longdash"),
+          legend.position = c(0.777, 0.788))
+
+png(file = paste0(FIGURES, "Unique_genes_DR.png"))
+plot4
+dev.off()
+plot4
+# nolint end
+```
+
+
+```{r All_Annotations_MM, echo=FALSE, message=FALSE, warning=FALSE}
 grl_mm <- GRangesList()
 for (object in 1:length(grl)) {
     name <- gsub(" ", "_", names(grl[object]))
@@ -395,201 +533,214 @@ for (object in 1:length(grl)) {
 # nolint end
 ```
 
-```{r}
+```{r Common_Genes_MM_DR_Synteny, echo=FALSE, message=FALSE, warning=FALSE}
+# nolint start
 # Defining a dataframe that stores values describing the percentage of
 # genes that belong to synteny blocks:
 belong_block <- data.frame(matrix(ncol = 3, nrow = 0))
 colnames(belong_block) <- c("Sample", "Block_count", "Percentage")
 
 find_common_genes <- function(sample, name_title) {
-count <- 0
-mm <- sample       # Mus musculus
-dr <- gene_ranges       # Danio rerio
-# name_title <- names(grl_mm[y])
-synteny_block_n <- length(rownames(synteny_chr_pos))
+    count <- 0
+    mm <- sample       # Mus musculus
+    dr <- gene_ranges       # Danio rerio
+    # name_title <- names(grl_mm[y])
+    synteny_block_n <- length(rownames(synteny_chr_pos))
 
-df_mm <- as.data.frame(na.omit(mm)) # d
-df_dr <- as.data.frame(na.omit(dr)) # c
+    df_mm <- as.data.frame(na.omit(mm)) # d
+    df_dr <- as.data.frame(na.omit(dr)) # c
 
-df_mm <- df_mm[, c("seqnames", "start", "end", "width", "strand", "annotation",
-                   "gene_symbol")]
-                   
-intersecting_genes <- data.frame(matrix(ncol = 5, nrow = 0))
-colnames(intersecting_genes) <- c("Gene", "Chr", "Start", "End", "Organism")
-
-for (i in 1:synteny_block_n) {
-    syn_row <- synteny_chr_pos[i, ]
-
-    genes_mm <- na.omit(df_mm[df_mm$seqnames == paste0("chr", syn_row$"chr_MM") &
-                              df_mm$start >= syn_row$"startpos_MM" &
-                              df_mm$end <= syn_row$"endpos_MM", ])
-
-    genes_dr <- na.omit(df_dr[df_dr$seqnames == paste0("chr", syn_row$"chr_DR") &
-                              df_dr$start >= syn_row$"startpos_DR" &
-                              df_dr$end <= syn_row$"endpos_DR", ])
+    # Retrieving data from certain Mus musculus GRange (as dataframe) columns:
+    df_mm <- df_mm[, c("seqnames", "start", "end", "width", "strand",
+                       "annotation", "gene_symbol")]
     
-    # Finding common genes:
-    common_g <- intersect(tolower(genes_dr[,"gene_symbol"]),
-                          tolower(genes_mm[,"gene_symbol"]))
+    # Creating a dataframe that will store data about common genes (chromosome,
+    # start and end positions, organism name (either Mus musculus
+    # or Danio rerio)):
+    common_genes <- data.frame(matrix(ncol = 5, nrow = 0))
+    colnames(common_genes) <- c("Gene", "Chr", "Start", "End", "Organism")
 
-    if (length(rownames(genes_dr)) != 0 & length(rownames(genes_mm)) != 0 &
-        length(common_g) != 0) {
-        print(paste0("i value = ", i))
+    ########################## FINDING COMMON GENES ############################
+
+    # Loop that iterates every synteny block (every row from dataset that
+    # describes syntenic regions between M.musculus and D.rerio) and determines
+    # common genes:
+    for (i in 1:synteny_block_n) {
+        syn_row <- synteny_chr_pos[i, ]
+
+        # Extracing M.musculus rows that match the conditions (match
+        # chromosome numbers and belong to synteny block interval):
+        genes_mm <- na.omit(df_mm[df_mm$seqnames == paste0("chr",
+                                                           syn_row$"chr_MM") &
+                                  df_mm$start >= syn_row$"startpos_MM" &
+                                  df_mm$end <= syn_row$"endpos_MM", ])
+
+        # Extracing D.rerio rows that match the conditions (match chromosome
+        # numbers and belong to synteny block interval):
+        genes_dr <- na.omit(df_dr[df_dr$seqnames == paste0("chr",
+                                                           syn_row$"chr_DR") &
+                                  df_dr$start >= syn_row$"startpos_DR" &
+                                  df_dr$end <= syn_row$"endpos_DR", ])
         
-        # Parodys, kiek buvo tokių genų, kurie būdingi ir MM, ir DR (priklauso
-        # sintenijos blokui).
-        count = count + 1 
-        print(paste0("count = ", count))
+        # Finding common genes:
+        common_g <- intersect(tolower(genes_mm[,"gene_symbol"]),
+                              tolower(genes_dr[,"gene_symbol"]))
 
-        # Data about common genes in Danio rerio:
-        cg_data_dr <- genes_dr[genes_dr$"gene_symbol" %in% common_g,
-                               c("seqnames", "start", "end", "gene_symbol")]
+        # Condition that forms a new dataframe if genes belong to synteny
+        # block and they are common to both M.musculus and D.rerio organisms:
+        if (length(rownames(genes_dr)) != 0 & length(rownames(genes_mm)) != 0 &
+            length(common_g) != 0) {
+            print(paste0("i value = ", i))
+            count = count + 1 
+            print(paste0("count = ", count))
 
-        cg_data_dr[, ncol(cg_data_dr) + 1] <- rep("Danio_rerio",
-                                                  length(nrow(cg_data_dr)))
-        colnames(cg_data_dr)[5] = "organism"
+            # Data about common genes in D.rerio:
+            cg_data_dr <- genes_dr[genes_dr$"gene_symbol" %in% common_g,
+                                   c("seqnames", "start", "end", "gene_symbol")]
+            cg_data_dr[, ncol(cg_data_dr) + 1] <- rep("Danio_rerio",
+                                                      length(nrow(cg_data_dr)))
+            colnames(cg_data_dr)[5] <- "organism"
 
-        # Data about common genes in Mus musculus:
-        cg_data_mm <- genes_mm[tolower(genes_mm$"gene_symbol") %in% common_g,
-                               c("seqnames", "start", "end", "annotation",
-                                 "gene_symbol")]
-        # mm_genes <- dplc[!duplicated(dplc[ , "gene_symbol"]), c("seqnames", "start", "end", "gene_symbol")]
-        cg_data_mm$"gene_symbol" <- tolower(cg_data_mm$"gene_symbol")
+            # Data about common genes in M.musculus:
+            cg_data_mm <- genes_mm[tolower(genes_mm$"gene_symbol") %in% common_g,
+                                   c("seqnames", "start", "end", "annotation",
+                                     "gene_symbol")]
+            cg_data_mm$"gene_symbol" <- tolower(cg_data_mm$"gene_symbol")
+            cg_data_mm[, ncol(cg_data_mm) + 1] <- rep("Mus_musculus",
+                                                      length(nrow(cg_data_mm)))
+            colnames(cg_data_mm)[6] <- "organism"
 
-        cg_data_mm[, ncol(cg_data_mm) + 1] <- rep("Mus_musculus",
-                                                  length(nrow(cg_data_mm)))
-        colnames(cg_data_mm)[6] = "organism"
-
-        genes <- rbind(cg_data_dr, cg_data_mm[, c("seqnames", "start", "end",
-                                                  "gene_symbol", "organism")])
-
-        intersecting_genes <- rbind(intersecting_genes, genes)
+            genes <- rbind(cg_data_dr, cg_data_mm[, c("seqnames", "start", "end",
+                                                    "gene_symbol", "organism")])
+            common_genes <- rbind(common_genes, genes)
+        }
     }
-}
 
-# belong_block[nrow(belong_block) + 1, ] <- c(name_title, count,
-#                                             (count / synteny_block_n) * 100)
-# }
+    # write.table(belong_block,
+    #             file = paste0(INTER_FILES, "/Belong_to_block.txt"),
+    #             sep = "\t", quote = FALSE, row.names = FALSE)
 
-# write.table(belong_block, file = paste0(INTER_FILES, "/Belong_to_block.txt"),
-#             sep = "\t", quote = FALSE, row.names = FALSE)
-# nolint end
+    ################### GETTING SEQUENCES FOR COMMON GENES #####################
 
-# nolint start
-# Creating a sequence dataset that stores Mus musculus gene sequences:
-gene_mm <- intersecting_genes[intersecting_genes$"organism" == "Mus_musculus", ]
-mm_gr <- df_mm[df_mm$start %in% gene_mm$"start" &
-               df_mm$end %in% gene_mm$"end" &
-               df_mm$seqnames %in% gene_mm$"seqnames",
-               c("seqnames", "start", "end", "gene_symbol")]
+    # Creating a sequence dataset that stores M.musculus gene sequences:
+    gene_mm <- common_genes[common_genes$"organism" == "Mus_musculus", ]
+    mm_gr <- df_mm[df_mm$start %in% gene_mm$"start" &
+                   df_mm$end %in% gene_mm$"end" &
+                   df_mm$seqnames %in% gene_mm$"seqnames",
+                   c("seqnames", "start", "end", "gene_symbol")]
 
-mm_gr <- makeGRangesFromDataFrame(mm_gr, keep.extra.columns = TRUE)
-seq_mm <- getSeq(BSgenome.Mmusculus.UCSC.mm10, mm_gr)
-names(seq_mm) <- mm_gr$gene_symbol
+    mm_gr <- makeGRangesFromDataFrame(mm_gr, keep.extra.columns = TRUE)
+    seq_mm <- getSeq(BSgenome.Mmusculus.UCSC.mm10, mm_gr)
+    names(seq_mm) <- mm_gr$gene_symbol
 
+    # Creating a sequence dataset that stores D.rerio gene sequences:
+    gene_dr <- common_genes[common_genes$"organism" == "Danio_rerio", ]
+    dr_gr <- df_dr[df_dr$start %in% gene_dr$"start" &
+                   df_dr$end %in% gene_dr$"end" &
+                   df_dr$seqnames %in% gene_dr$"seqnames",
+                   c("seqnames", "start", "end", "gene_symbol")]
 
-# Creating a sequence dataset that stores Danio rerio gene sequences:
-gene_dr <- intersecting_genes[intersecting_genes$"organism" == "Danio_rerio", ]
-dr_gr <- df_dr[df_dr$start %in% gene_dr$"start" &
-               df_dr$end %in% gene_dr$"end" &
-               df_dr$seqnames %in% gene_dr$"seqnames",
-               c("seqnames", "start", "end", "gene_symbol")]
+    dr_gr <- makeGRangesFromDataFrame(dr_gr, keep.extra.columns = TRUE)
+    seq_dr <- getSeq(BSgenome.Drerio.UCSC.danRer11, dr_gr)
+    names(seq_dr) <- dr_gr$gene_symbol
 
-dr_gr <- makeGRangesFromDataFrame(dr_gr, keep.extra.columns = TRUE)
-seq_dr <- getSeq(BSgenome.Drerio.UCSC.danRer11, dr_gr)
-names(seq_dr) <- dr_gr$gene_symbol
+    ####################### COUNTING HITS OF TBX5 PWM ##########################
 
-mpwm <- read.table(paste0(INTER_FILES, "TBX5_MOUSE.H11MO.0.D.pwm"))
-mpwm <- t(mpwm)
-rownames(mpwm) <- c("A", "C", "G", "T")
+    mpwm <- read.table(paste0(INTER_FILES, "TBX5_MOUSE.H11MO.0.D.pwm"))
+    mpwm <- t(mpwm)
+    rownames(mpwm) <- c("A", "C", "G", "T")
 
-# Counting PWM matches for Danio rerio:
-gene_hits_dr <- data.frame(matrix(ncol = 3, nrow = 0))
-colnames(gene_hits_dr) <- c("Gene", "Hits", "Length")
+    # Counting PWM matches for Danio rerio:
+    gene_hits_dr <- data.frame(matrix(ncol = 3, nrow = 0))
+    colnames(gene_hits_dr) <- c("Gene", "Hits", "Length")
 
-# Determining the number of Tbx5 binding hits:
-for (gene in 1:length(seq_dr)) {
-    hits <- countPWM(as.matrix(mpwm), as.character(seq_dr[gene]),
-                     min.score = "75%")
-    row = c(names(seq_dr[gene]), hits, nchar(as.character(seq_dr[gene])))
-    gene_hits_dr[nrow(gene_hits_dr) + 1, ] <- row
-}
-gene_hits_dr <- as.data.frame(gene_hits_dr[order(gene_hits_dr$Gene), ])
-gene_hits_dr[, ncol(gene_hits_dr) + 1] <- rep("Danio rerio",
-                                              length(nrow(gene_hits_dr)))
+    # Determining the number of Tbx5 binding hits:
+    for (gene in 1:length(seq_dr)) {
+        hits <- countPWM(as.matrix(mpwm), as.character(seq_dr[gene]),
+                         min.score = "75%")
+        row <- c(names(seq_dr[gene]), hits, nchar(as.character(seq_dr[gene])))
+        gene_hits_dr[nrow(gene_hits_dr) + 1, ] <- row
+    }
+    gene_hits_dr <- as.data.frame(gene_hits_dr[order(gene_hits_dr$Gene), ])
+    gene_hits_dr[, ncol(gene_hits_dr) + 1] <- rep("Danio rerio",
+                                                  length(nrow(gene_hits_dr)))
 
-# Counting PWM matches for Mus musculus:
-gene_hits_mm <- data.frame(matrix(ncol = 3, nrow = 0))
-colnames(gene_hits_mm) <- c("Gene", "Hits", "Length")
+    # Counting PWM matches for Mus musculus:
+    gene_hits_mm <- data.frame(matrix(ncol = 3, nrow = 0))
+    colnames(gene_hits_mm) <- c("Gene", "Hits", "Length")
 
-# Determining the number of Tbx5 binding hits:
-for (gene in 1:length(seq_mm)) {
-    hits <- countPWM(as.matrix(mpwm), as.character(seq_mm[gene]),
-                     min.score = "75%")
-    row = c(names(seq_mm[gene]), hits, nchar(as.character(seq_mm[gene])))
-    gene_hits_mm[nrow(gene_hits_mm) + 1, ] <- row
-}
-gene_hits_mm <- gene_hits_mm[order(gene_hits_mm$Gene), ]
+    # Determining the number of Tbx5 binding hits:
+    for (gene in 1:length(seq_mm)) {
+        hits <- countPWM(as.matrix(mpwm), as.character(seq_mm[gene]),
+                         min.score = "75%")
+        row <- c(names(seq_mm[gene]), hits, nchar(as.character(seq_mm[gene])))
+        gene_hits_mm[nrow(gene_hits_mm) + 1, ] <- row
+    }
+    gene_hits_mm <- gene_hits_mm[order(gene_hits_mm$Gene), ]
 
-gene_hits_mm <- data.table(gene_hits_mm)
-gene_hits_mm <- as.data.frame(gene_hits_mm[, list(Hits = sum(as.numeric(Hits)),
-                            Length = sum(as.numeric(Length))), by = 'Gene'])
+    # Summing the values of the repeating genes in Mus musculus:
+    gene_hits_mm <- data.table(gene_hits_mm)
+    gene_hits_mm <- as.data.frame(
+                        gene_hits_mm[, list(Hits = sum(as.numeric(Hits)),
+                                            Length = sum(as.numeric(Length))),
+                                            by = 'Gene'])
 
-gene_hits_mm[, ncol(gene_hits_mm) + 1] <- rep("Mus musculus",
-                                              length(nrow(gene_hits_mm)))
+    gene_hits_mm[, ncol(gene_hits_mm) + 1] <- rep("Mus musculus",
+                                                  length(nrow(gene_hits_mm)))
 
-combined_df <- rbind(gene_hits_dr, gene_hits_mm)
-colnames(combined_df)[4] = "Organism"
+    # Creating a combined dataframe that stores Tbx5 hit values of
+    # M.musculus and D.rerio organisms:
+    combined_df <- rbind(gene_hits_dr, gene_hits_mm)
+    colnames(combined_df)[4] = "Organism"
 
-
-plot5 <- ggplot(combined_df, aes(x = as.numeric(Hits), y = as.numeric(Length),
-                                 colour = Organism)) +
-    geom_point(alpha = 0.7, size = 8, shape = 20)+
-    scale_colour_manual(values = c("#301c05", "#b96517")) +
-    labs(colour = "Organizmas", title = name_title, x = "", y = "") +
-    ylim(0, 400000) +
-    scale_y_continuous(labels = label_number(suffix = " K", scale = 1e-3)) +
-    geom_vline(xintercept = 20, linetype = "dashed") + 
-    geom_hline(yintercept = 100000, linetype = "dashed") +
-    theme(panel.background = element_rect(fill = "#eeeef1",
-                                          colour = "#4c0001"),
-          panel.grid.major.y = element_line(colour = "#cab5b5", size = 0.3,
-                                            linetype = "dashed"),
-          panel.grid.minor.y = element_line(colour = "#cab5b5", size = 0.3,
-                                            linetype = "dashed"),
-          panel.grid.major.x = element_line(colour = "#cab5b5", size = 0.2,
-                                            linetype = "longdash"),
-          panel.grid.minor.x = element_line(colour = "#cab5b5", size = 0.2,
-                                            linetype = "longdash"),
-          axis.text.x = element_text(angle = 0, hjust = 1, vjust = 1, size = 11,
-                                     face = "bold", color = "black"),
-          axis.text.y = element_text(size = 11, face = "bold",
-                                     color = "black"),
-          axis.title.x = element_text(size = 16),
-          axis.title.y = element_text(size = 16),
-          plot.title = element_text(hjust = 0.5, face = "bold"),
-          legend.title = element_text(face = "bold", size = 10),
-          legend.text = element_text(size = 10, color = "black"))
-# png(file = paste0(FIGURES, "PWM_matches.png"), width = 700)
-# plot5
-# dev.off()
-plot5
+    plot5 <- ggplot(combined_df, aes(x = as.numeric(Hits),
+                                     y = as.numeric(Length),
+                                     colour = Organism)) +
+        geom_point(alpha = 0.7, size = 8, shape = 20) +
+        scale_colour_manual(values = c("#301c05", "#b96517")) +
+        labs(colour = "Organizmas", title = name_title, x = "", y = "") +
+        ylim(0, 400000) +
+        scale_y_continuous(labels = label_number(suffix = " K", scale = 1e-3)) +
+        geom_vline(xintercept = 20, linetype = "dashed") + 
+        geom_hline(yintercept = 100000, linetype = "dashed") +
+        theme(panel.background = element_rect(fill = "#eeeef1",
+                                              colour = "#4c0001"),
+            panel.grid.major.y = element_line(colour = "#cab5b5", size = 0.3,
+                                              linetype = "dashed"),
+            panel.grid.minor.y = element_line(colour = "#cab5b5", size = 0.3,
+                                              linetype = "dashed"),
+            panel.grid.major.x = element_line(colour = "#cab5b5", size = 0.2,
+                                              linetype = "longdash"),
+            panel.grid.minor.x = element_line(colour = "#cab5b5", size = 0.2,
+                                              linetype = "longdash"),
+            axis.text.x = element_text(angle = 0, hjust = 1, vjust = 1,
+                                       size = 11, face = "bold",
+                                       color = "black"),
+            axis.text.y = element_text(size = 11, face = "bold",
+                                       color = "black"),
+            axis.title.x = element_text(size = 16),
+            axis.title.y = element_text(size = 16),
+            plot.title = element_text(hjust = 0.5, face = "bold"),
+            legend.title = element_text(face = "bold", size = 10),
+            legend.text = element_text(size = 10, color = "black"))
+    # png(file = paste0(FIGURES, "PWM_matches.png"))
+    # plot5
+    # dev.off()
+    plot5
 }
 # nolint end
 ```
 
-
-```{r}
+```{r PWM_Matches_All_Samples, echo=FALSE, message=FALSE, warning=FALSE}
 # nolint start
 # Creating a list that stores ggplot objects:
 plots <- list()
-for (sample in 1:length(grl_mm)) {
-    plots[[sample]] <- find_common_genes(grl_mm[[sample]],
-                                         names(grl_mm[sample]))
+for (smpl in 1:length(grl_mm)) {
+    plots[[smpl]] <- find_common_genes(grl_mm[[smpl]], names(grl_mm[smpl]))
 }
 
-png(file = paste0(FIGURES, "PWM_matches_all.png"), height = 700, width = 800)
-ggarrange(plotlist = plots, widths = 7, common.legend = TRUE, legend="bottom")
+png(file = paste0(FIGURES, "PWM_matches_all.png"))
+ggarrange(plotlist = plots, widths = 7, common.legend = TRUE, legend = "bottom")
 dev.off()
 # nolint end
 ```
