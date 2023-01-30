@@ -611,6 +611,7 @@ todėl turint šią informaciją galima detaliau tyrinėti pikus, priklausančiu
 blokams.
 
 \subsection{Pikų anotavimas}
+\subsubsection{Artimiausių TSS nustatymas}
 Šeštame paveiksle pavaizduotoje diagrama nurodyta, kiek unikalių genų buvo
 priskirta kiekvieno mėginio pikams, patenkantiems į sintenijos blokus.
 
@@ -633,93 +634,128 @@ Mažiausiai unikalių genų nustatyta \emph{emb\_fibr\_r4\_4} mėginyje (8.71\%)
 Rezultatas gali rodyti, kad pikai priklausė didesniam sintenijos blokų skaičiui,
 tačiau blokai buvo trumpi.
 
+\subsubsection{Genominių elementų pasiskirstymas}
 Anotuojant mėginių sintenijos blokams priklausančius pikus taip pat buvo
-nustatyta, kokiems genominiams elementams priklauso kiekvienas pikas. Gauti
-rezultatai pateikti antroje lentelėje (lentelė 2).
+nustatyta, kokiems genominiams elementams priklauso kiekvienas pikas. Antroje
+lentelėje (lentelė 2) išskirti genominiai elementai, kuriems priklauso
+didžiausias procentas anotuotų mėginių pikų. Kitiems genominiams elementams
+(5' ir 3' sritims, promotoriams nuo 1 iki 2 kb ir nuo 2 iki 3 kb, egzonams)
+priklausė mažiau nei 7\% visų mėginių pikų, todėl jie neanalizuoti.
 
 \begin{table}[htb]
     \newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
     \small
     \caption*{\small\textbf{2 lentelė. Genominių elementų procentinė dalis
                             mėginiuose}}
-    \begin{tabular}{|c|c|c|}
+    \begin{tabular}{|c|c|c|c|c|}
         \hline
-        \textbf{\thead{Mėginys}} & \textbf{\thead{Blokų\\skaičius}} &
-            \textbf{\thead{Procentinė\\dalis}} \\
+        \textbf{\thead{Mėginys}} & \textbf{\thead{Promotorius (<=1kb)}} &
+        \textbf{\thead{Pirmas intronas}} & \textbf{\thead{Kiti intronai}} &
+        \textbf{\thead{Tarpgeninė sritis}} \\
         \hline
-        \emph{crdc\_mscl\_r1\_2} & \thead{39} & \thead{2.78\%}\\ 
+        \textbf{\thead{\emph{crdc\_mscl\_r1\_2}}} & 21.31\% & 12.72\% &
+                24.18\% & 19.65\% \\
         \hline
-        \emph{emb\_fibr\_r1\_1} & \thead{41} & \thead{2.92\%}\\ 
+        \textbf{\thead{\emph{emb\_fibr\_r1\_1}}} & 13.69\% & 15.09\% &
+                31.61\% & 24.69\% \\
         \hline
-        \emph{emb\_fibr\_r2\_2} & \thead{40} & \thead{2.85\%}\\ 
+        \textbf{\thead{\emph{emb\_fibr\_r2\_2}}} & 16.91\% & 13.67\% &
+                30.5\% & 26.19\% \\
         \hline
-        \emph{emb\_fibr\_r3\_3} & \thead{40} & \thead{2.85\%}\\ 
+        \textbf{\thead{\emph{emb\_fibr\_r3\_3}}} & 18.65\% & 13.08\% &
+                30.2\% & 25.45\% \\
         \hline
-        \emph{heart\_r1\_1} & \thead{39} & \thead{2.78\%}\\ 
+        \textbf{\thead{\emph{heart\_r1\_1}}} & 27.97\% & 11.54\% &
+                26.7\% & 21.97\% \\
         \hline
-        \emph{emb\_fibr\_r4\_4} & \thead{18} & \thead{1.28\%}\\ 
+        \textbf{\thead{\emph{emb\_fibr\_r4\_4}}} & 6.49\% & \textbf{16.34\%} &
+                \textbf{36.73\%} & \textbf{28.37\%} \\
         \hline
-        \emph{crdc\_fibr\_r1\_3} & \thead{25} & \thead{1.78\%}\\ 
+        \textbf{\thead{\emph{crdc\_fibr\_r1\_3}}} & \textbf{30.83\%} & 12.06\% &
+                24.88\% & 20.12\% \\
         \hline
-    
     \end{tabular}
 \end{table}
+
+Remiantis lentelės duomenimis \emph{emb\_fibr\_r4\_4} didžioji mėginio pikų
+dalis priklausė introninėms ir tarpgeninėms sritims, naminių pelių embrionų
+fibroblastų ląsteles paveikus tik Tbx5 transkripcijos faktoriumi. Be to, šiame
+mėginyje nustatytas itin mažas procentas pikų, priklausančių promotorinėms
+sritims. Atsižvelgus į tai, kad to paties eksperimento mėginiai, kuriems taikyti
+skirtingi poveikiai, galima daryti išvadą, kad genominių elementų pasiskirstymo
+procentas priklauso nuo to, kokiais poveikiais veikiamos naminės pelės ląstelės.
+
+\newpage
+
+\subsection{Genų nustatymas zebražuvėje}
+Turint duomenis apie homologiškas sritis tarp \emph{Mus musculus} ir
+\emph{Danio rerio} organizmų buvo patikrinta, kurie anotuoti kiekvieno naminės
+pelės pikų mėginių genai priklauso ir zebražuvės genų rinkiniui, bei kiek šių,
+tarp organizmų sutampančių, genų gali būti nustatyta zebražuvės sintenijos
+blokams priklausančiose pozicijose. Gauti rezultatai pateikti žemiau esančiame
+paveiksle.
 
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[width=0.7\linewidth]{../Figures/Unique_genes_DR.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{6 pav. Anotuotų pikų dalis mėginiuose}}
+        \caption*{\small\textbf{6 pav. D.rerio sintenijos blokams priklausančių
+        genų dalis}}
         \label{fig:birds}
     \end{center}
 \end{figure}
 
-\newpage
+Remiantis gauta diagrama galima pastebėti, kad zebražuvės genų, sutampančių su
+naminės pelės genais ir priklausančių sintenijos blokams, buvo itin nedaug.
+Palyginus visus mėginių anotuotų pikų genų rinkinius su zebražuvės genų rinkiniu
+bendrų genų dalis buvo mažesnė nei 4\%.
 
-Galbūt čia reikia vis dėlto pateikti lentelę, kurioje
-nurodyta, koks procentas yra Exon, Intron, Intergenic ir t.t.?
+\subsection{Transkripcijos faktoriaus prisijungimas zebražuvės sekose}
+Nepaisant mažo bendrų genų tarp \emph{Mus musculus} ir \emph{Danio rerio}
+organizmų buvo patikrinta, ar zebražuvės pozicijose, patenkančiose į sintenijos
+blokus, gali jungtis Tbx5 transkripcijos faktorius. Sekų fragmentų,
+atitinkančių Tbx5 pozicinę svorių matricą, skaičius palygintas su atitikimų
+skaičiumi, gautu Tbx5 transkripcijos faktoriaus pozicinę svorių matricą
+pritaikius naminės pelės sintenijos blokams priklausančioms sekoms.
+
+Žemiau pateikiamame paveiksle vaizduojamas Tbx5 transkripcijos faktoriaus
+matricos atitikimas \emph{Mus musculus} ir \emph{Danio rerio} sekose.
+
 
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.9\linewidth]{../Figures/PWM_matches_all.png}
+        \includegraphics[width=0.8\linewidth]{../Figures/PWM_matches_all.png}
         \vspace{-2\baselineskip}
         \caption*{\small\textbf{}}
         \label{fig:birds}
     \end{center}
 \end{figure}
 
-\newpage
-
-Čia pateikti lentelę, kurioje nurodyti, kiek atitikimų surasta.
-T.y. kiek synteny blokų buvo nustatyta tarp pikų (kurie blokai
-iš gautų su Cinteny įrankiu buvo tinkami ir priklausė pikams.)
-
-\begin{table}[htb]
-    \newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
-    \small
-    \caption*{\small\textbf{2 lentelė.}}
-    \begin{tabular}{|c|c|c|}
-        \hline
-        \textbf{\thead{Mėginys}} & \textbf{\thead{Blokų\\skaičius}} &
-            \textbf{\thead{Procentinė\\dalis}} \\
-        \hline
-        \emph{crdc\_mscl\_r1\_2} & \thead{39} & \thead{2.78\%}\\ 
-        \hline
-        \emph{emb\_fibr\_r1\_1} & \thead{41} & \thead{2.92\%}\\ 
-        \hline
-        \emph{emb\_fibr\_r2\_2} & \thead{40} & \thead{2.85\%}\\ 
-        \hline
-        \emph{emb\_fibr\_r3\_3} & \thead{40} & \thead{2.85\%}\\ 
-        \hline
-        \emph{heart\_r1\_1} & \thead{39} & \thead{2.78\%}\\ 
-        \hline
-        \emph{emb\_fibr\_r4\_4} & \thead{18} & \thead{1.28\%}\\ 
-        \hline
-        \emph{crdc\_fibr\_r1\_3} & \thead{25} & \thead{1.78\%}\\ 
-        \hline
-    
-    \end{tabular}
-\end{table}
+% \begin{table}[htb]
+%     \newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+%     \small
+%     \caption*{\small\textbf{2 lentelė.}}
+%     \begin{tabular}{|c|c|c|}
+%         \hline
+%         \textbf{\thead{Mėginys}} & \textbf{\thead{Blokų\\skaičius}} &
+%             \textbf{\thead{Procentinė\\dalis}} \\
+%         \hline
+%         \emph{crdc\_mscl\_r1\_2} & \thead{39} & \thead{2.78\%}\\ 
+%         \hline
+%         \emph{emb\_fibr\_r1\_1} & \thead{41} & \thead{2.92\%}\\ 
+%         \hline
+%         \emph{emb\_fibr\_r2\_2} & \thead{40} & \thead{2.85\%}\\ 
+%         \hline
+%         \emph{emb\_fibr\_r3\_3} & \thead{40} & \thead{2.85\%}\\ 
+%         \hline
+%         \emph{heart\_r1\_1} & \thead{39} & \thead{2.78\%}\\ 
+%         \hline
+%         \emph{emb\_fibr\_r4\_4} & \thead{18} & \thead{1.28\%}\\ 
+%         \hline
+%         \emph{crdc\_fibr\_r1\_3} & \thead{25} & \thead{1.78\%}\\ 
+%         \hline
+%     \end{tabular}
+% \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%
 % SATSUMA REZULTATAS
