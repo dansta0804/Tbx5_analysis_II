@@ -475,7 +475,7 @@ for (smpl3 in 1:length(grl_synteny)) {
 plot4 <- ggplot(genes_synteny, aes(x = Sample, y = as.numeric(Percentage))) +
     geom_bar(stat = "identity", fill = "#611d02",
             width = .5, color = "#310f01") +
-    labs(title = "", x = "", y = "Anotuotų pikų % D. rerio") +
+    labs(title = "", x = "", y = "Genų % D. rerio") +
     geom_text(aes(label = paste0(round(as.numeric(Percentage), digit = 2), "%")),
               color = "#030101", size = 5, vjust = -1, fontface = 2) +
     coord_cartesian(ylim = c(0, as.numeric(max(genes_synteny$Percentage)) + 3)) +
@@ -522,7 +522,7 @@ for (object in 1:length(grl)) {
 
     m <- match(mm_annot$geneId, entrez2gene$entrez)
     mm_annot <- cbind(mm_annot[, 1:14], gene_symbol = entrez2gene$symbol[m],
-                        mm_annot[, 15:16])
+                      mm_annot[, 15:16])
 
     # Defining the same grl_smlr object that has two extra columns with
     # gene id and gene symbol:
@@ -541,6 +541,8 @@ colnames(belong_block) <- c("Sample", "Block_count", "Percentage")
 
 find_common_genes <- function(sample, name_title) {
     count <- 0
+    sample <- grl_mm[[1]]
+    name_title <- names(grl_mm[1])
     mm <- sample       # Mus musculus
     dr <- gene_ranges       # Danio rerio
     # name_title <- names(grl_mm[y])
@@ -634,12 +636,12 @@ find_common_genes <- function(sample, name_title) {
 
     # Creating a sequence dataset that stores D.rerio gene sequences:
     gene_dr <- common_genes[common_genes$"organism" == "Danio_rerio", ]
-    dr_gr <- df_dr[df_dr$start %in% gene_dr$"start" &
+    dr_gr <<- df_dr[df_dr$start %in% gene_dr$"start" &
                    df_dr$end %in% gene_dr$"end" &
                    df_dr$seqnames %in% gene_dr$"seqnames",
-                   c("seqnames", "start", "end", "gene_symbol")]
+                   c("seqnames", "start", "end", "gene_symbol", "gene_id")]
 
-    dr_gr <- makeGRangesFromDataFrame(dr_gr, keep.extra.columns = TRUE)
+    dr_gr <<- makeGRangesFromDataFrame(dr_gr, keep.extra.columns = TRUE)
     seq_dr <- getSeq(BSgenome.Drerio.UCSC.danRer11, dr_gr)
     names(seq_dr) <- dr_gr$gene_symbol
 
@@ -695,10 +697,11 @@ find_common_genes <- function(sample, name_title) {
     plot5 <- ggplot(combined_df, aes(x = as.numeric(Hits),
                                      y = as.numeric(Length),
                                      colour = Organism)) +
-        geom_point(alpha = 0.7, size = 8, shape = 20) +
+        geom_point(alpha = 0.7, size = 5, shape = 20) +
         scale_colour_manual(values = c("#301c05", "#b96517")) +
-        labs(colour = "Organizmas", title = name_title, x = "", y = "") +
-        ylim(0, 400000) +
+        labs(colour = "Organizmas", title = name_title, x = "", y = "Ilgis") +
+        scale_x_continuous(limits = c(0, 80)) +
+        coord_cartesian(ylim = c(0, 400000)) +
         scale_y_continuous(labels = label_number(suffix = " K", scale = 1e-3)) +
         geom_vline(xintercept = 20, linetype = "dashed") + 
         geom_hline(yintercept = 100000, linetype = "dashed") +
@@ -713,9 +716,9 @@ find_common_genes <- function(sample, name_title) {
             panel.grid.minor.x = element_line(colour = "#cab5b5", size = 0.2,
                                               linetype = "longdash"),
             axis.text.x = element_text(angle = 0, hjust = 1, vjust = 1,
-                                       size = 11, face = "bold",
+                                       size = 12, face = "bold",
                                        color = "black"),
-            axis.text.y = element_text(size = 11, face = "bold",
+            axis.text.y = element_text(size = 12, face = "bold",
                                        color = "black"),
             axis.title.x = element_text(size = 16),
             axis.title.y = element_text(size = 16),
@@ -735,11 +738,31 @@ find_common_genes <- function(sample, name_title) {
 # Creating a list that stores ggplot objects:
 plots <- list()
 for (smpl in 1:length(grl_mm)) {
-    plots[[smpl]] <- find_common_genes(grl_mm[[smpl]], names(grl_mm[smpl]))
+
+    remove_y <- theme(
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.y = element_blank())
+    
+        plots[[smpl]] <- find_common_genes(grl_mm[[smpl]],
+                                           names(grl_mm[smpl])) + remove_y
 }
 
-png(file = paste0(FIGURES, "PWM_matches_all.png"))
-ggarrange(plotlist = plots, widths = 7, common.legend = TRUE, legend = "bottom")
+png(file = paste0(FIGURES, "PWM_matches_all.png"), width = 1200)
+ggarrange(plotlist = plots, nrow = 1, common.legend = TRUE, widths = 5,
+          legend = "bottom")
 dev.off()
+# nolint end
+```
+
+```{r DR_GO_Analysis, echo=FALSE, message=FALSE, warning=FALSE}
+# nolint start
+# library(ReactomePA)
+# library(clusterProfiler)
+
+# ggo <- groupGO(gene = (dr_gr)$gene_id, "org.Dr.eg.db", ont = "BP", level = 2,
+#                readable = TRUE)
+# head(summary(ggo))
+# barplot(ggo, drop = TRUE, showCategory = 20)
 # nolint end
 ```
