@@ -382,6 +382,50 @@ pakito, vykstant persitvarkymo procesams.
 
 \newpage
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% KONKREČIŲ ĮRANKIŲ VEIKIMO APRAŠYMAI
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Taikyto \textbf{Cinteny} įrankio metodo aprašymas}
+Siekiant efektyviai reprezentuoti linijinę genomų markerių tvarką šiame įrankyje
+implementuota išplėsta trejetainio paieškos medžio struktūra (angl.
+\emph{ternary search tree} (TST)). Ši struktūra išplėsta, pavaizdavus
+„perėjimus“ tarp medžio lapų. Šie „perėjimai“ atitinka linijinius genomo
+markerių „perėjimus“. Šie markeriai gali būti apibūdinti kaip ortologiniai
+(homologiniai) genai.
+
+\begin{figure}[htb]
+    \begin{center}
+        \includegraphics[width=0.4\linewidth]{../Figures/TTS_data_structure.png}
+        \vspace{-0.5\baselineskip}
+        \caption*{\small\textbf{4 pav. TST medžio struktūra su perėjimais}}
+        \label{fig:birds}
+    \end{center}
+\end{figure}
+
+Pateiktame paveiksle vaizduojama TST medžio struktūra su „perėjimais“ keliems
+genams iš žmogaus, pelės ir žiurkės genomų. Paveiksle viršūnės (apskritimai)
+atitinka genų simbolius, medžio lapai (elipsės) atitinka homologinę grupę.
+Individualūs genai (meta viršūnės), priklausantys kiekvienai homologinei
+grupei, atvaizduoti po medžio lapais. Linijiniai perėjimai sukonstruoti,
+sujungus meta viršūnes ta tvarka, kuria genai nustatyti chromosomose.
+
+Konservatyvių genų blokai, išlaikantys savo eiliškumą, yra agreguojami į
+didesnius blokus, neįtraukiant blokų, kurie gauti atlikus sekų
+mikropertvarkymus. Keičiant įrankio parametrus (minimalų sintenijos blokų
+ilgį, maksimalų tarpą tarp agreguotų blokų ir minimalų genų (markerių) skaičių
+bloke) gali būti gauti skirtingi sintenijos blokai.
+
+
+Šios hibridinės struktūros taikymas leidžia atlikti genų paiešką per logaritminį
+laiką, įvardinti visus galimus ortologus bei pereiti visus genų perėjimus iš 5'
+galo link 3' chromosomos galo arba atvirkščiai. Struktūrą realizuojantis
+algoritmo kompleksiškumas yra $ N\log_{10}N $, kur N skaičius nurodo genome
+nustatytų genų skaičių, todėl šį metodą galima taikyti ir dideliems (didelį
+bazių porų skaičių turintiems) genomams.
+
+\newpage
+
 %%%%%%%%%%%%%%%%%%%
 % TYRIMO METODAI
 %%%%%%%%%%%%%%%%%%%
@@ -414,93 +458,19 @@ panaudojus \emph{rtracklayer}\cite{R_TRACK} bibliotekos funkciją
 \emph{ggplot2}\cite{R_GGPLOT} bibliotekos \emph{geom\_bar()} funkcija.
 
 \subsection{Pikų anotavimas}
-Analizuotų mėginių pikai anotuoti, pasinaudojus R programavimo kalbos
-bibliotekos \emph{ChIPseeker}\cite{CHIP1, CHIP2} funkcija
+Analizuotų mėginių pikai anotuoti (nustatyti artimiausi genai), pasinaudojus R
+programavimo kalbos bibliotekos \emph{ChIPseeker}\cite{CHIP1, CHIP2} funkcija
 \emph{annotatePeak()}. Dveji iš šiai funkcijai perduodamų parametrų buvo gauti
 įdiegus \emph{TxDb.Mmusculus.UCSC.mm10.knownGene}\cite{KNOWN_GENE}
 ir \emph{org.Mm.eg.db}\cite{MM_ANNOT} bibliotekas.
 
-\subsection{Persidengiančių genų nustatymas}
-\emph{Danio rerio} organizmo genų rinkinys gautas, pasinaudojus iš
-Ensembl\cite{ENSEMBL} duomenų bazės atsisiųsta \emph{Danio rerio}
-organizmo GTF formato anotacija. GTF failas importuotas į R programą
-kaip objektas, pritaikius \emph{rtracklayer}\cite{R_TRACK} bibliotekos funkciją
-\emph{import()}.
+\subsection{Sintenijos blokams priklausančių genų nustatymas}
+Sintenijos blokams priklausantys \emph{Danio rerio} genai nustatyti,
+patikrinus, kurie iš žinomų zebražuvės genų priklauso blokams. Pilnas zebražuvės
+genų rinkinys gautas, pasinaudojus \emph{TxDb.Drerio.UCSC.danRer11.refGene} bei
+\emph{org.Dr.eg.db} bibliotekomis. <<<- Pataisyti šitą aprašymą.
 
-Zebražuvės genų identifikatoriai ir genų pavadinimai gauti, atliekant objekto
-kovertavimą į \emph{data.frame} struktūrą bei atliekant informacijos išgavimą
-iš šios duomenų struktūros.
-
-Tarp naminės pelės anotuotų pikų ir zebražuvės genų rinkinių persidengiantys
-genai nustatyti su standartine R funkcija \emph{intersect()}.
-
-\newpage
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% KONKREČIŲ ĮRANKIŲ VEIKIMO APRAŠYMAI
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Naudotų įrankių metodų aprašymas}
-Šioje analizės dalyje buvo siekiama patikrinti skirtingų \emph{synteny} blokų
-identifikavimo įrankių veikimą, ieškant homologinių genomų sričių tarp
-\emph{Mus musculus} ir \emph{Danio rerio} organizmų. Todėl šioje dalyje buvo
-išbandyti 3 skirtingi įrankiai: \emph{Cinteny}.
-
-\subsection{\textbf{Cinteny} įrankio metodas}
-
-Siekiant efektyviai reprezentuoti linijinę genomų markerių tvarką šiame įrankyje
-implementuota išplėsta trejetainio paieškos medžio struktūra (angl.
-\emph{ternary search tree} (TST)). Ši struktūra išplėsta, pavaizdavus
-„perėjimus“ tarp medžio lapų. Šie „perėjimai“ atitinka linijinius genomo
-markerių „perėjimus“. Šie markeriai gali būti apibūdinti kaip ortologiniai
-(homologiniai) genai.
-
-\begin{figure}[htb]
-    \begin{center}
-        \includegraphics[width=0.5\linewidth]{../Figures/TTS_data_structure.png}
-        \vspace{-0.5\baselineskip}
-        \caption*{\small\textbf{4 pav. TST medžio struktūra su perėjimais}}
-        \label{fig:birds}
-    \end{center}
-\end{figure}
-
-Pateiktame paveiksle vaizduojama TST medžio struktūra su „perėjimais“ keliems
-genams iš žmogaus, pelės ir žiurkės genomų. Paveiksle viršūnės (apskritimai)
-atitinka genų simbolius, medžio lapai (elipsės) atitinka homologinę grupę.
-Individualūs genai (meta viršūnės), priklausantys kiekvienai homologinei
-grupei, atvaizduoti po medžio lapais. Linijiniai perėjimai sukonstruoti,
-sujungus meta viršūnes ta tvarka, kuria genai nustatyti chromosomose.
-
-Konservatyvių genų blokai, išlaikantys savo eiliškumą, yra agreguojami į
-didesnius blokus, neįtraukiant blokų, kurie gauti atlikus sekų
-mikropertvarkymus. Keičiant įrankio parametrus (minimalų sintenijos blokų
-ilgį, maksimalų tarpą tarp agreguotų blokų ir minimalų genų (markerių) skaičių
-bloke) gali būti gauti skirtingi sintenijos blokai.
-
-
-Šios hibridinės struktūros taikymas leidžia atlikti genų paiešką per logaritminį
-laiką, įvardinti visus galimus ortologus bei pereiti visus genų perėjimus iš 5'
-galo link 3' chromosomos galo arba atvirkščiai. Struktūrą realizuojantis
-algoritmo kompleksiškumas yra $ N\log_{10}N $, kur N skaičius nurodo genome
-nustatytų genų skaičių, todėl šį metodą galima taikyti ir dideliems (didelį
-bazių porų skaičių turintiems) genomams.
-
-
-%\subsection{\textbf{Satsuma} įrankio veikimo principai}
-%Tai yra populiariausias DNR sekų išlyginimu paremtą metodą taikantis įrankis.
-%Šis įrankis realizuoja \textbf{kryžminės koreliacijos metodą}, paremtą sekų
-%išlyginimais.
-
-
-%\subsection{\textbf{Symap} įrankio veikimo principai}
-
-%%%%%%%%%%%%%%%%%%%%%%%
-% CINTENY REZULTATAS
-%%%%%%%%%%%%%%%%%%%%%%%
-
-%One problem of central importance is the identification of blocks of genes
-%(or other markers) with evolutionary conserved order.
-
+\subsection{Transkripcijos faktoriaus prisijungimo sričių nustatymas}
 
 \newpage
 
@@ -721,50 +691,31 @@ pritaikius naminės pelės sintenijos blokams priklausančioms sekoms.
 Žemiau pateikiamame paveiksle vaizduojamas Tbx5 transkripcijos faktoriaus
 matricos atitikimas \emph{Mus musculus} ir \emph{Danio rerio} sekose.
 
-
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.8\linewidth]{../Figures/PWM_matches_all.png}
+        \includegraphics[width=1\linewidth]{../Figures/PWM_matches_all.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{}}
+        \caption*{\small\textbf{7 pav. PWM matricos atitikimai M.musculus ir
+        D.rerio sekose}}
         \label{fig:birds}
     \end{center}
 \end{figure}
 
-% \begin{table}[htb]
-%     \newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
-%     \small
-%     \caption*{\small\textbf{2 lentelė.}}
-%     \begin{tabular}{|c|c|c|}
-%         \hline
-%         \textbf{\thead{Mėginys}} & \textbf{\thead{Blokų\\skaičius}} &
-%             \textbf{\thead{Procentinė\\dalis}} \\
-%         \hline
-%         \emph{crdc\_mscl\_r1\_2} & \thead{39} & \thead{2.78\%}\\ 
-%         \hline
-%         \emph{emb\_fibr\_r1\_1} & \thead{41} & \thead{2.92\%}\\ 
-%         \hline
-%         \emph{emb\_fibr\_r2\_2} & \thead{40} & \thead{2.85\%}\\ 
-%         \hline
-%         \emph{emb\_fibr\_r3\_3} & \thead{40} & \thead{2.85\%}\\ 
-%         \hline
-%         \emph{heart\_r1\_1} & \thead{39} & \thead{2.78\%}\\ 
-%         \hline
-%         \emph{emb\_fibr\_r4\_4} & \thead{18} & \thead{1.28\%}\\ 
-%         \hline
-%         \emph{crdc\_fibr\_r1\_3} & \thead{25} & \thead{1.78\%}\\ 
-%         \hline
-%     \end{tabular}
-% \end{table}
+Palyginus gautus rezultataus galima pastebėti, kad visais atvejais pozicinės
+matricos atitikimas \emph{Danio rerio} sekoms buvo panašus. Zebražuvės genome
+buvo genų, kurių dydis viršijo 100000 nukleotidų (taškai, priklausantys I
+ketvirčiui). Šiose sekose Tbx5 pozicinės svorių matricos atitikimų buvo
+nustatyta daugiau nei 30.
 
-%%%%%%%%%%%%%%%%%%%%%%%
-% SATSUMA REZULTATAS
-%%%%%%%%%%%%%%%%%%%%%%%
+Naminės pelės genuose PWM matricos atitikimų buvo nustatyta mažiau. Be to, sekų
+ilgis buvo mažesnis. Mėginyje \emph{emb\_fibr\_r4\_4} Tbx5 pozicinės svorių
+matricos anotuotų pikų genų atitikimų buvo mažiausiai, todėl tikėtina, kad šiame
+mėginyje Tbx5 transkripcijos faktorius jungtųsi retai.
 
-%\subsection*{\textbf{Satsuma} įrankis}
-%Siekiant patikrinti metodų, leidžiančių identifikuoti \emph{synteny} blokus,
-%tikslumą, buvo išbandytas \emph{Satsuma}\cite{SATSUMA} įrankis. Nustatytų
-%\emph{synteny} blokų procentinė dalis pikų atžvilgiu pavaizduota 4 pav.
+\subsection{Sintenijos blokams priklausančių genų biologinės funkcijos}
+\emph{Danio rerio} genams, priklausantiems sintenijos blokams ir sutampantiems
+su \emph{Mus musculus} genais, atlikta biologinių funkcijų nustatymo analizė.
+Gautos biologinės funkcijos pateiktos žemiau esančioje lentelėje?
 
 %%%%%%%%%%%%%%%%%%%%%
 % SYMAP REZULTATAS
@@ -776,50 +727,12 @@ matricos atitikimas \emph{Mus musculus} ir \emph{Danio rerio} sekose.
 %realizuojančius įrankius. Šio metodo rezultatas pateiktas 5 pav. 
 
 
-Apibendrinus gautus rezultatus nustatyta sintenijos blokų dalis
-pikų atžvilgiu buvo maža (neviršijo 20\%), todėl sintenijos blokų paieška
-nėra tinkamiausias būdas, siekiant įvertinti \emph{Mus musculus} ir
-\emph{Danio rerio} organizmų homologiją, nes taikomas sintenijos blokų
-paieškos metodas, tikėtina, nesuranda visų galimų homologiškų
-\emph{Mus musculus} ir \emph{Danio rerio} organizmų genomų fragmentų.
-
-\newpage
-
-%%%%%%%%%%%%%%%%%%%%
-% PIKŲ ANOTAVIMAS
-%%%%%%%%%%%%%%%%%%%%
-
-% \subsection{Pikų anotavimas}
-% Atlikus pikų anotavimą kiekvieno mėginio anotuotų pikų skaičius ir su 
-% \emph{Danio rerio} organizmo genais persidengiančių genų skaičius pateiktas
-% stulpelinėse diagramose (4 pav.).
-% \begin{figure}[htb]
-%     \begin{center}
-%         \includegraphics[width=0.8\linewidth]{../Tbx5_analysis_II/Figures/Annotated_genes.png}
-%         \vspace{-2\baselineskip}
-%         \caption*{\small\textbf{4 pav. Unikalių ir persidengiančių genų
-%         skaičiaus stulpelinės diagramos}}
-%         \label{fig:birds}
-%     \end{center}
-% \end{figure}
-
-% Remiantis gautomis diagramomis galima pastebėti, kad didžiausias anotuotų pikų
-% skaičius (unikalių genų skaičius) būdingas mėginiams \emph{emb\_fibr\_r1\_1},
-% \emph{emb\_fibr\_r2\_2} ir \emph{emb\_fibr\_r3\_3}, kuriuose naminių pelių
-% embrionų fibroblastai buvo veikti AGHMT, GHMT ir GMT kardiogeniniais
-% transkripcijos faktoriais. Mažiausias genų skaičius nustatytas mėginyje, kuriame
-% naminių pelių embrionų fibroblastų kamienas (\emph{emb\_fibr\_r4\_4}) veiktas
-% tik Tbx5 transkripcijos faktoriumi.
-
-% Dešinėje pateiktoje stulpelinėje diagramoje galima pastebėti, kad tuose pačiuose
-% mėginiuose, kuriuose buvo tirtas vienodas embrionų fibroblastų kamienas, tačiau
-% taikytos skirtingos sąlygos, su zebražuvės genais persidengiančių genų skaičius
-% nebuvo vienodas. Nepaisant to, kad persidengiančių genų skaičius šiuose
-% mėginiuose nebuvo itin didelis (didžiausias skirtumas nustatytas tarp
-% \emph{emb\_fibr\_r1\_1} ir \emph{emb\_fibr\_r3\_3} mėginių, kur persidengiančių
-% genų skaičiaus skirtumas buvo lygus 127 genams), galima daryti išvadą, kad
-% taikant skirtingas sąlygas (veikiant skirtingu kardiogeninių faktorių komplektu)
-% dalyje genų pikai nebuvo nustatyti.
+% Apibendrinus gautus rezultatus nustatyta sintenijos blokų dalis
+% pikų atžvilgiu buvo maža (neviršijo 20\%), todėl sintenijos blokų paieška
+% nėra tinkamiausias būdas, siekiant įvertinti \emph{Mus musculus} ir
+% \emph{Danio rerio} organizmų homologiją, nes taikomas sintenijos blokų
+% paieškos metodas, tikėtina, nesuranda visų galimų homologiškų
+% \emph{Mus musculus} ir \emph{Danio rerio} organizmų genomų fragmentų.
 
 \newpage
 
@@ -876,18 +789,6 @@ synteny in modern and ancestral genomes, Bioinformatics, Volume 26, Issue 8,
 visualization of synteny and genome rearrangements in multiple organisms.
 BMC Bioinformatics 8, 82 (2007). https://doi.org/10.1186/1471-2105-8-82
 
-\bibitem{SATSUMA} Grabherr, M. G., Russell, P., Meyer, M., Mauceli,
-E., Alföldi, J., Di Palma, F., \& Lindblad-Toh, K. (2010). Genome-wide
-synteny through highly sensitive sequence alignment: Satsuma.
-Bioinformatics, 26(9), 1145-51.
-
-\bibitem{SYMAP}
-
-\bibitem{IADHORE} Proost, S.; Fostier, J.; De Witte, D.; Dhoedt, B.;
-Demeester, P.; Van de Peer, Y.; Vandepoele, K. i-ADHoRe 3.0—Fast and sensitive
-detection of genomic homology in extremely large data sets. Nucleic Acids Res.
-2012, 40, e11.
-
 \bibitem{ARTICLE1} Liu, D., Hunt, M. \& Tsai, I.J. Inferring synteny between
 genome assemblies: a systematic evaluation. BMC Bioinformatics 19, 26 (2018).
 https://doi.org/10.1186/s12859-018-2026-4
@@ -930,13 +831,6 @@ R package version 3.10.0.
 
 \bibitem{MM_ANNOT} Carlson M (2022). org.Mm.eg.db: Genome wide annotation for
 Mouse. R package version 3.15.0.
-
-\bibitem{ENSEMBL} Magali Ruffier, Andreas Kähäri, Monika Komorowska, Stephen
-Keenan, Matthew Laird, Ian Longden, Glenn Proctor, Steve Searle, Daniel
-Staines, Kieron Taylor, Alessandro Vullo, Andrew Yates, Daniel Zerbino, Paul
-Flicek Ensembl core software resources: storage and programmatic access for DNA
-sequence and genome annotation Database 2017, bax020
-doi: 10.1093/database/bax020
 
 \bibitem{R_TRACK} M. Lawrence, R. Gentleman, V. Carey: "rtracklayer: an {R}
 package for interfacing with genome browsers". Bioinformatics 25:1841-1842.
