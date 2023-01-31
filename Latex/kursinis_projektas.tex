@@ -445,12 +445,12 @@ nustatyti ir vizualizuoti pasinaudojus internetinės
 
 \subsection{Sintenijos blokų pozicijų gavimas}
 Šiame analizės etape sintenijos blokai buvo gauti pasinaudojus Cinteny
-įrankiu, kurio pateiktoje išvestyje buvo pateiktos pirmojo genomo
+įrankiu, kurio pateiktoje išvestyje buvo nurodytos pirmojo genomo
 \emph{Mus musculus} genominės pozicijos ir antrojo genomo \emph{Danio rerio}
 genominės pozicijos, kuriose abiejų genomų sekų fragmentai sutapo - gauti
 sintenijos blokai.
 
-\subsection{Sintenijos blokų persidengimas su pikais}
+\subsection{Pikų persidengimas su sintenijos blokais}
 Sintenijos blokų failas buvo apdorotas R programoje, kurioje apskaičiuota
 kiekvieno mėginio pikų bei su sintenijos blokais persidengiančių pikų dalis,
 panaudojus \emph{rtracklayer}\cite{R_TRACK} bibliotekos funkciją
@@ -458,19 +458,53 @@ panaudojus \emph{rtracklayer}\cite{R_TRACK} bibliotekos funkciją
 \emph{ggplot2}\cite{R_GGPLOT} bibliotekos \emph{geom\_bar()} funkcija.
 
 \subsection{Pikų anotavimas}
-Analizuotų mėginių pikai anotuoti (nustatyti artimiausi genai), pasinaudojus R
+Analizuotų mėginių pikai anotuoti (apskaičiavus atstumą iki transkripcijos
+pradžios regiono (angl. \emph{\textbf{T}ranscription \textbf{S}tart
+\textbf{S}ite}) ir pikams priskyrus artimiausius genus), pasinaudojus R
 programavimo kalbos bibliotekos \emph{ChIPseeker}\cite{CHIP1, CHIP2} funkcija
-\emph{annotatePeak()}. Dveji iš šiai funkcijai perduodamų parametrų buvo gauti
-įdiegus \emph{TxDb.Mmusculus.UCSC.mm10.knownGene}\cite{KNOWN_GENE}
-ir \emph{org.Mm.eg.db}\cite{MM_ANNOT} bibliotekas.
+\emph{annotatePeak()}. Dveji iš šiai funkcijai perduotų parametrų buvo gauti
+įdiegus \emph{TxDb.Mmusculus.UCSC.mm10.knownGene}\cite{KNOWN_GENE} (visų žinomų
+\emph{Mus musculus} genų rinkinį) ir \emph{org.Mm.eg.db}\cite{MM_ANNOT}
+bibliotekas.
 
 \subsection{Sintenijos blokams priklausančių genų nustatymas}
-Sintenijos blokams priklausantys \emph{Danio rerio} genai nustatyti,
-patikrinus, kurie iš žinomų zebražuvės genų priklauso blokams. Pilnas zebražuvės
-genų rinkinys gautas, pasinaudojus \emph{TxDb.Drerio.UCSC.danRer11.refGene} bei
-\emph{org.Dr.eg.db} bibliotekomis. <<<- Pataisyti šitą aprašymą.
+Sintenijos blokams priklausančių \emph{Danio rerio} genų nustatytymui panaudota
+\emph{dataframe} duomenų struktūra. Ši struktūra gauta, pasinaudojus
+\emph{genes()} funkcija, kuriai perduotas visų žinomų \emph{Danio rerio} genų
+pozicijų ir kitos informacijos apie genus objektas
+\emph{TxDb.Drerio.UCSC.danRer11.refGene}. Gautam genų duomenų rinkiniui
+pritaikyta \emph{mapIds()} funkcija, kuri kiekvienam genui priskyrė atitinkamą
+geno simbolį, remiantis žinomu \emph{EntrezID} identifikatoriumi iš
+\emph{org.Dr.eg.db} bibliotekos objekto.
+
+Nustačius visų žinomų zebražuvės genų simbolius, nustatyta, kurie genai sutampa
+su \emph{Mus musculus} genais, pasinaudojus standartinės R bibliotekos
+\emph{dplyr} funkcijomis. Gautas mažesnis genų rinkinys perduotas bibliotekos
+\emph{GenomicRanges} funkcijai \emph{subsetByOverlaps()}, grąžinančiai
+\emph{GRanges} objektą su pozicijomis ir anotacijomis, kurios patenka į
+sintenijos blokų genominius intervalus.
 
 \subsection{Transkripcijos faktoriaus prisijungimo sričių nustatymas}
+Šiame analizės etape sudarytos dvi atskiros duomenų struktūros, kuriose
+išsaugota informacija apie \emph{Mus musculus} ir \emph{Danio rerio} genus,
+kurie sutampa tarp analizuojamų organizmų ir priklauso žinomiems sintenijos
+blokams, specifikuojant genų simbolius ir jų pozicijas.
+
+Turint abiejų genomų sutampančių genų objektus, panaudota \emph{Biostrings}
+bibliotekos funkcija \emph{getSeq()}, kuriai buvo perduoti analizuojamo genomo
+\emph{BSenome} klasės objektai (\emph{BSgenome.Mmusculus.UCSC.mm10} ir
+\emph{BSgenome.Drerio.UCSC.danRer11}) bei genų pozicijų GRanges objektai.
+Funkcija grąžino pozicijas atitinkančias nukleotidų sekas.
+
+Siekiant įvertinti, ar lyginamų naminės pelės ir zebražuvės genomų sekose gali
+prisijungti kardiogeninis Tbx5 transkripcijos faktorius, buvo skaičiuojami Tbx5
+transkripcijos faktoriaus pozicinės svorių matricos (PWM) atitikimai sekose,
+naudojant funkciją \emph{countPWM()}. Pozicinė svorių matrica atsisiųsta iš
+iš HOCOMOCO[17] (11.0 versija) duomenų bazės \emph{Homo sapiens} ir
+\emph{Mus musculus} organizmų transkripcijos faktorių kolekcijos.
+
+Kiekvieno organizmų geno PWM matricos atitikimai vizualizuoti taškine diagrama,
+pritaikius \emph{ggplot} funkciją \emph{geom\_point()}.
 
 \newpage
 
@@ -834,6 +868,14 @@ Mouse. R package version 3.15.0.
 
 \bibitem{R_TRACK} M. Lawrence, R. Gentleman, V. Carey: "rtracklayer: an {R}
 package for interfacing with genome browsers". Bioinformatics 25:1841-1842.
+
+\bibitem{HOCOMOCO} HOCOMOCO: towards a complete collection of transcription
+factor binding models for human and mouse via large-scale ChIP-Seq analysis
+Ivan V. Kulakovskiy; Ilya E. Vorontsov; Ivan S. Yevshin; Ruslan N. Sharipov;
+Alla D. Fedorova; Eugene I. Rumynskiy; Yulia A. Medvedeva; Arturo Magana-Mora;
+Vladimir B. Bajic; Dmitry A. Papatsenko; Fedor A. Kolpakov; Vsevolod J. Makeev
+Nucl. Acids Res., Database issue, gkx1106 (11 November 2017)
+doi: 10.1093/nar/gkx1106.
 
 \bibitem{NCBI} National Center for Biotechnology Information (NCBI)[Internet].
 Bethesda (MD): National Library of Medicine (US), National Center for
