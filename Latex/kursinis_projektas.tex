@@ -258,15 +258,16 @@ genų produktų (baltymų) sąsajas\cite{FUNC_REF}.
 \newpage
 
 \subsection{Identifikavimo metodai}
-Internete galima rasti ne vieną įrankį, leidžiantį vizualizuoti gerai anotuotų
-genomų sinteniją DNR lygmenyje (pavyzdžiui, Ensembl SyntenyView\cite{ENS_SYN},
-NCBI MapViewer\cite{NCBI_MAP}, Genomicus\cite{GENOMICUS}), tačiau nepaisant to,
-kad taikant šiuos įrankius konservatyvius regionus galima vizualizuoti ne vienu
-būdu, įrankiai pateikia iš anksto suskaičiuotus rezultatus. Naudojant šiuos
-įrankius tyrėjai negali pasirinkti parametrų, pavyzdžiui, leidžiančių keisti
-sintenijos blokų ilgį ar minimalų genų skaičių bloke.
+Internete galima rasti ne vieną įrankį\cite{ARTICLE1, ARTICLE2}, leidžiantį
+vizualizuoti gerai anotuotų genomų sinteniją DNR lygmenyje (pavyzdžiui, Ensembl
+SyntenyView\cite{ENS_SYN}, NCBI MapViewer\cite{NCBI_MAP},
+Genomicus\cite{GENOMICUS}), tačiau nepaisant to, kad taikant šiuos įrankius
+konservatyvius regionus galima vizualizuoti ne vienu būdu, įrankiai pateikia iš
+anksto suskaičiuotus rezultatus. Naudojant šiuos įrankius tyrėjai negali
+pasirinkti parametrų, pavyzdžiui, leidžiančių keisti sintenijos blokų ilgį ar
+minimalų genų skaičių bloke.
 
-Dėl šių įrankių trūkumų yra sukurta daug įvairių programinių įrankių,
+Dėl šių įrankių trūkumų yra sukurta daug įvairių programinių įrankių, 
 leidžiančių atlikti pastarųjų blokų paiešką savarankiškai, tiriant nemodelinių
 organizmų genomų evoliuciją bei keičiant algoritmų parametrus. Šiuos įrankius
 galima pasirinkti pagal tai, koks yra organizmų giminingumas, koks genomo
@@ -344,14 +345,13 @@ atsirasti tokių sekų fragmentų, kurie iš tiesų neturėtų priklausyti bloku
 \subsubsection*{Godžiųjų algoritmų taikymo metodas}
 Realizuojant šį metodą yra konstruojamos kolinearių genų porų grandinės. Metodo
 įgyvendinimui atliekama daug daugiau skaičiavimų nei aprašytas homologinių genų
-matricos sudarymo metodas.
-Įrankiuose, kurie remiasi šiuo metodu, yra naudojami \emph{BLASTP} rezultatai.
-Jais remiantis galima taikyti dinaminį programavimą ir sukonstruoti kolinearių
-genų porų grandines, turinčias maksimalias grandinės vertes (angl. 
-\emph{chainscore}). Taikant šį metodą sintenijos blokus sudaro kolineariose
-pozicijose esančių unikalių homologinių sekų (sintenijos inkarų) genai bei tarp
-jų išsidėstę nehomologiniai genai, kurie evoliucijos eigoje buvo paveikti
-mutacijų.
+matricos sudarymo metodas. Įrankiuose, kurie remiasi šiuo metodu, yra naudojami
+\emph{BLASTP} rezultatai. Jais remiantis galima taikyti dinaminį programavimą
+ir sukonstruoti kolinearių genų porų grandines, turinčias maksimalias grandinės
+vertes (angl. \emph{chainscore}). Taikant šį metodą sintenijos blokus sudaro
+kolineariose pozicijose esančių unikalių homologinių sekų (sintenijos inkarų)
+genai bei tarp jų išsidėstę nehomologiniai genai, kurie evoliucijos eigoje buvo
+paveikti mutacijų.
 
 \textbf{Metodo privalumai:} Taikant šį metodą galima lyginti daug skirtingų
 genomų ir analizuoti genų pokyčius chromosomose. Taip pat genomų kolinearių
@@ -387,7 +387,8 @@ pakito, vykstant persitvarkymo procesams.
 
 \section{Taikytų įrankių metodų aprašymai}
 \subsection{\emph{Cinteny} įrankis}
-Siekiant efektyviai reprezentuoti linijinę genomų markerių tvarką šiame įrankyje
+Siekiant efektyviai reprezentuoti linijinę genomų markerių tvarką
+\emph{Cinteny}\cite{CINTENY} įrankyje
 implementuota išplėsta trejetainio paieškos medžio struktūra (angl.
 \emph{ternary search tree} (TST)). Ši struktūra išplėsta, pavaizdavus 
 „perėjimus“ tarp medžio lapų. Šie „perėjimai“ atitinka linijinius genomo
@@ -422,6 +423,34 @@ galo link 3' chromosomos galo arba atvirkščiai. Struktūrą realizuojantis
 algoritmo kompleksiškumas yra $ N\log_{10}N $, kur N skaičius nurodo genome
 nustatytų genų skaičių, todėl šį metodą galima taikyti ir dideliems genomams.
 
+\subsection{\emph{SyMAP} įrankis}
+\emph{SyMAP}\cite{SYMAP} (angl. \emph{\textbf{Sy}nteny \textbf{M}apping and
+\textbf{A}nalysis \textbf{P}rogram}) - \emph{DAGChainer} įrankiu paremtas JAVA
+įrankis, leidžiantis analizuoti ir vizualizuoti sintenijos sąsajas tarp genomų,
+keičiant įrankio parametrus ir nustatant sintenijos blokus, atlikus skaičiavimus
+(rezultatų gavimas gali užtrukti kelias valandas, priklausomai nuo kompiuterio
+resursų ir analizuojamų genomų dydžio).
+
+Įrankyje įgyvendintas homologinių genų matricos sudarymo metodas. Vykdant
+sintenijos blokų paiešką tarp dviejų genomų iš pradžių genomų sekų ir anotacijų
+rinkiniai pridedami į duomenų bazę ir nustatomi algoritmo parametrai. Kitame
+etape įvykdomas dviejų genomų sekų išlyginimas, po kurio naudojami skirtingi
+filtrai, pavyzdžiui, filtras, kondensuojantis tandemiškai pasikartojančius
+genus ir pašalinantis pasikartojančias sekas. Po šio etapo sukonstruojama
+homologinė genų matrica, kurioje ieškomi sintenijos blokai. Nustačius sintenijos
+blokus, jie vizualizuojami interaktyvioje taškinėje diagramoje. Sintenijos blokų
+pavyzdys pateiktas 5 paveiksle (pažymėta mėlynais stačiakampiais).
+
+\begin{figure}[htb]
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{../Figures/Synteny_dotplot_example.png}
+        \vspace{-0.5\baselineskip}
+        \caption*{\small\textbf{5 pav. Nustatytų sintenijos blokų taškinė
+        diagrama (pavyzdys)}}
+        \label{fig:birds}
+    \end{center}
+\end{figure}
+
 \newpage
 
 %%%%%%%%%%%%%%%%%%%
@@ -429,8 +458,8 @@ nustatytų genų skaičių, todėl šį metodą galima taikyti ir dideliems geno
 %%%%%%%%%%%%%%%%%%%
 
 \section{Tyrimo metodai}
-Homologijos tarp \emph{Mus musculus} ir \emph{Danio rerio} organizmų
-tyrimo analizė atlikta su R programavimo kalba\cite{R} (4.2.2 versija)
+Homologijos tarp \emph{Mus musculus} ir \emph{Danio rerio} organizmų tyrimo
+analizė atlikta su R programavimo kalba\cite{R} (4.2.2 versija)
 
 Tarpiniai analizės rezultatai pateikti, naudojant komandinės eilutės įrankį
 Scikick\cite{SCIK} (0.2.0 versija). Naudojant šį įrankį buvo apjungti keli Rmd
@@ -470,17 +499,17 @@ Sintenijos blokams priklausančių \emph{Danio rerio} genų nustatytymui panaudo
 \emph{dataframe} duomenų struktūra. Ši struktūra gauta, pasinaudojus
 \emph{genes()} funkcija, kuriai perduotas visų žinomų \emph{Danio rerio} genų
 pozicijų ir kitos informacijos apie genus objektas
-\emph{TxDb.Drerio.UCSC.danRer11.refGene}. Gautam genų duomenų rinkiniui
-pritaikyta \emph{mapIds()} funkcija, kuri kiekvienam genui priskyrė atitinkamą
-geno simbolį, remiantis žinomu \emph{EntrezID} identifikatoriumi iš
+\emph{TxDb.Drerio.UCSC.danRer11.refGene}\cite{REF_GENE}. Gautam genų duomenų
+rinkiniui pritaikyta \emph{mapIds()} funkcija, kuri kiekvienam genui priskyrė
+atitinkamą geno simbolį, remiantis žinomu \emph{EntrezID} identifikatoriumi iš
 \emph{org.Dr.eg.db} bibliotekos objekto.
 
 Nustačius visų žinomų zebražuvės genų simbolius, nustatyta, kurie genai sutampa
 su \emph{Mus musculus} genais, pasinaudojus standartinės R bibliotekos
-\emph{dplyr} funkcijomis. Gautas mažesnis genų rinkinys perduotas bibliotekos
-\emph{GenomicRanges} funkcijai \emph{subsetByOverlaps()}, grąžinančiai
-\emph{GRanges} objektą su pozicijomis ir anotacijomis, kurios patenka į
-sintenijos blokų genominius intervalus.
+\emph{dplyr}\cite{DPLYR} funkcijomis. Gautas mažesnis genų rinkinys perduotas
+bibliotekos \emph{GenomicRanges}\cite{GRANGES} funkcijai
+\emph{subsetByOverlaps()}, grąžinančiai \emph{GRanges} objektą su pozicijomis
+ir anotacijomis, kurios patenka į sintenijos blokų genominius intervalus.
 
 \subsection{Transkripcijos faktoriaus prisijungimo sričių nustatymas}
 Šiame analizės etape sudarytos dvi atskiros duomenų struktūros, kuriose
@@ -488,11 +517,13 @@ išsaugota informacija apie \emph{Mus musculus} ir \emph{Danio rerio} genus,
 kurie sutampa tarp analizuojamų organizmų ir priklauso žinomiems sintenijos
 blokams, specifikuojant genų simbolius ir jų pozicijas.
 
-Turint abiejų genomų sutampančių genų objektus, panaudota \emph{Biostrings}
+Turint abiejų genomų sutampančių genų objektus, panaudota
+\emph{Biostrings}\cite{BIOSTRINGS}
 bibliotekos funkcija \emph{getSeq()}, kuriai buvo perduoti analizuojamo genomo
-\emph{BSenome} klasės objektai (\emph{BSgenome.Mmusculus.UCSC.mm10} ir
-\emph{BSgenome.Drerio.UCSC.danRer11}) bei genų pozicijų GRanges objektai.
-Funkcija grąžino pozicijas atitinkančias nukleotidų sekas.
+\emph{BSenome}\cite{BSGENOME} klasės objektai
+(\emph{BSgenome.Mmusculus.UCSC.mm10} ir \emph{BSgenome.Drerio.UCSC.danRer11})
+bei genų pozicijų GRanges objektai. Funkcija grąžino pozicijas atitinkančias
+nukleotidų sekas.
 
 Siekiant įvertinti, ar lyginamų naminės pelės ir zebražuvės genomų sekose gali
 prisijungti kardiogeninis Tbx5 transkripcijos faktorius, buvo skaičiuojami Tbx5
@@ -520,7 +551,7 @@ genomų vizualizuoti \emph{circo} diagramoje (3 pav.).
     \begin{center}
         \includegraphics[width=0.8\linewidth]{../Figures/SynCircos.png}
         \vspace{-1\baselineskip}
-        \caption*{\small\textbf{3 pav. Sintenijos blokų \emph{circo}
+        \caption*{\small\textbf{6 pav. Sintenijos blokų \emph{circo}
         diagrama}}
         \label{fig:birds}
     \end{center}
@@ -557,7 +588,7 @@ neatsižvelgus į sekų fragmentų ilgį.
         \includegraphics[width=\textwidth]{../Figures/Synteny_Chr_DR.png}
         \caption*{\centering\small\textbf{b) Fragmentų skaičius \emph{Danio rerio} chromosomose}}
     \end{subfigure}
-    \caption*{\small\textbf{4 pav. Sekų fragmentų pasiskirstymas chromosomose}}
+    \caption*{\small\textbf{7 pav. Sekų fragmentų pasiskirstymas chromosomose}}
     \label{fig:birds}
 \end{figure}
 
@@ -567,6 +598,19 @@ pasitaikydavo zebražuvės genome dažniausiai. Atsižvelgus į šių chromosom�
 dydžius, kur vienuolikta chromosoma yra mažesnė nei kitos išskirtos chromosomos
 (ją sudaro 122 Mbp\cite{MGI}), buvo nustatyta sąlyginai didelė dalis fragmentų,
 turinčių homologijų su zebražuvės genomo sekų fragmentais.
+
+Chromosomos, kurių sekų fragmentai nustatyti zebražuvės genome, buvo
+vizualizuoti su \emph{SyMAP} įrankiu.
+
+\begin{figure}[htb]
+    \begin{center}
+        \includegraphics[width=0.9\linewidth]{../Figures/Blocks_Chr2_9.png}
+        \vspace{-1\baselineskip}
+        \caption*{\small\textbf{6 pav. Sintenijos blokų \emph{circo}
+        diagrama}}
+        \label{fig:birds}
+    \end{center}
+\end{figure}
 
 Patikrinus, kiek yra \emph{Danio rerio} chromosomų fragmentų, kurie patenka į
 sintenijos blokus, gauti rezultatai vizualizuoti ketvirto paveikslo b) dalyje.
@@ -590,7 +634,7 @@ mėginyje nustatyta pikų, kurie patenka į sintenijos blokų intervalą.
     \begin{center}
         \includegraphics[width=0.8\linewidth]{../Figures/Synteny_blocks_peaks.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{5 pav. Sintenijos blokų procentinė dalis}}
+        \caption*{\small\textbf{8 pav. Sintenijos blokų procentinė dalis}}
         \label{fig:birds}
     \end{center}
 \end{figure}
@@ -621,7 +665,7 @@ priskirta kiekvieno mėginio pikams, patenkantiems į sintenijos blokus.
     \begin{center}
         \includegraphics[width=0.7\linewidth]{../Figures/Unique_genes_MM.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{6 pav. Anotuotų pikų dalis mėginiuose}}
+        \caption*{\small\textbf{9 pav. Anotuotų pikų dalis mėginiuose}}
         \label{fig:birds}
     \end{center}
 \end{figure}
@@ -701,7 +745,7 @@ paveiksle.
     \begin{center}
         \includegraphics[width=0.7\linewidth]{../Figures/Unique_genes_DR.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{6 pav. D.rerio sintenijos blokams priklausančių
+        \caption*{\small\textbf{10 pav. D.rerio sintenijos blokams priklausančių
         genų dalis}}
         \label{fig:birds}
     \end{center}
@@ -727,7 +771,7 @@ matricos atitikimas \emph{Mus musculus} ir \emph{Danio rerio} sekose.
     \begin{center}
         \includegraphics[width=1\linewidth]{../Figures/PWM_matches_all.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{7 pav. PWM matricos atitikimai M.musculus ir
+        \caption*{\small\textbf{11 pav. PWM matricos atitikimai M.musculus ir
         D.rerio sekose}}
         \label{fig:birds}
     \end{center}
@@ -743,21 +787,6 @@ Naminės pelės genuose PWM matricos atitikimų buvo nustatyta mažiau. Be to, s
 ilgis buvo mažesnis. Mėginyje \emph{emb\_fibr\_r4\_4} Tbx5 pozicinės svorių
 matricos anotuotų pikų genų atitikimų buvo mažiausiai, todėl tikėtina, kad šiame
 mėginyje Tbx5 transkripcijos faktorius jungtųsi retai.
-
-\subsection{Sintenijos blokams priklausančių genų biologinės funkcijos}
-\emph{Danio rerio} genams, priklausantiems sintenijos blokams ir sutampantiems
-su \emph{Mus musculus} genais, atlikta biologinių funkcijų nustatymo analizė.
-Gautos biologinės funkcijos pateiktos žemiau esančioje lentelėje?
-
-%%%%%%%%%%%%%%%%%%%%%
-% SYMAP REZULTATAS
-%%%%%%%%%%%%%%%%%%%%%
-
-%\subsection*{\textbf{Symap} įrankis}
-%Šioje analizėje buvo panaudotas įrankis \emph{Symap}\cite{SYMAP}, kurio
-%rezultatas palygintas su rezultatais, gautais taikant kitus metodus
-%realizuojančius įrankius. Šio metodo rezultatas pateiktas 5 pav. 
-
 
 % Apibendrinus gautus rezultatus nustatyta sintenijos blokų dalis
 % pikų atžvilgiu buvo maža (neviršijo 20\%), todėl sintenijos blokų paieška
@@ -796,6 +825,15 @@ conserved since divergence of man and mouse. Proc Nat Acad Sci 1984,
 Cross-species comparisons: a review of methods and available resources.
 Genome Res 2003, 13: 1–12. 10.1101/gr.222003.
 
+\bibitem{ARTICLE1} Liu, D., Hunt, M. \& Tsai, I.J. Inferring synteny between
+genome assemblies: a systematic evaluation. BMC Bioinformatics 19, 26 (2018).
+https://doi.org/10.1186/s12859-018-2026-4
+
+\bibitem{ARTICLE2} Lallemand, T.; Leduc, M.; Landès, C.; Rizzon, C.; Lerat, E.
+An Overview of Duplicated Gene Detection Methods: Why the Duplication Mechanism
+Has to Be Accounted for in Their Choice. Genes 2020, 11, 1046.
+https://doi.org/10.3390/genes11091046
+
 \bibitem{ENS_SYN} Clamp M, Andrews D, Barker D, Bevan P, Cameron G, Chen Y,
 Clark L, Cox T, Cuff J, Curwen V, Down T, Durbin R, Eyras E, Gilbert J,
 Hammond M, Hubbard T, Kasprzyk A, Keefe D, Lehvaslaiho H, Iyer V, Melsopp C,
@@ -817,18 +855,14 @@ Hugues Roest Crollius, Genomicus: a database and a browser to study gene
 synteny in modern and ancestral genomes, Bioinformatics, Volume 26, Issue 8,
 15 April 2010, Pages 1119–1121, https://doi.org/10.1093/bioinformatics/btq079.
 
-\bibitem{CINTENY} Sinha, A.U., Meller, J. Cinteny: flexible analysis and
+\bibitem{CINTENY} Sinha AU, Meller J. Cinteny: flexible analysis and
 visualization of synteny and genome rearrangements in multiple organisms.
-BMC Bioinformatics 8, 82 (2007). https://doi.org/10.1186/1471-2105-8-82
+BMC Bioinformatics. 2007 Mar 8;8:82. doi: 10.1186/1471-2105-8-82.
+PMID: 17343765; PMCID: PMC1821339.
 
-\bibitem{ARTICLE1} Liu, D., Hunt, M. \& Tsai, I.J. Inferring synteny between
-genome assemblies: a systematic evaluation. BMC Bioinformatics 19, 26 (2018).
-https://doi.org/10.1186/s12859-018-2026-4
-
-\bibitem{ARTICLE2} Lallemand, T.; Leduc, M.; Landès, C.; Rizzon, C.; Lerat, E.
-An Overview of Duplicated Gene Detection Methods: Why the Duplication Mechanism
-Has to Be Accounted for in Their Choice. Genes 2020, 11, 1046.
-https://doi.org/10.3390/genes11091046
+\bibitem{SYMAP} Soderlund C, Nelson W, Shoemaker A, Paterson A. SyMAP: A system
+for discovering and viewing syntenic regions of FPC maps. Genome Res. 2006
+Sep;16(9):1159-68. doi: 10.1101/gr.5396706. PMID: 16951135; PMCID: PMC1557773.
 
 \bibitem{R} R Core Team (2022).
 R: A language and environment for statistical computing. R Foundation
@@ -864,8 +898,30 @@ R package version 3.10.0.
 \bibitem{MM_ANNOT} Carlson M (2022). org.Mm.eg.db: Genome wide annotation for
 Mouse. R package version 3.15.0.
 
-\bibitem{R_TRACK} M. Lawrence, R. Gentleman, V. Carey: "rtracklayer: an {R}
-package for interfacing with genome browsers". Bioinformatics 25:1841-1842.
+\bibitem{REF_GENE} Team BC, Maintainer BP (2019).
+TxDb.Drerio.UCSC.danRer11.refGene: Annotation package for TxDb object(s).
+R package version 3.4.6.
+
+\bibitem{DR_ANNOT} Carlson M (2019). org.Dr.eg.db: Genome wide annotation for
+Zebrafish. R package version 3.8.2.
+
+\bibitem{DPLYR} Hadley Wickham, Romain François, Lionel Henry and Kirill Müller
+(2018). dplyr: A Grammar of Data Manipulation. R package version 0.7.6.
+https://CRAN.R-project.org/package=dplyr
+
+\bibitem{GRANGES} Lawrence M, Huber W, Pagès H, Aboyoun P, Carlson M,
+Gentleman R, Morgan M, Carey V (2013). “Software for Computing and Annotating
+Genomic Ranges.” PLoS Computational Biology, 9.
+doi: 10.1371/journal.pcbi.1003118,
+http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1003118.
+
+\bibitem{BIOSTRINGS} Pagès H, Aboyoun P, Gentleman R, DebRoy S (2022).
+Biostrings: Efficient manipulation of biological strings. R package version
+2.66.0, https://bioconductor.org/packages/Biostrings.
+
+\bibitem{BSGENOME} Pagès H (2023). BSgenome: Software infrastructure for
+efficient representation of full genomes and their SNPs. R package version
+1.66.2, https://bioconductor.org/packages/BSgenome.
 
 \bibitem{HOCOMOCO} HOCOMOCO: towards a complete collection of transcription
 factor binding models for human and mouse via large-scale ChIP-Seq analysis
