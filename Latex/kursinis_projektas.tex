@@ -129,8 +129,8 @@ ląstelių ChIP sekoskaitos duomenimis.
     \item Nustatyti, kokia mėginių pikų dalis priklauso sintenijos blokams;
     \item Anotavus pikus nustatyti pikus atitinkančius genus \emph{Danio rerio}
     genome;
-    \item Patikrinti, ar \emph{Danio rerio} genome nustatytų genų promotoriuose
-    galimas Tbx5 transkripcijos faktoriaus prisijungimas.
+    \item Patikrinti, ar nustatytose \emph{Danio rerio} genomo sekose galimas
+    Tbx5 transkripcijos faktoriaus prisijungimas.
 \end{itemize}
 
 \newpage
@@ -220,12 +220,11 @@ lentelėje.
 \subsection{Sintenijos bloko apibūdinimas}
 
 \textbf{Sintenijos blokas} - tarp skirtingų genomų identifikuojami chromosomų
-regionai, kuriems būdingi bendri homologiniai genai, išsidėstę nebūtinai
-vienoda tvarka. Sintenijos blokai neretai gali būti vadinami kolineariais
-blokais. Pastarieji blokai nuo sintenijos blokų skiriasi tik tuo, kad
-kolineariesiems blokams būdingas identiškas genų išsidėstymas. Žemiau
-pateikiamame pirmame paveiksle (1 pav.) vaizduojami galimi sintenijos blokų
-tipai:
+regionai, kuriems būdingi bendri homologiniai genai, išsidėstę nebūtinai vienoda
+tvarka. Sintenijos blokai neretai gali būti vadinami kolineariais blokais.
+Pastarieji blokai nuo sintenijos blokų skiriasi tik tuo, kad kolineariesiems
+blokams būdingas identiškas genų išsidėstymas. Žemiau pateikiamame pirmame
+paveiksle (1 pav.) pavaizduoti galimi sintenijos blokų tipai:
 
 \begin{figure}[htb]
     \begin{center}
@@ -239,7 +238,7 @@ tipai:
     \end{center}
 \end{figure}
 
-Paveiksle vaizduojamuose blokuose yra po tris ortologinius genus (inkarus):
+Paveiksle pavaizduotuose blokuose yra po tris ortologinius genus (inkarus):
 \begin{enumerate}
     \item \textbf{A blokas:} blokas tarp vienoda tvarka išsidėsčiusių
     ortologinių genų;
@@ -249,12 +248,12 @@ Paveiksle vaizduojamuose blokuose yra po tris ortologinius genus (inkarus):
     neortologiniai genai.
 \end{enumerate}
 
-\emph{Synteny} blokų taikymas leidžia tirti skirtingų organizmų sąsajas ir
-genomų evoliuciją, vykstant genomų persitvarkymo procesams. Atliekant šių
-blokų analizę galima rekonstruoti filogenetinius ir filogenominius
-medžius\cite{PHYLO_REF}, siekiant išsiaiškinti bendrą tiriamų organizmų kilmę.
-Taip pat konservatyvių genų blokų nustatymas tarp skirtingų organizmų genomų
-gali indikuoti funkcines genų produktų (baltymų) sąsajas\cite{FUNC_REF}.
+Sintenijos blokų paieška leidžia tirti skirtingų organizmų sąsajas ir genomų
+evoliuciją, vykstant genomų persitvarkymo procesams. Atliekant šių blokų analizę
+galima rekonstruoti filogenetinius ir filogenominius medžius\cite{PHYLO_REF},
+siekiant išsiaiškinti bendrą tiriamų organizmų kilmę. Taip pat konservatyvių
+genų blokų nustatymas tarp skirtingų organizmų genomų gali indikuoti funkcines
+genų produktų (baltymų) sąsajas\cite{FUNC_REF}.
 
 \newpage
 
@@ -287,7 +286,7 @@ metodai išskaidyti pagal lyginamų genomų giminingumą:
 \end{figure}
 
 \subsubsection{Giminingų organizmų genomų lyginimas}
-Lyginant genomus, priklausančius itin giminingiems organizmams, \emph{synteny}
+Lyginant genomus, priklausančius itin giminingiems organizmams, sintenijos
 blokai gali būti identifikuojami taikant įrankius, paremtus DNR sekų
 išlyginimais, nes genomų sekų atitikimo laipsnis yra didelis (didelė dalis
 nukleotidų sutampa).
@@ -377,7 +376,7 @@ Taikant skirtingus grafų tipus tiriamos vidinės genomo struktūros, jog būtų
 identifikuoti sintenijos blokai. Šiomis struktūromis gali būti: iš eilės
 einantys ir tarp dviejų genomų sutampantys genų sekų blokai, tarp kurių nėra
 tarpų ir kuriems būdinga vienoda kryptis abiejuose genomuose; mikroblokai -
-blokai tarp kurių gali būti tarpų; trumpi ciklai, kurie įrodo, kad genomas
+blokai, tarp kurių gali būti tarpų; trumpi ciklai, kurie įrodo, kad genomas
 pakito, vykstant persitvarkymo procesams.
 
 \newpage
@@ -386,10 +385,11 @@ pakito, vykstant persitvarkymo procesams.
 % KONKREČIŲ ĮRANKIŲ VEIKIMO APRAŠYMAI
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Taikyto \textbf{Cinteny} įrankio metodo aprašymas}
+\section{Taikytų įrankių metodų aprašymai}
+\subsection{\emph{Cinteny} įrankis}
 Siekiant efektyviai reprezentuoti linijinę genomų markerių tvarką šiame įrankyje
 implementuota išplėsta trejetainio paieškos medžio struktūra (angl.
-\emph{ternary search tree} (TST)). Ši struktūra išplėsta, pavaizdavus
+\emph{ternary search tree} (TST)). Ši struktūra išplėsta, pavaizdavus 
 „perėjimus“ tarp medžio lapų. Šie „perėjimai“ atitinka linijinius genomo
 markerių „perėjimus“. Šie markeriai gali būti apibūdinti kaip ortologiniai
 (homologiniai) genai.
@@ -403,26 +403,24 @@ markerių „perėjimus“. Šie markeriai gali būti apibūdinti kaip ortologin
     \end{center}
 \end{figure}
 
-Pateiktame paveiksle vaizduojama TST medžio struktūra su „perėjimais“ keliems
+Pateiktame paveiksle pavaizduota TST medžio struktūra su „perėjimais“ keliems
 genams iš žmogaus, pelės ir žiurkės genomų. Paveiksle viršūnės (apskritimai)
 atitinka genų simbolius, medžio lapai (elipsės) atitinka homologinę grupę.
-Individualūs genai (meta viršūnės), priklausantys kiekvienai homologinei
-grupei, atvaizduoti po medžio lapais. Linijiniai perėjimai sukonstruoti,
-sujungus meta viršūnes ta tvarka, kuria genai nustatyti chromosomose.
+Individualūs genai (meta viršūnės), priklausantys kiekvienai homologinei grupei,
+atvaizduoti po medžio lapais. Linijiniai perėjimai sukonstruoti, sujungus meta
+viršūnes ta tvarka, kuria genai nustatyti chromosomose.
 
 Konservatyvių genų blokai, išlaikantys savo eiliškumą, yra agreguojami į
 didesnius blokus, neįtraukiant blokų, kurie gauti atlikus sekų
 mikropertvarkymus. Keičiant įrankio parametrus (minimalų sintenijos blokų
-ilgį, maksimalų tarpą tarp agreguotų blokų ir minimalų genų (markerių) skaičių
+ilgį, maksimalų tarpą tarp agreguotų blokų ir minimalų genų - markerių - skaičių
 bloke) gali būti gauti skirtingi sintenijos blokai.
-
 
 Šios hibridinės struktūros taikymas leidžia atlikti genų paiešką per logaritminį
 laiką, įvardinti visus galimus ortologus bei pereiti visus genų perėjimus iš 5'
 galo link 3' chromosomos galo arba atvirkščiai. Struktūrą realizuojantis
 algoritmo kompleksiškumas yra $ N\log_{10}N $, kur N skaičius nurodo genome
-nustatytų genų skaičių, todėl šį metodą galima taikyti ir dideliems (didelį
-bazių porų skaičių turintiems) genomams.
+nustatytų genų skaičių, todėl šį metodą galima taikyti ir dideliems genomams.
 
 \newpage
 
