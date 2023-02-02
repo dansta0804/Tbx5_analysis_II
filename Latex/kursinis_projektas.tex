@@ -350,14 +350,14 @@ atsirasti tokių sekų fragmentų, kurie iš tiesų neturėtų priklausyti bloku
 
 \subsubsection*{Godžiųjų algoritmų taikymo metodas}
 Realizuojant šį metodą yra konstruojamos kolinearių genų porų grandinės. Metodo
-įgyvendinimui atliekama daug daugiau skaičiavimų nei aprašytas homologinių genų
-matricos sudarymo metodas. Įrankiuose, kurie remiasi šiuo metodu, yra naudojami
-\emph{BLASTP} rezultatai. Jais remiantis galima taikyti dinaminį programavimą
-ir sukonstruoti kolinearių genų porų grandines, turinčias maksimalias grandinės
-vertes (angl. \emph{chainscore}). Taikant šį metodą sintenijos blokus sudaro
-kolineariose pozicijose esančių unikalių homologinių sekų (sintenijos inkarų)
-genai bei tarp jų išsidėstę nehomologiniai genai, kurie evoliucijos eigoje buvo
-paveikti mutacijų.
+į\-gy\-ven\-di\-ni\-mui atliekama daug daugiau skaičiavimų nei aprašytame
+homologinių genų matricos sudarymo metode. Įrankiuose, kurie remiasi šiuo
+metodu, yra naudojami \emph{BLASTP} rezultatai. Jais remiantis galima taikyti
+dinaminį programavimą ir sukonstruoti kolinearių genų porų grandines, turinčias
+maksimalias grandinės vertes (angl. \emph{chainscore}). Taikant šį metodą
+sintenijos blokus sudaro kolineariose pozicijose esančių unikalių homologinių
+sekų (sintenijos inkarų) genai bei tarp jų išsidėstę nehomologiniai genai, kurie
+evoliucijos eigoje buvo paveikti mutacijų.
 
 \textbf{Metodo privalumai:} Taikant šį metodą galima lyginti daug skirtingų
 genomų ir analizuoti genų pokyčius chromosomose. Taip pat genomų kolinearių
@@ -465,11 +465,12 @@ pavyzdys pateiktas 5 paveiksle (pažymėta mėlynais stačiakampiais).
 
 \section{Tyrimo metodai}
 Homologijos tarp \emph{Mus musculus} ir \emph{Danio rerio} organizmų tyrimo
-analizė atlikta su R programavimo kalba\cite{R} (4.2.2 versija)
+analizė atlikta su R programavimo kalba\cite{R} (4.2.2 versija).
 
 Tarpiniai analizės rezultatai pateikti, naudojant komandinės eilutės įrankį
 Scikick\cite{SCIK} (0.2.0 versija). Naudojant šį įrankį buvo apjungti keli Rmd
-failai ir gauta HTML formato ataskaita \hyperref[Priedas]{(6 skyriaus priedas)}.
+formato failai ir gauta HTML formato ataskaita \hyperref[Priedas]{(6 skyriaus
+priedas)}.
 
 \subsection{Sintenijos blokų nustatymas ir vizualizavimas}
 Sintenijos blokai tarp \emph{Mus musculus} ir \emph{Danio rerio} organizmų
@@ -477,11 +478,11 @@ nustatyti ir vizualizuoti pasinaudojus internetinės
 \emph{Synteny Portal}\cite{SYN_PORT} aplikacijos \emph{SynCircos} įrankiu.
 
 \subsection{Sintenijos blokų pozicijų gavimas}
-Šiame analizės etape sintenijos blokai buvo gauti pasinaudojus Cinteny
+Šiame analizės etape sintenijos blokai buvo gauti, pasinaudojus \emph{Cinteny}
 įrankiu, kurio pateiktoje išvestyje buvo nurodytos pirmojo genomo
 \emph{Mus musculus} genominės pozicijos ir antrojo genomo \emph{Danio rerio}
-genominės pozicijos, kuriose abiejų genomų sekų fragmentai sutapo - gauti
-sintenijos blokai.
+genominės pozicijos, kuriose abiejų genomų sekų fragmentai sutapo arba turėjo
+labai panašią struktūrą - gauti sintenijos blokai.
 
 \subsection{Pikų persidengimas su sintenijos blokais}
 Sintenijos blokų failas buvo apdorotas R programoje, kurioje apskaičiuota
@@ -501,16 +502,16 @@ programavimo kalbos bibliotekos \emph{ChIPseeker}\cite{CHIP1, CHIP2} funkcija
 bibliotekas.
 
 \subsection{Sintenijos blokams priklausančių genų nustatymas}
-Sintenijos blokams priklausančių \emph{Danio rerio} genų nustatytymui panaudota
+Sintenijos blokams priklausančių \emph{Danio rerio} genų nustatymui panaudota
 \emph{dataframe} duomenų struktūra. Ši struktūra gauta, pasinaudojus
-\emph{genes()} funkcija, kuriai perduotas visų žinomų \emph{Danio rerio} genų
-pozicijų ir kitos informacijos apie genus objektas
-\emph{TxDb.Drerio.UCSC.danRer11.refGene}\cite{REF_GENE}. Gautam genų duomenų
+\emph{genes()} funkcija, kuriai perduotas visų žinomų zebražuvės genų pozicijų
+ir kitos informacijos apie genus objektas
+\emph{TxDb.Drerio.UCSC.danRer11.\-refGene}\cite{REF_GENE}. Gautam genų duomenų
 rinkiniui pritaikyta \emph{mapIds()} funkcija, kuri kiekvienam genui priskyrė
 atitinkamą geno simbolį, remiantis žinomu \emph{EntrezID} identifikatoriumi iš
-\emph{org.Dr.eg.db} bibliotekos objekto.
+\emph{org.Dr.eg.db}\cite{DR_ANNOT} bibliotekos objekto.
 
-Nustačius visų žinomų zebražuvės genų simbolius, nustatyta, kurie genai sutampa
+Nustačius visų žinomų zebražuvės genų simbolius nustatyta, kurie genai sutampa
 su \emph{Mus musculus} genais, pasinaudojus standartinės R bibliotekos
 \emph{dplyr}\cite{DPLYR} funkcijomis. Gautas mažesnis genų rinkinys perduotas
 bibliotekos \emph{GenomicRanges}\cite{GRANGES} funkcijai
@@ -528,14 +529,14 @@ Turint abiejų genomų sutampančių genų objektus, panaudota
 bibliotekos funkcija \emph{getSeq()}, kuriai buvo perduoti analizuojamo genomo
 \emph{BSenome}\cite{BSGENOME} klasės objektai
 (\emph{BSgenome.Mmusculus.UCSC.mm10} ir \emph{BSgenome.Drerio.UCSC.danRer11})
-bei genų pozicijų GRanges objektai. Funkcija grąžino pozicijas atitinkančias
-nukleotidų sekas.
+bei genų pozicijų \emph{GRanges} objektai. Funkcija grąžino pozicijas
+atitinkančias nukleotidų sekas.
 
 Siekiant įvertinti, ar lyginamų naminės pelės ir zebražuvės genomų sekose gali
 prisijungti kardiogeninis Tbx5 transkripcijos faktorius, buvo skaičiuojami Tbx5
 transkripcijos faktoriaus pozicinės svorių matricos (PWM) atitikimai sekose,
 naudojant funkciją \emph{countPWM()}. Pozicinė svorių matrica atsisiųsta iš
-iš HOCOMOCO[17] (11.0 versija) duomenų bazės \emph{Homo sapiens} ir
+HOCOMOCO\cite{HOCOMOCO} (11.0 versija) duomenų bazės \emph{Homo sapiens} ir
 \emph{Mus musculus} organizmų transkripcijos faktorių kolekcijos.
 
 Kiekvieno organizmų geno PWM matricos atitikimai vizualizuoti taškine diagrama,
@@ -551,7 +552,7 @@ pritaikius \emph{ggplot} funkciją \emph{geom\_point()}.
 \subsection{Sintenijos blokų nustatymas ir vizualizavimas}
 
 Sintenijos blokai tarp \emph{Mus musculus} ir \emph{Danio rerio} organizmų
-genomų vizualizuoti \emph{circo} diagramoje (3 pav.).
+genomų vizualizuoti \emph{circo} diagramoje (6 pav.).
 
 \begin{figure}[htb]
     \begin{center}
@@ -563,7 +564,7 @@ genomų vizualizuoti \emph{circo} diagramoje (3 pav.).
     \end{center}
 \end{figure}
 
-Remiantis sukurta diagrama, galima pastebėti, kad tarp viso naminės pelės
+Remiantis sukurta diagrama galima pastebėti, kad tarp viso naminės pelės
 chromosomų rinkinio nebuvo nei vienos chromosomos, kurios fragmentai nebūtų
 nustatyti zebražuvės genome. Nepaisant to, naminės pelės fragmentų
 pozicijos akivaizdžiai nesutapo su zebražuvės genome nustatytomis tų pačių
@@ -586,27 +587,27 @@ neatsižvelgus į sekų fragmentų ilgį.
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{../Figures/Synteny_Chr_MM.png}
-        \caption*{\centering\small\textbf{a) Fragmentų skaičius \emph{Mus musculus} chromosomose}}
+        \caption*{\centering\small\textbf{a) Fragmentų skaičius \emph{M. musculus} chromosomose}}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{../Figures/Synteny_Chr_DR.png}
-        \caption*{\centering\small\textbf{b) Fragmentų skaičius \emph{Danio rerio} chromosomose}}
+        \caption*{\centering\small\textbf{b) Fragmentų skaičius \emph{D. rerio} chromosomose}}
     \end{subfigure}
     \caption*{\small\textbf{7 pav. Sekų fragmentų pasiskirstymas chromosomose}}
     \label{fig:birds}
 \end{figure}
 
 Pateiktoje stulpelinėje diagramoje išsiskiria trys chromosomos (\emph{Chr1},
-\emph{Chr2} ir \emph{Chr11}). Šių naminės pelės chromosomų fragmentai
+\emph{Chr2} ir \emph{Chr11}) (7 pav. a)). Šių naminės pelės chromosomų fragmentai
 pasitaikydavo zebražuvės genome dažniausiai. Atsižvelgus į šių chromosomų
 dydžius, kur vienuolikta chromosoma yra mažesnė nei kitos išskirtos chromosomos
 (ją sudaro 122 Mbp\cite{MGI}), buvo nustatyta sąlyginai didelė dalis fragmentų,
 turinčių homologijų su zebražuvės genomo sekų fragmentais.
 
 Patikrinus, kiek yra \emph{Danio rerio} chromosomų fragmentų, kurie patenka į
-sintenijos blokus, gauti rezultatai vizualizuoti ketvirto paveikslo b) dalyje.
+sintenijos blokus, gauti rezultatai vizualizuoti septinto paveikslo b) dalyje.
 Galima pastebėti, kad sintenijos blokams priklausančių chromosomų fragmentų
 skaičius buvo itin nevienodas, palyginus su \emph{Mus musculus} rezultatais.
 Chromosomose, kuriose esantys fragmentai buvo dažniausiai homologiški naminės
@@ -626,15 +627,15 @@ ir zebražuvės devintos chromosomų.
     \begin{center}
         \includegraphics[width=0.8\linewidth]{../Figures/Blocks_Chr2_9.png}
         \vspace{-1\baselineskip}
-        \caption*{\small\textbf{8 pav. Sintenijos blokai tarp M. musculus ir D.
-        rerio chromosomų}}
+        \caption*{\small\textbf{8 pav. Sintenijos blokai tarp \emph{M. musculus}
+        ir \emph{D. rerio} chromosomų}}
         \label{fig:birds}
     \end{center}
 \end{figure}
 
 Antra ir devinta naminės pelės ir zebražuvės chromosomos buvo patyrinėtos
-detaliau. Devintame paveiksle pavaizduoti žalia spalva pažymėti regionai,
-kuriems būdingas sekų panašumas.
+detaliau. Devintame paveiksle žalia spalva pažymėti chromosomų regionai, kuriems
+būdingas sekų panašumas.
 
 \begin{figure}[htb]
     \begin{center}
@@ -648,8 +649,8 @@ kuriems būdingas sekų panašumas.
 \newpage
 
 Remiantis gautu rezultatu buvo nustatyti 86 genai, kurie būdingi abiems
-organizmams ir kurių sekų panašumas yra aukštas. Pavyzdžiui, sp9 genas, kurio
-sekų panašumas abiejuose organizmuose siekia 72\%, tačiau galima pastebėti, kad
+organizmams ir kurių sekų panašumas yra aukštas. Pavyzdžiui, \emph{sp9} genas,
+kurio sekų panašumas abiejuose organizmuose siekia 72\%. Galima pastebėti, kad
 evoliucijos eigoje naminės pelės ir zebražuvės geno sekos mutavo - įvyko
 taškinės mutacijos, pasireiškė delecijos bei insercijos, tačiau palyginus
 išlygintas sekas, pastebėta, kad sekos yra labai panašios.
@@ -658,8 +659,7 @@ išlygintas sekas, pastebėta, kad sekos yra labai panašios.
     \begin{center}
         \includegraphics[width=1\linewidth]{../Figures/Sp9_gene_alignment.png}
         \vspace{-1\baselineskip}
-        \caption*{\small\textbf{10 pav. Sintenijos blokai tarp M. musculus ir D.
-        rerio chromosomų}}
+        \caption*{\small\textbf{10 pav. \emph{Sp9} geno sekų išlyginimas}}
         \label{fig:birds}
     \end{center}
 \end{figure}
@@ -669,13 +669,13 @@ išlygintas sekas, pastebėta, kad sekos yra labai panašios.
 \subsection{Sintenijos blokų dalis pikuose}
 \emph{Cinteny} įrankio pateikta sintenijos blokų informacija buvo panaudota,
 siekiant išsiaiškinti, kokia pikų dalis patenka į įrankio nustatytų sintenijos
-blokų intervalus, kurių buvo nustatyta 1403. Penktame paveiksle (5 pav.)
+blokų intervalus, kurių buvo nustatyta 1403. Vienuoliktame paveiksle (11 pav.)
 pavaizduota, kiek kiekviename analizuotame naminių pelių širdžių ląstelių
 mėginyje nustatyta pikų, kurie patenka į sintenijos blokų intervalą.
 
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.8\linewidth]{../Figures/Synteny_blocks_peaks.png}
+        \includegraphics[width=0.7\linewidth]{../Figures/Synteny_blocks_peaks.png}
         \vspace{-2\baselineskip}
         \caption*{\small\textbf{11 pav. Sintenijos blokų procentinė dalis}}
         \label{fig:birds}
@@ -688,9 +688,9 @@ blokų skaičius (34.84\%), palyginus su bendru pikų skaičiumi, būdingas
 ląstelės buvo veiktos tik Tbx5 kardiogeniniu transkripcijos faktoriumi.
 Mažiausias sintenijos blokų skaičius (33.27\%) nustatytas
 \emph{emb\_fibr\_r3\_3} mėginyje, kuriame pelių embrionų fibroblastų ląstelės
-veiktos GATA4, MEF2C ir Tbx5 transkripcijos faktoriaus, ir mėginyje
-\emph{emb\_fibr\_r1\_1}, kur embrionų fibroblastai veikti pilnu kargdiogeninių
-transkripcijos faktorių komplektu (AHGMT) (33.28\%). Nepaisant to, kad
+veiktos GATA4, MEF2C ir Tbx5 transkripcijos faktorių, ir mėginyje
+\emph{emb\_fibr\_r1\_1}, kur embrionų fibroblastai veikti pilnu kardiogeninių
+trans\-krip\-ci\-jos faktorių komplektu (AHGMT) (33.28\%). Nepaisant to, kad
 pastaruosiuose mėginiuose bendras pikų skaičius skyrėsi daug, bendras sintenijos
 blokams priklausančių pikų procentas skyrėsi vos 0.01\%.
 
@@ -701,8 +701,9 @@ blokams.
 
 \subsection{Pikų anotavimas}
 \subsubsection{Artimiausių TSS nustatymas}
-Šeštame paveiksle pavaizduotoje diagrama nurodyta, kiek unikalių genų buvo
-priskirta kiekvieno mėginio pikams, patenkantiems į sintenijos blokus.
+Dvyliktame paveiksle pavaizduotoje diagramoje nurodyta, kiek unikalių genų buvo
+priskirta kiekvieno mėginio pikams (palyginus su pilnu naminės pelės genų
+rinkiniu), patenkantiems į sintenijos blokus.
 
 \begin{figure}[htb]
     \begin{center}
@@ -714,14 +715,14 @@ priskirta kiekvieno mėginio pikams, patenkantiems į sintenijos blokus.
 \end{figure}
 
 Remiantis diagramos duomenimis pastebėta, kad daugiausiai unikalių genų
-nustatyta \emph{emb\_fibr\_r1\_1} mėginyje (26.53\%). Ankstesniame paveiksle
-(5 pav.) šiame mėginyje buvo nustatyta nedaug sintenijos blokams priklausančių
+nustatyta \emph{emb\_\-fibr\_r1\_1} mėginyje (26.53\%). Ankstesniame paveiksle
+(11 pav.) šiame mėginyje buvo nustatyta nedaug sintenijos blokams priklausančių
 pikų, tačiau nebuvo atsižvelgta į sintenijos blokų ilgį. Gautas rezultatas rodo,
 kad pikai galėjo patekti į ilgesnį sintenijos bloką.
 
 Mažiausiai unikalių genų nustatyta \emph{emb\_fibr\_r4\_4} mėginyje (8.71\%).
 Rezultatas gali rodyti, kad pikai priklausė didesniam sintenijos blokų skaičiui,
-tačiau blokai buvo trumpi.
+tačiau blokai buvo trumpi, todėl į juos nepateko dalis genų.
 
 \subsubsection{Genominių elementų pasiskirstymas}
 Anotuojant mėginių sintenijos blokams priklausančius pikus taip pat buvo
@@ -767,12 +768,13 @@ priklausė mažiau nei 7\% visų mėginių pikų, todėl jie neanalizuoti.
 \end{table}
 
 Remiantis lentelės duomenimis \emph{emb\_fibr\_r4\_4} didžioji mėginio pikų
-dalis priklausė introninėms ir tarpgeninėms sritims, naminių pelių embrionų
+dalis priklausė introninėms ir tarpgeninėms sritims naminių pelių embrionų
 fibroblastų ląsteles paveikus tik Tbx5 transkripcijos faktoriumi. Be to, šiame
-mėginyje nustatytas itin mažas procentas pikų, priklausančių promotorinėms
-sritims. Atsižvelgus į tai, kad to paties eksperimento mėginiai, kuriems taikyti
-skirtingi poveikiai, galima daryti išvadą, kad genominių elementų pasiskirstymo
-procentas priklauso nuo to, kokiais poveikiais veikiamos naminės pelės ląstelės.
+mėginyje nustatytas itin mažas procentas pikų, prik\-lau\-san\-čių promotorinėms
+sritims. Atsižvelgus į tai, kad to paties eksperimento mėginių, kuriems taikyti
+skirtingi poveikiai, pikai priklauso skirtingiems genominiams elementams galima
+daryti išvadą, kad genominių elementų pasiskirstymo procentas priklauso nuo to,
+kokiais poveikiais veikiamos naminės pelės ląstelės.
 
 \newpage
 
@@ -788,8 +790,8 @@ paveiksle.
     \begin{center}
         \includegraphics[width=0.7\linewidth]{../Figures/Unique_genes_DR.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{13 pav. D.rerio sintenijos blokams priklausančių
-        genų dalis}}
+        \caption*{\small\textbf{13 pav. \emph{D.rerio} sintenijos blokams
+        priklausančių genų dalis}}
         \label{fig:birds}
     \end{center}
 \end{figure}
@@ -799,23 +801,25 @@ naminės pelės genais ir priklausančių sintenijos blokams, buvo itin nedaug.
 Palyginus visus mėginių anotuotų pikų genų rinkinius su zebražuvės genų rinkiniu
 bendrų genų dalis buvo mažesnė nei 4\%.
 
+\newpage
+
 \subsection{Transkripcijos faktoriaus prisijungimas zebražuvės sekose}
 Nepaisant mažo bendrų genų tarp \emph{Mus musculus} ir \emph{Danio rerio}
-organizmų buvo patikrinta, ar zebražuvės pozicijose, patenkančiose į sintenijos
-blokus, gali jungtis Tbx5 transkripcijos faktorius. Sekų fragmentų,
-atitinkančių Tbx5 pozicinę svorių matricą, skaičius palygintas su atitikimų
-skaičiumi, gautu Tbx5 transkripcijos faktoriaus pozicinę svorių matricą
-pritaikius naminės pelės sintenijos blokams priklausančioms sekoms.
+organizmų procento, buvo patikrinta, ar zebražuvės genomo pozicijose,
+patenkančiose į sintenijos blokus, gali jungtis Tbx5 transkripcijos faktorius.
+Sekų fragmentų, atitinkančių Tbx5 pozicinę svorių matricą, skaičius palygintas
+su atitikimų skaičiumi, gautu Tbx5 transkripcijos faktoriaus pozicinę svorių
+matricą pritaikius naminės pelės sintenijos blokams priklausančioms sekoms.
 
-Žemiau pateikiamame paveiksle vaizduojamas Tbx5 transkripcijos faktoriaus
-matricos atitikimas \emph{Mus musculus} ir \emph{Danio rerio} sekose.
+Žemiau pateiktame paveiksle pavaizduotas Tbx5 transkripcijos faktoriaus matricos
+atitikimų skaičius \emph{Mus musculus} ir \emph{Danio rerio} sekose.
 
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[width=1\linewidth]{../Figures/PWM_matches_all.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{14 pav. PWM matricos atitikimai M.musculus ir
-        D.rerio sekose}}
+        \caption*{\small\textbf{14 pav. Tbx5 PWM matricos atitikimai
+        \emph{M. musculus} ir \emph{D. rerio} sekose}}
         \label{fig:birds}
     \end{center}
 \end{figure}
@@ -828,8 +832,8 @@ nustatyta daugiau nei 30.
 
 Naminės pelės genuose PWM matricos atitikimų buvo nustatyta mažiau. Be to, sekų
 ilgis buvo mažesnis. Mėginyje \emph{emb\_fibr\_r4\_4} Tbx5 pozicinės svorių
-matricos anotuotų pikų genų atitikimų buvo mažiausiai, todėl tikėtina, kad šiame
-mėginyje Tbx5 transkripcijos faktorius jungtųsi retai.
+matricos atitikimų anotuotų pikų genuose buvo mažiausiai, todėl tikėtina, kad
+šiame mėginyje Tbx5 transkripcijos faktorius jungtųsi rečiau.
 
 % Apibendrinus gautus rezultatus nustatyta sintenijos blokų dalis
 % pikų atžvilgiu buvo maža (neviršijo 20\%), todėl sintenijos blokų paieška
@@ -992,16 +996,17 @@ Nucleic Acids Res. 2019 Jan. 8;47 (D1): D801–D806.
 %%%%%%%%%%%%
 
 \section{Priedas} \label{Priedas}
-
 Priedų sąraše pateikiamos tarpinių rezultatų puslapio, sugeneruoto su Scikick,
-bei Git repozitorijos, kurioje saugomi analizei naudoti duomenų failai,
-parašyti skriptai bei pagrindinė R programa, nuorodos.
+bei Git re\-po\-zi\-to\-ri\-jų, kuriose saugomi analizei naudoti duomenų
+failai ir pagrindinė R programa, nuorodos. Taip pat pateikta kursinio darbo metu
+atliktos analizės Git repozitorijos, kurioje saugomi mėginių ChIP sekoskaitos
+duomenys, nuoroda.
 
 \begin{itemize}
+    \item \textbf{Kursinio darbo Scikick ataskaita: \colorbox{yellow}{ATNAUJINAMA...}}\\
+        \url{https://karklas.mif.vu.lt/\string~dast6577/KursinisDarbas/v2.0/peaks\_MM.html}
     \item \textbf{Kursinio projekto analizės Git repozitorija:}\\
         \url{https://github.com/dansta0804/Tbx5\_analysis\_II.git}
-    \item \textbf{Kursinio darbo Scikick ataskaita:}\\
-        \url{https://karklas.mif.vu.lt/\string~dast6577/KursinisDarbas/v2.0/peaks\_MM.html}
     \item \textbf{Kursinio darbo analizės Git repozitorija:}\\
         \url{https://github.com/dansta0804/Tbx5\_analysis.git}
   \end{itemize}
