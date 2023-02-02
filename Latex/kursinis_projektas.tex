@@ -51,10 +51,10 @@
 
 \vskip 90pt
 \begin{center}
-    {\bf \LARGE Pavadinimas lietuviškai}
+    {\bf \LARGE \colorbox{yellow}{Pavadinimas lietuviškai}}
 \end{center}
 \begin{center}
-    {\bf \Large Pavadinimas angliškai}
+    {\bf \Large \colorbox{yellow}{Pavadinimas angliškai}}
 \end{center}
 \vskip 20pt
 \centerline{\bf \large \textbf{Kursinis projektas}}
@@ -90,6 +90,8 @@
 
 \section*{Santrauka}
 
+\colorbox{yellow}{PILDOMA...}
+
 \hfill \break
 \textbf{Raktiniai žodžiai:} homologija, sintenija, lyginamoji genomika,
     transkripcijos faktorius, Tbx5, \emph{Mus musculus}, \emph{Danio rerio}, R.
@@ -101,6 +103,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section*{Summary}
+
+\colorbox{yellow}{PILDOMA...}
 
 \hfill \break
 \textbf{Keywords:} homology, sinteny, comparative genomics,
@@ -114,6 +118,8 @@
 
 \section{Įvadas}
 \subsection*{Darbo temos aktualumas}
+\colorbox{yellow}{PILDOMA...}
+
 \subsection*{Darbo tikslas}
 
 Nustatyti \emph{Mus musculus} ir \emph{Danio rerio} organizmų homologiją,
@@ -599,19 +605,6 @@ dydžius, kur vienuolikta chromosoma yra mažesnė nei kitos išskirtos chromoso
 (ją sudaro 122 Mbp\cite{MGI}), buvo nustatyta sąlyginai didelė dalis fragmentų,
 turinčių homologijų su zebražuvės genomo sekų fragmentais.
 
-Chromosomos, kurių sekų fragmentai nustatyti zebražuvės genome, buvo
-vizualizuoti su \emph{SyMAP} įrankiu.
-
-\begin{figure}[htb]
-    \begin{center}
-        \includegraphics[width=0.9\linewidth]{../Figures/Blocks_Chr2_9.png}
-        \vspace{-1\baselineskip}
-        \caption*{\small\textbf{6 pav. Sintenijos blokų \emph{circo}
-        diagrama}}
-        \label{fig:birds}
-    \end{center}
-\end{figure}
-
 Patikrinus, kiek yra \emph{Danio rerio} chromosomų fragmentų, kurie patenka į
 sintenijos blokus, gauti rezultatai vizualizuoti ketvirto paveikslo b) dalyje.
 Galima pastebėti, kad sintenijos blokams priklausančių chromosomų fragmentų
@@ -620,6 +613,56 @@ Chromosomose, kuriose esantys fragmentai buvo dažniausiai homologiški naminės
 pelės genomui (\emph{Chr9} ir \emph{Chr17}), buvo nustatyta po 76 sintenijos
 blokui priklausančius fragmentus. Mažiausias sintenijos blokui priklausančių
 fragmentų skaičius nustatytas 22 chromosomoje (28 fragmentai).
+
+\emph{Mus musculus} ir \emph{Danio rerio} chromosomos, kurių sekų fragmentai
+dažniausiai pateko į sintenijos blokus, vizualizuoti su \emph{SyMAP} įrankiu.
+Aštuntame paveiksle žalia spalva išskirti sintenijos blokai. Daugiausiai
+sintenijos blokų, kurie buvo ilgiausi, nustatyta tarp naminės pelės antros
+ir zebražuvės devintos chromosomų.
+
+\newpage
+
+\begin{figure}[htb]
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{../Figures/Blocks_Chr2_9.png}
+        \vspace{-1\baselineskip}
+        \caption*{\small\textbf{8 pav. Sintenijos blokai tarp M. musculus ir D.
+        rerio chromosomų}}
+        \label{fig:birds}
+    \end{center}
+\end{figure}
+
+Antra ir devinta naminės pelės ir zebražuvės chromosomos buvo patyrinėtos
+detaliau. Devintame paveiksle pavaizduoti žalia spalva pažymėti regionai,
+kuriems būdingas sekų panašumas.
+
+\begin{figure}[htb]
+    \begin{center}
+        \includegraphics[width=0.4\linewidth]{../Figures/Chr2_9_synteny.png}
+        \vspace{-1\baselineskip}
+        \caption*{\small\textbf{9 pav. Homologiškų regionų vizualizavimas}}
+        \label{fig:birds}
+    \end{center}
+\end{figure}
+
+\newpage
+
+Remiantis gautu rezultatu buvo nustatyti 86 genai, kurie būdingi abiems
+organizmams ir kurių sekų panašumas yra aukštas. Pavyzdžiui, sp9 genas, kurio
+sekų panašumas abiejuose organizmuose siekia 72\%, tačiau galima pastebėti, kad
+evoliucijos eigoje naminės pelės ir zebražuvės geno sekos mutavo - įvyko
+taškinės mutacijos, pasireiškė delecijos bei insercijos, tačiau palyginus
+išlygintas sekas, pastebėta, kad sekos yra labai panašios.
+
+\begin{figure}[htb]
+    \begin{center}
+        \includegraphics[width=1\linewidth]{../Figures/Sp9_gene_alignment.png}
+        \vspace{-1\baselineskip}
+        \caption*{\small\textbf{10 pav. Sintenijos blokai tarp M. musculus ir D.
+        rerio chromosomų}}
+        \label{fig:birds}
+    \end{center}
+\end{figure}
 
 \newpage
 
@@ -634,7 +677,7 @@ mėginyje nustatyta pikų, kurie patenka į sintenijos blokų intervalą.
     \begin{center}
         \includegraphics[width=0.8\linewidth]{../Figures/Synteny_blocks_peaks.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{8 pav. Sintenijos blokų procentinė dalis}}
+        \caption*{\small\textbf{11 pav. Sintenijos blokų procentinė dalis}}
         \label{fig:birds}
     \end{center}
 \end{figure}
@@ -665,7 +708,7 @@ priskirta kiekvieno mėginio pikams, patenkantiems į sintenijos blokus.
     \begin{center}
         \includegraphics[width=0.7\linewidth]{../Figures/Unique_genes_MM.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{9 pav. Anotuotų pikų dalis mėginiuose}}
+        \caption*{\small\textbf{12 pav. Anotuotų pikų dalis mėginiuose}}
         \label{fig:birds}
     \end{center}
 \end{figure}
@@ -745,7 +788,7 @@ paveiksle.
     \begin{center}
         \includegraphics[width=0.7\linewidth]{../Figures/Unique_genes_DR.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{10 pav. D.rerio sintenijos blokams priklausančių
+        \caption*{\small\textbf{13 pav. D.rerio sintenijos blokams priklausančių
         genų dalis}}
         \label{fig:birds}
     \end{center}
@@ -771,7 +814,7 @@ matricos atitikimas \emph{Mus musculus} ir \emph{Danio rerio} sekose.
     \begin{center}
         \includegraphics[width=1\linewidth]{../Figures/PWM_matches_all.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{11 pav. PWM matricos atitikimai M.musculus ir
+        \caption*{\small\textbf{14 pav. PWM matricos atitikimai M.musculus ir
         D.rerio sekose}}
         \label{fig:birds}
     \end{center}
@@ -802,6 +845,7 @@ mėginyje Tbx5 transkripcijos faktorius jungtųsi retai.
 %%%%%%%%%%%%
 
 \section{Išvados}
+\colorbox{yellow}{PILDOMA...}
 
 \newpage
 
