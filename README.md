@@ -1,4 +1,4 @@
-# Homology between *Mus musculus* and *Danio rerio* determination.
+# Homology between *M. musculus* and *D. rerio* determination.
 
 The repository stores files that were used to continue performing Tbx5
 transcription factor analysis with selected ***Mus musculus*** heart cells.
