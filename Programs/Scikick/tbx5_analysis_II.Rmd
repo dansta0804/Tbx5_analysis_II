@@ -5,14 +5,10 @@ This part of the work describes the analysis that was performed to
 determine whether the search of synteny blocks is a suitable method that is
 used to evaluate homology between *Mus musculus* and *Danio rerio* genomes.
 
-The main purpose of the analysis was to determine the similarity between the
-genomes by using various bioinformatical tools in order to identify synteny
-blocks between aforementioned organisms.
-
 - The samples that were used in the analysis are described in the previous
-    analysis and can be viewed [here](file:///home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/Tbx5_analysis_II/Programs/report/out_html/samples.html).
+    analysis and can be viewed [here](https://karklas.mif.vu.lt/~dast6577/KursinisProjektas/samples.html);
 - The results of the Tbx5 transcription factor abundance in *Mus musculus*
-    organism analysis can be found [here](file:///home/daniele/Desktop/IV_course/I_semester/Kursinis_projektas/Tbx5_analysis_II/Programs/report/out_html/peaks_MM.html).
+    organism analysis can be found [here](https://karklas.mif.vu.lt/~dast6577/KursinisProjektas/tbx5_analysis_I.html).
 
 ```{r Libraries, echo=FALSE, message=FALSE, warning=FALSE}
 library(pacman)
@@ -46,7 +42,7 @@ samples <- read.csv(file = paste0(INTER_FILES, "sample_key.csv"))
 # Getting synteny block positions and chromosome number for mouse:
 synteny_chr_pos <<- synteny_blocks[, c(7:8, 6, 3:4, 2)]
 colnames(synteny_chr_pos) <- c("startpos_MM", "endpos_MM", "chr_MM",
-                                "startpos_DR", "endpos_DR", "chr_DR")
+                               "startpos_DR", "endpos_DR", "chr_DR")
 
 # Creating a dataframe that stores data:
 df_mm <- data.frame(chr = paste0("chr", c(synteny_chr_pos[, 3])),
@@ -102,7 +98,7 @@ bold <- ifelse(chr_syn$Freq >= 100, 2, 0)
 # nolint end
 ```
 
-```{r Synteny_Chr_MM_Plot, fig.width = 4, fig.height = 2, fig.align = "center"}
+```{r Synteny_Chr_MM_Plot, out.width="60%", out.height="60%", fig.align = "center"}
 # nolint start
 plot0 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) + 
     geom_bar(width = 0.8, size = 0.2, fill = "#be800d", color = "#523a0f",
@@ -122,9 +118,11 @@ plot0 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) +
                                             linetype = "longdash"),
           panel.grid.minor.x = element_line(colour = "#cab5b5", size = 0.2,
                                             linetype = "longdash"),
-          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 11,
-                                     face = "bold", color = "black"),
-          axis.text.y = element_text(size = 11, face = "bold", color = "black"),
+          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1,
+                                     size = 11, face = "bold",
+                                     color = "black"),
+          axis.text.y = element_text(size = 11, face = "bold",
+                                     color = "black"),
           axis.title.x = element_text(size = 2),
           axis.title.y = element_text(size = 16),
           plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -162,7 +160,7 @@ bold <- ifelse(chr_syn$Freq >= 70, 2, 0)
 # nolint end
 ```
 
-```{r Synteny_Chr_DR_Plot, fig.width = 5, fig.height = 4, fig.align = "center"}
+```{r Synteny_Chr_DR_Plot, out.width="60%", out.height="60%", fig.align = "center"}
 # nolint start
 plot1 <- ggplot(chr_syn, aes(x = Chr, y = Freq)) + 
     geom_bar(width = 0.8, size = 0.2, fill = "#611d02", color = "#310f01",
@@ -202,7 +200,7 @@ plot1
 
 In comparison with the *Mus musculus* results, the number of fragments in
 chromosomes apparently varies between the chromosomes. According to the diagram,
-the greatest number of fragments has been detected in the 5, 7, 9 and 17
+the greatest number of fragments has been detected in the 5, 7, 9, 13 and 17
 chromosomes (75, 74, 76, 74 and 76 fragments, respectively). The smallest number
 of fragments has been detected in the 22nd chromosome (28 fragments).
 
@@ -238,7 +236,7 @@ for (i in 1:length(grl)) {
 # nolint end
 ```
 
-```{r Synteny_Percentage_Plot, fig.width = 5, fig.height = 4, fig.align = "center"}
+```{r Synteny_Percentage_Plot, out.width="60%", out.height="60%", fig.align = "center"}
 # nolint start
 plot2 <- ggplot(df_final, aes(fill = indic, y = as.numeric(value), x = names)) + 
     geom_bar(width = 1, size = 0.2, colour = "#3f2704", stat = 'identity',
@@ -249,7 +247,8 @@ plot2 <- ggplot(df_final, aes(fill = indic, y = as.numeric(value), x = names)) +
               fontface = 2), vjust = -1.2, hjust = -0.5, size = 5) +
     labs(title = "", x = "", y = "") + 
     scale_fill_manual(values = c("#d37f02", "#f3bc47"),
-                      labels = c("Pikų skaičius", "Synteny blokų skaičius")) +
+                      labels = c("Pikų skaičius",
+                                 "Sintenijos blokų skaičius")) +
     scale_y_continuous(labels = label_number(suffix = " K", scale = 1e-3)) +
     guides(fill = guide_legend(title = "Spalvų paaiškinimas")) +
     theme(panel.background = element_rect(fill = "#eeeef1",
@@ -282,7 +281,7 @@ plot2
 
 ### Peak annotation
 
-```{r Peak_Annotations_MM, echo=FALSE, message=FALSE, warning=FALSE}
+```{r Peak_Annotations_MM, message=FALSE, warning=FALSE, include=FALSE}
 # nolint start
 mm_known_genes <- TxDb.Mmusculus.UCSC.mm10.knownGene
 grl_synteny <- GRangesList()
@@ -322,7 +321,7 @@ for (object in 1:length(grl_reduced)) {
 A diagram below shows how many unique genes were annotated for each house mouse
 heart cell sample belonging to the synteny blocks.
 
-```{r Peak_Annotations_MM_Plot, fig.width = 5, fig.height = 4, fig.align = "center"}
+```{r Peak_Annotations_MM_Plot, out.width="60%", out.height="60%", fig.align = "center"}
 # nolint start
 genes_samples <- data.frame(matrix(ncol = 3, nrow = 0))
 colnames(genes_samples) <- c("Sample", "Gene_count", "Percentage")
@@ -341,9 +340,11 @@ plot3 <- ggplot(genes_samples, aes(x = Sample, y = as.numeric(Percentage))) +
     geom_bar(stat = "identity", fill = "#cc8b12",
              width = .5, color = "#8d5c00") +
     labs(title = "", x = "", y = "Anotuotų pikų % M. musculus") +
-    geom_text(aes(label = paste0(round(as.numeric(Percentage), digit = 2), "%")),
-              color = "#030101", size = 5, vjust = -1, fontface = 2) +
-    coord_cartesian(ylim = c(0, as.numeric(max(genes_samples$Percentage)) + 20)) +
+    geom_text(aes(label = paste0(round(as.numeric(Percentage), digit = 2),
+                                 "%")), color = "#030101", size = 5,
+              vjust = -1, fontface = 2) +
+    coord_cartesian(ylim = c(0,
+                             as.numeric(max(genes_samples$Percentage)) + 20)) +
     theme(axis.text = element_text(size = 10, colour = "black"),
           axis.text.x = element_text(angle = 45, hjust = 1, size = 12,
                                      vjust = 1, face = "bold"),
@@ -352,7 +353,8 @@ plot3 <- ggplot(genes_samples, aes(x = Sample, y = as.numeric(Percentage))) +
           axis.title.y = element_text(size = 14, colour = "black"),
           panel.grid.major = element_line(color = "#eeeeee"),
           plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
-          panel.background = element_rect(fill = "#eeeef1", colour = "#3a1010"),
+          panel.background = element_rect(fill = "#eeeef1",
+                                          colour = "#3a1010"),
           panel.grid.major.y = element_line(colour = "#cab5b5",
                                             size = 0.3, linetype = "dashed"),
           panel.grid.minor.y = element_line(colour = "#cab5b5",
@@ -430,14 +432,16 @@ for (smpl3 in 1:length(grl_synteny)) {
 # nolint end
 ```
 
-```{r Range_Annotations_DR_Plot, fig.width = 5, fig.height = 4, fig.align = "center"}
+```{r Range_Annotations_DR_Plot, out.width="60%", out.height="60%", fig.align = "center"}
 plot4 <- ggplot(genes_synteny, aes(x = Sample, y = as.numeric(Percentage))) +
     geom_bar(stat = "identity", fill = "#611d02",
             width = .5, color = "#310f01") +
     labs(title = "", x = "", y = "Genų % D. rerio") +
-    geom_text(aes(label = paste0(round(as.numeric(Percentage), digit = 2), "%")),
+    geom_text(aes(label = paste0(round(as.numeric(Percentage), digit = 2),
+                                 "%")),
               color = "#030101", size = 5, vjust = -1, fontface = 2) +
-    coord_cartesian(ylim = c(0, as.numeric(max(genes_synteny$Percentage)) + 3)) +
+    coord_cartesian(ylim = c(0,
+                             as.numeric(max(genes_synteny$Percentage)) + 3)) +
     theme(axis.text = element_text(size = 10, colour = "black"),
           axis.text.x = element_text(angle = 45, hjust = 1, size = 12,
                                      vjust = 1, face = "bold"),
@@ -446,7 +450,8 @@ plot4 <- ggplot(genes_synteny, aes(x = Sample, y = as.numeric(Percentage))) +
           axis.title.y = element_text(size = 14, colour = "black"),
           panel.grid.major = element_line(color = "#eeeeee"),
           plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
-          panel.background = element_rect(fill = "#eeeef1", colour = "#3a1010"),
+          panel.background = element_rect(fill = "#eeeef1",
+                                          colour = "#3a1010"),
           panel.grid.major.y = element_line(colour = "#cab5b5",
                                             size = 0.3, linetype = "dashed"),
           panel.grid.minor.y = element_line(colour = "#cab5b5",
@@ -465,11 +470,11 @@ plot4
 ```
 
 ### Tbx5 PWM matrix hits
-The chart below shows Tbx5 transcription factor PWM matrix hit count among
+The chart below shows Tbx5 transcription factor PWM matrix hit counts among
 *Mus musculus* and *Danio rerio* genes that overlap and belong to synteny
 blocks.
 
-```{r All_Annotations_MM, echo=FALSE, message=FALSE, warning=FALSE}
+```{r All_Annotations_MM, message=FALSE, warning=FALSE, include=FALSE}
 grl_mm <- GRangesList()
 for (object in 1:length(grl)) {
     name <- gsub(" ", "_", names(grl[object]))
@@ -504,11 +509,8 @@ colnames(belong_block) <- c("Sample", "Block_count", "Percentage")
 
 find_common_genes <- function(sample, name_title) {
     count <- 0
-    sample <- grl_mm[[1]]
-    name_title <- names(grl_mm[1])
     mm <- sample       # Mus musculus
     dr <- gene_ranges       # Danio rerio
-    # name_title <- names(grl_mm[y])
     synteny_block_n <- length(rownames(synteny_chr_pos))
 
     df_mm <- as.data.frame(na.omit(mm)) # d
@@ -547,26 +549,26 @@ find_common_genes <- function(sample, name_title) {
                                   df_dr$end <= syn_row$"endpos_DR", ])
         
         # Finding common genes:
-        common_g <- intersect(tolower(genes_mm[,"gene_symbol"]),
+        cmmn_g <- intersect(tolower(genes_mm[,"gene_symbol"]),
                               tolower(genes_dr[,"gene_symbol"]))
 
         # Condition that forms a new dataframe if genes belong to synteny
         # block and they are common to both M.musculus and D.rerio organisms:
         if (length(rownames(genes_dr)) != 0 & length(rownames(genes_mm)) != 0 &
-            length(common_g) != 0) {
+            length(cmmn_g) != 0) {
             # print(paste0("i value = ", i))
             count = count + 1 
             # print(paste0("count = ", count))
 
             # Data about common genes in D.rerio:
-            cg_data_dr <- genes_dr[genes_dr$"gene_symbol" %in% common_g,
+            cg_data_dr <- genes_dr[genes_dr$"gene_symbol" %in% cmmn_g,
                                    c("seqnames", "start", "end", "gene_symbol")]
             cg_data_dr[, ncol(cg_data_dr) + 1] <- rep("Danio_rerio",
                                                       length(nrow(cg_data_dr)))
             colnames(cg_data_dr)[5] <- "organism"
 
             # Data about common genes in M.musculus:
-            cg_data_mm <- genes_mm[tolower(genes_mm$"gene_symbol") %in% common_g,
+            cg_data_mm <- genes_mm[tolower(genes_mm$"gene_symbol") %in% cmmn_g,
                                    c("seqnames", "start", "end", "annotation",
                                      "gene_symbol")]
             cg_data_mm$"gene_symbol" <- tolower(cg_data_mm$"gene_symbol")
@@ -574,8 +576,9 @@ find_common_genes <- function(sample, name_title) {
                                                       length(nrow(cg_data_mm)))
             colnames(cg_data_mm)[6] <- "organism"
 
-            genes <- rbind(cg_data_dr, cg_data_mm[, c("seqnames", "start", "end",
-                                                    "gene_symbol", "organism")])
+            genes <- rbind(cg_data_dr, cg_data_mm[, c("seqnames", "start",
+                                                      "end", "gene_symbol",
+                                                      "organism")])
             common_genes <- rbind(common_genes, genes)
         }
     }
@@ -691,12 +694,12 @@ find_common_genes <- function(sample, name_title) {
     # png(file = paste0(FIGURES, "PWM_matches.png"))
     # plot5
     # dev.off()
-    # plot5
+    plot5
 }
 # nolint end
 ```
 
-```{r PWM_Matches_All_Samples, fig.width = 5, fig.height = 4, fig.align = "center"}
+```{r PWM_Matches_All_Samples, out.width="60%", out.height="60%", echo=FALSE, message=FALSE, warning=FALSE, fig.align = "center"}
 # nolint start
 # Creating a list that stores ggplot objects:
 plots <- list()
