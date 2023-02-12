@@ -156,7 +156,8 @@ studied which house mouse (lat. \emph{Mus musculus}) cell peaks (ChIP sequencing
 data) and zebrafish genes that overlap with annotated house mouse peaks belong
 to synteny blocks. It was done in order to clarify whether the search of synteny
 blocks is a reliable and suitable approach for analysing the mechanisms of Tbx5
-transcription factor gene regulation in organism when data is unavailable.
+transcription factor gene regulation in target-organism when data is
+unavailable.
 
 The undertaken analysis indicated that synteny block search is not the most
 suitable way to evaluate the homology between \emph{Mus musculus} and
@@ -164,7 +165,7 @@ suitable way to evaluate the homology between \emph{Mus musculus} and
 mouse ChIP sequencing data peaks that belonged to the synteny block regions.
 Furthermore, there was determined a notably small percentage of
 \emph{Danio rerio} genes that both overlap with annotated \emph{Mus musculus}
-genes and lie between synteny blocks' intervals.
+peaks and lie between synteny blocks' intervals.
 
 \hfill \break
 
@@ -179,7 +180,7 @@ factor, Tbx5, \emph{Mus musculus}, \emph{Danio rerio}, R.
 
 \section{Įvadas}
 \subsection*{Darbo temos aktualumas}
-Spartėjantys laimėjimai mokslo srityje stipriai patobulino įvairias priemones,
+Įvairūs laimėjimai mokslo srityje stipriai patobulino metodus bei priemones,
 leidžiančias laiku diagnozuoti ir išgydyti nuo ligų, kurios anksčiau buvo
 laikomos nepagydomomis. Šie laimėjimai itin prisidėjo prie vienos iš medicinos
 sričių - organizmų bei organų regeneracijos - vystymosi.
@@ -197,11 +198,11 @@ modeliniame organizme, tačiau taip pat yra labai svarbu išsiaiškinti būdus,
 kurie padėtų žinomą mechanizmo informaciją įvertinti kitame organizme,
 atsižvelgus į organizmo giminingumą bei evoliucijos eigoje įvykusius genomo
 persitvarkymus. Dėl šios priežasties šio darbo metu atlikta analizė, įvertinanti
-sintenijos blokų paieškos metodo, nustatančio homologiją tarp naminės pelės ir
-zebražuvės genomų, tinkamumą mechanizmų tyrimui kituose organizmuose.
+sintenijos blokų paieškos metodo, nus\-ta\-tan\-čio homologiją tarp naminės pelės
+ir zebražuvės genomų, tinkamumą mechanizmų tyrimui kituose organizmuose.
 
 \subsection*{Darbo tikslas}
-Nustatyti, ar sintenijos blokai gali būti naudojami homologijos tarp
+Nustatyti, ar sintenijos blokų paieška yra tinkamas būdas homologijos tarp
 \emph{Mus musculus} ir \emph{Danio rerio} organizmų nustatymui.
 
 \subsection*{Uždaviniai}
@@ -229,10 +230,9 @@ Duomenys atsisiųsti iš GTRD (Gene Transcription Regulation Database)\cite{GTRD
 duomenų bazės, saugančios informaciją apie transkripcijos sekas bei atviro
 chromatino regionus.
 
-Analizei naudoti 7 skirtingi naminių pelių (lot. \emph{Mus musculus}) širdžių
-ląstelių mėginiai, tirti 3 nepriklausomų eksperimentų metu širdžių ląsteles
-veikiant skirtingais poveikiais. Šių mėginių charakteristikos pateiktos pirmoje
-lentelėje.
+Analizei naudoti 7 skirtingi naminių pelių širdžių ląstelių mėginiai, tirti 3
+nepriklausomų eksperimentų metu širdžių ląsteles veikiant skirtingais
+poveikiais. Šių mėginių charakteristikos pateiktos pirmoje lentelėje.
 
 \begin{table}[htb]
     \newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
@@ -470,7 +470,7 @@ pakito, vykstant persitvarkymo procesams\cite{ARTICLE2}.
 \subsection{\emph{Cinteny} įrankis}
 Siekiant efektyviai reprezentuoti linijinę genomų markerių tvarką
 \emph{Cinteny}\cite{CINTENY} įrankyje
-implementuota išplėsta trejetainio paieškos medžio struktūra \cite{TST}(angl.
+implementuota išplėsta trejetainio paieškos medžio struktūra\cite{TST} (angl.
 \emph{ternary search tree} (TST)). Ši struktūra išplėsta, pavaizdavus 
 „perėjimus“ tarp medžio lapų. Šie „perėjimai“ atitinka linijinius genomo
 markerių „perėjimus“. Šie markeriai gali būti apibūdinti kaip ortologiniai
@@ -544,12 +544,12 @@ analizė atlikta su R programavimo kalba\cite{R} (4.2.2 versija).
 
 Tarpiniai analizės rezultatai pateikti, naudojant komandinės eilutės įrankį
 Scikick\cite{SCIK} (0.2.0 versija). Naudojant šį įrankį buvo apjungti keli Rmd
-formato failai ir gauta HTML formato ataskaita \hyperref[Priedas]{(6 skyriaus
+formato failai ir gauta HTML formato ataskaita \hyperref[Priedas]{(8 skyriaus
 priedas)}.
 
 \subsection{Sintenijos blokų nustatymas ir vizualizavimas}
 Sintenijos blokai tarp \emph{Mus musculus} ir \emph{Danio rerio} organizmų
-nustatyti ir vizualizuoti pasinaudojus internetinės
+nustatyti ir vizualizuoti, pasinaudojus internetinės
 \emph{Synteny Portal}\cite{SYN_PORT} aplikacijos \emph{SynCircos} įrankiu.
 
 \subsection{Sintenijos blokų pozicijų gavimas}
@@ -566,12 +566,12 @@ analizės metu nustatyta, kokiuose naminės pelės ląstelių pikų mėginiuose 
 transkripcijos faktoriaus motyvų yra daugiausiai, todėl šiame Kursinio projekto
 analizės etape sintenijos blokų failas buvo apdorotas R programoje, siekiant
 apskaičiuoti, kiek (kokia procentinė dalis) kiekvieno mėginio pikų patenka į
-sintenijos blokų intervalus, ir, ar turint ChIP sekoskaitos duomenis bei
-žinant sintenijos blokus tarp organizmo, kurio ChIP sekoskaitos duomenys nėra
-žinomi, galima įvertinti organizmų homologiją. Šiame etape panaudota
-\emph{rtracklayer}\cite{R_TRACK} bibliotekos funkcija \emph{subsetByOverlaps()}.
-Stulpelinės diagramos sukurtos su \emph{ggplot2}\cite{R_GGPLOT} bibliotekos
-\emph{geom\_bar()} funkcija.
+sintenijos blokų intervalus. Taip pat tikrinta, ar turint ChIP sekoskaitos
+duomenis bei žinant sintenijos blokus tarp organizmo, kurio ChIP sekoskaitos
+duomenys nėra žinomi, galima įvertinti organizmų homologiją. Šiame etape
+panaudota \emph{rtracklayer}\cite{R_TRACK} bibliotekos funkcija
+\emph{subsetByOverlaps()}. Stulpelinės diagramos sukurtos su
+\emph{ggplot2}\cite{R_GGPLOT} bibliotekos \emph{geom\_bar()} funkcija.
 
 \subsection{Pikų anotavimas}
 Analizuotų mėginių pikai anotuoti (apskaičiavus atstumą iki transkripcijos
@@ -597,8 +597,8 @@ Nustačius visų žinomų zebražuvės genų simbolius nustatyta, kurie genai su
 su \emph{Mus musculus} genais, pasinaudojus standartinės R bibliotekos
 \emph{dplyr}\cite{DPLYR} funkcijomis. Gautas mažesnis genų rinkinys perduotas
 bibliotekos \emph{GenomicRanges}\cite{GRANGES} funkcijai
-\emph{subsetByOverlaps()}, grąžinančiai \emph{GRanges} objektą su pozicijomis
-ir anotacijomis, kurios patenka į sintenijos blokų genominius intervalus.
+\emph{subsetByOverlaps()}, grąžinančiai \emph{GRanges} objektą su anotacijomis
+ir pozicijomis, kurios patenka į sintenijos blokų genominius intervalus.
 
 \subsection{Transkripcijos faktoriaus prisijungimo sričių nustatymas}
 Šiame analizės etape sudarytos dvi atskiros duomenų struktūros, kuriose
@@ -609,7 +609,7 @@ blokams, specifikuojant genų simbolius ir jų pozicijas.
 Turint abiejų genomų sutampančių genų objektus, panaudota
 \emph{Biostrings}\cite{BIOSTRINGS}
 bibliotekos funkcija \emph{getSeq()}, kuriai buvo perduoti analizuojamo genomo
-\emph{BSenome}\cite{BSGENOME} klasės objektai
+\emph{BSgenome}\cite{BSGENOME} klasės objektai
 (\emph{BSgenome.Mmusculus.UCSC.mm10} ir \emph{BSgenome.Drerio.UCSC.danRer11})
 bei genų pozicijų \emph{GRanges} objektai. Funkcija grąžino pozicijas
 atitinkančias nukleotidų sekas.
@@ -622,7 +622,7 @@ HOCOMOCO\cite{HOCOMOCO} (11.0 versija) duomenų bazės \emph{Homo sapiens} ir
 \emph{Mus musculus} organizmų transkripcijos faktorių kolekcijos.
 
 Kiekvieno organizmų geno PWM matricos atitikimai vizualizuoti taškine diagrama,
-pritaikius \emph{ggplot} funkciją \emph{geom\_point()}.
+pritaikius \emph{ggplot2} funkciją \emph{geom\_point()}.
 
 \newpage
 
@@ -659,8 +659,8 @@ kurią sudaro 78,093,715 bazių poros) sintenijos blokų sankaupa pastebima
 tik vienoje chromosomos pusėje (pavienių blokų nenustatyta).
 
 \subsection{Sintenijos blokų pasiskirstymas chromosomose}
-Pateiktoje diagramoje vaizduojama, kiek kiekvienos naminės pelės chromosomos
-fragmentų buvo nustatyta skirtingose zebražuvės chromosomose bei pozicijose,
+Pateiktose diagramose vaizduojama, kiek analizuotų organizmų chromosomų
+fragmentų buvo nustatyta kito organizmo chromosomose bei pozicijose,
 neatsižvelgus į sekų fragmentų ilgį.
 
 \begin{figure}[htb]
@@ -690,7 +690,7 @@ chromosomos (ją sudaro 122 Mbp\cite{MGI}), buvo nustatyta sąlyginai didelė da
 fragmentų, turinčių homologijų su zebražuvės genomo sekų fragmentais.
 
 Patikrinus, kiek yra \emph{Danio rerio} chromosomų fragmentų, kurie patenka į
-sintenijos blokus, gauti rezultatai vizualizuoti septinto paveikslo b) dalyje.
+sintenijos blokus, gauti rezultatai vizualizuoti šešto paveikslo b) dalyje.
 Galima pastebėti, kad sintenijos blokams priklausančių chromosomų fragmentų
 skaičius buvo itin nevienodas, palyginus su \emph{Mus musculus} rezultatais.
 Chromosomose, kuriose esantys fragmentai buvo dažniausiai homologiški naminės
@@ -699,8 +699,8 @@ blokui priklausančius fragmentus. Mažiausias sintenijos blokui priklausančių
 fragmentų skaičius nustatytas 22 chromosomoje (28 fragmentai).
 
 \emph{Mus musculus} ir \emph{Danio rerio} chromosomos, kurių sekų fragmentai
-dažniausiai pateko į sintenijos blokus, vizualizuoti su \emph{SyMAP} įrankiu.
-Aštuntame paveiksle žalia spalva išskirti sintenijos blokai. Daugiausiai
+dažniausiai pateko į sintenijos blokus, vizualizuotos su \emph{SyMAP} įrankiu.
+Septintame paveiksle žalia spalva išskirti sintenijos blokai. Daugiausiai
 sintenijos blokų, kurie buvo ilgiausi, nustatyta tarp naminės pelės antros
 ir zebražuvės devintos chromosomų.
 
@@ -717,7 +717,7 @@ ir zebražuvės devintos chromosomų.
 \end{figure}
 
 Antra ir devinta naminės pelės ir zebražuvės chromosomos buvo patyrinėtos
-detaliau. Devintame paveiksle žalia spalva pažymėti chromosomų regionai, kuriems
+detaliau. Aštuntame paveiksle žalia spalva pažymėti chromosomų regionai, kuriems
 būdingas sekų panašumas.
 
 \begin{figure}[htb]
@@ -751,16 +751,18 @@ išlygintas sekas, pastebėta, kad sekos yra labai panašios.
 
 \subsection{Pikų dalis sintenijos blokuose}
 \emph{Cinteny} įrankio pateikta sintenijos blokų informacija buvo panaudota,
-siekiant išsiaiškinti, kokia pikų dalis patenka į įrankio nustatytų sintenijos
-blokų intervalus, kurių buvo nustatyta 1403. Dešimtame paveiksle (10 pav.)
-pavaizduota, kiek kiekviename analizuotame naminių pelių širdžių ląstelių
-mėginyje nustatyta pikų, kurie patenka į sintenijos blokų intervalą.
+siekiant išsiaiškinti, kokia naminės pelės ChIP sekoskaitos pikų dalis patenka į
+įrankio nustatytų sintenijos blokų intervalus, kurių buvo nustatyta 1403.
+Dešimtame paveiksle (10 pav.) pavaizduota, kiek kiekviename analizuotame
+naminių pelių širdžių ląstelių mėginyje nustatyta pikų, kurie patenka į
+sintenijos blokų intervalą.
 
 \begin{figure}[htb]
     \begin{center}
-        \includegraphics[width=0.7\linewidth]{../Figures/Synteny_blocks_peaks.png}
+        \includegraphics[width=0.65\linewidth]{../Figures/Synteny_blocks_peaks.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{10 pav. Sintenijos blokų procentinė dalis}}
+        \caption*{\small\textbf{10 pav. Pikų, patenkančių į sintenijos blokus,
+                                procentinė dalis}}
         \label{fig:10}
     \end{center}
 \end{figure}
@@ -780,13 +782,13 @@ blokams priklausančių pikų procentas skyrėsi vos 0.01\%.
 Apibendrinus visus gautus mėginių rezultatus galima daryti išvadą, kad visiems
 mėginiams būdingas panašus skaičius pikų, kurie priklauso sintenijos blokams,
 todėl turint šią informaciją galima detaliau tyrinėti pikus, priklausančius
-blokams.
+sintenijos blokams.
 
 \subsection{Pikų anotavimas}
 \subsubsection{Artimiausių TSS nustatymas}
-Vienuoliktame paveiksle pavaizduotoje diagramoje nurodyta, kiek unikalių genų
-buvo priskirta kiekvieno mėginio pikams (palyginus su pilnu naminės pelės genų
-rinkiniu), patenkantiems į sintenijos blokus.
+Vienuoliktame paveiksle pavaizduotoje stulpelinėje diagramoje nurodyta, kiek
+unikalių genų buvo priskirta kiekvieno mėginio pikams (palyginus su pilnu
+naminės pelės genų rinkiniu), patenkantiems į sintenijos blokus.
 
 \begin{figure}[htb]
     \begin{center}
@@ -806,6 +808,8 @@ kad pikai galėjo patekti į ilgesnį sintenijos bloką.
 Mažiausiai unikalių genų nustatyta \emph{emb\_fibr\_r4\_4} mėginyje (8.71\%).
 Rezultatas gali rodyti, kad pikai priklausė didesniam sintenijos blokų skaičiui,
 tačiau blokai buvo trumpi, todėl į juos nepateko dalis genų.
+
+\newpage
 
 \subsubsection{Genominių elementų pasiskirstymas}
 Anotuojant mėginių sintenijos blokams priklausančius pikus taip pat buvo
@@ -855,18 +859,18 @@ dalis priklausė introninėms ir tarpgeninėms sritims naminių pelių embrionų
 fibroblastų ląsteles paveikus tik Tbx5 transkripcijos faktoriumi. Be to, šiame
 mėginyje nustatytas itin mažas procentas pikų, prik\-lau\-san\-čių promotorinėms
 sritims. Atsižvelgus į tai, kad to paties eksperimento mėginių, kuriems taikyti
-skirtingi poveikiai, pikai priklauso skirtingiems genominiams elementams galima
+skirtingi poveikiai, pikai priklauso skirtingiems genominiams elementams, galima
 daryti išvadą, kad genominių elementų pasiskirstymo procentas priklauso nuo to,
-kokiais poveikiais veikiamos naminės pelės ląstelės.
+kokiais poveikiais veikiamos naminės pelės širdies ląstelės.
 
 \newpage
 
 \subsection{Genų nustatymas zebražuvėje}
 Turint duomenis apie homologiškas sritis tarp \emph{Mus musculus} ir
-\emph{Danio rerio} organizmų buvo patikrinta, kurie anotuoti kiekvieno naminės
-pelės pikų mėginių genai priklauso ir zebražuvės genų rinkiniui, bei kiek šių,
-tarp organizmų sutampančių, genų gali būti nustatyta zebražuvės sintenijos
-blokams priklausančiose pozicijose. Gauti rezultatai pateikti žemiau esančiame
+\emph{Danio rerio} organizmų buvo patikrinta, kurie kiekvieno naminės pelės pikų
+mėginių genai priklauso ir zebražuvės genų rinkiniui, bei kiek šių, tarp
+organizmų sutampančių, genų gali būti nustatyta zebražuvės sintenijos blokams
+priklausančiose pozicijose. Gauti rezultatai pateikti žemiau esančiame
 paveiksle.
 
 \begin{figure}[htb]
@@ -879,10 +883,10 @@ paveiksle.
     \end{center}
 \end{figure}
 
-Remiantis gauta diagrama galima pastebėti, kad zebražuvės genų, sutampančių su
-naminės pelės genais ir priklausančių sintenijos blokams, buvo itin nedaug.
-Palyginus visus mėginių anotuotų pikų genų rinkinius su zebražuvės genų rinkiniu
-bendrų genų dalis buvo mažesnė nei 4\%.
+Remiantis gauta stulpeline diagrama galima pastebėti, kad zebražuvės genų,
+sutampančių su naminės pelės genais ir priklausančių sintenijos blokams, buvo
+itin nedaug. Palyginus visus mėginių anotuotų pikų genų rinkinius su zebražuvės
+genų rinkiniu bendrų genų dalis buvo mažesnė nei 4\%.
 
 \newpage
 
@@ -907,7 +911,7 @@ atitikimų skaičius \emph{Mus musculus} ir \emph{Danio rerio} sekose.
     \end{center}
 \end{figure}
 
-Palyginus gautus rezultataus galima pastebėti, kad visais atvejais pozicinės
+Palyginus gautus rezultatus galima pastebėti, kad visais atvejais pozicinės
 matricos atitikimas \emph{Danio rerio} sekoms buvo panašus. Zebražuvės genome
 buvo genų, kurių dydis viršijo 100000 nukleotidų (taškai, priklausantys I
 ketvirčiui). Šiose sekose Tbx5 pozicinės svorių matricos atitikimų buvo
@@ -915,7 +919,7 @@ nustatyta daugiau nei 30.
 
 Naminės pelės genuose PWM matricos atitikimų buvo nustatyta mažiau. Be to, sekų
 ilgis buvo mažesnis. Mėginyje \emph{emb\_fibr\_r4\_4} Tbx5 pozicinės svorių
-matricos atitikimų anotuotų pikų genuose buvo mažiausiai.
+matricos atitikimų anotuotų naminės pelės pikų genuose buvo mažiausiai.
 
 \newpage
 
@@ -932,16 +936,16 @@ analizę, naudojant sintenijos blokus, gauti rezultatai buvo apibendrinti:
           apibendrinant jų privalumus bei trūkumus.
     \item Sintenijos blokams priklausančių \emph{Mus musculus} ir
           \emph{Danio rerio} organizmų chromosomų sekos evoliucijos eigoje
-          mutavo stipriai, tačiau tarp organizmų pasitaikė chromosomų, kuriose
-          išlaikytas didesnis sekų konservatyvumas.
+          mutavo, tačiau tarp organizmų pasitaikė chromosomų, kuriose išlaikytas
+          didesnis sekų konservatyvumas.
     \item Sintenijos blokams priklausančių naminės pelės širdies ląstelių pikų
           dalis visuose mėginiuose neviršijo 35\%.
     \item \emph{Danio rerio} genų, sutampančių su \emph{Mus musculus} genais ir
-          patenkančių į sintenijos blokų intervalą, buvo itin nedaug.
-    \item Tbx5 transkripcijos faktoriaus motyvo taikinių skaičius
-          \emph{Danio rerio} genuose, kurie nustatomi \emph{Mus musculus}
-          organizmo genome ir priklauso sintenijos blokams, didėjant genų sekų
-          ilgiams didėja visais analizuotais atvejais.
+          patenkančių į sintenijos blokų intervalą, buvo mažiau nei 4\%.
+    \item Tbx5 transkripcijos faktoriaus motyvo taikinių skaičius, ilgėjant
+          \emph{Danio rerio} genų, kurie nustatyti \emph{Mus musculus}
+          organizmo genome ir priklausė sintenijos blokams, sekoms, didėjo
+          visais analizuotais atvejais.
 \end{itemize}
 
 \newpage
@@ -1112,8 +1116,8 @@ Nucleic Acids Res. 2019 Jan. 8;47 (D1): D801–D806.
 
 \section{Priedas} \label{Priedas}
 Priedų sąraše pateikiamos tarpinių rezultatų puslapio, sugeneruoto su Scikick,
-bei Git re\-po\-zi\-to\-ri\-jų, kuriose saugomi analizei naudoti duomenų
-failai ir pagrindinė R programa, nuorodos. Taip pat pateikta kursinio darbo metu
+bei Git re\-po\-zi\-to\-ri\-jos, kurioje saugomi analizei naudoti duomenų
+failai ir pagrindinė R programa, nuorodos. Taip pat pateikta Kursinio darbo metu
 atliktos analizės Git repozitorijos, kurioje saugomi mėginių ChIP sekoskaitos
 duomenys, nuoroda.
 
