@@ -1,9 +1,9 @@
-## Homology determination between *Mus musculus* and *Danio rerio* analysis
+## Analysis of ChIP-seq target search using synteny blocks
 ### Introduction
 
-This part of the work describes the analysis that was performed to
-determine whether the search of synteny blocks is a suitable method that is
-used to evaluate homology between *Mus musculus* and *Danio rerio* genomes.
+This part of the work describes the analysis that was performed to determine
+whether the search of synteny blocks is a suitable method that is used to
+evaluate homology between *Mus musculus* and *Danio rerio* genomes.
 
 - The samples that were used in the analysis are described in the previous
     analysis and can be viewed [here](https://karklas.mif.vu.lt/~dast6577/KursinisProjektas/samples.html);
@@ -248,7 +248,7 @@ plot2 <- ggplot(df_final, aes(fill = indic, y = as.numeric(value), x = names)) +
     labs(title = "", x = "", y = "") + 
     scale_fill_manual(values = c("#d37f02", "#f3bc47"),
                       labels = c("Pikų skaičius",
-                                 "Sintenijos blokų skaičius")) +
+                                 "Pikai, patenkantys į sintenijos blokus")) +
     scale_y_continuous(labels = label_number(suffix = " K", scale = 1e-3)) +
     guides(fill = guide_legend(title = "Spalvų paaiškinimas")) +
     theme(panel.background = element_rect(fill = "#eeeef1",
@@ -272,9 +272,9 @@ plot2 <- ggplot(df_final, aes(fill = indic, y = as.numeric(value), x = names)) +
           legend.text = element_text(size = 10)) +
     coord_flip()
 
-# png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"))
-# plot2
-# dev.off()
+png(file = paste0(FIGURES, "Synteny_blocks_peaks.png"))
+plot2
+dev.off()
 plot2
 # nolint end
 ```
@@ -339,7 +339,8 @@ for (smpl in 1:length(grl_synteny)) {
 plot3 <- ggplot(genes_samples, aes(x = Sample, y = as.numeric(Percentage))) +
     geom_bar(stat = "identity", fill = "#cc8b12",
              width = .5, color = "#8d5c00") +
-    labs(title = "", x = "", y = "Anotuotų pikų % M. musculus") +
+    labs(title = "", x = "",
+    y = expression(paste("Anotuotų pikų % ", italic("M. musculus")))) +
     geom_text(aes(label = paste0(round(as.numeric(Percentage), digit = 2),
                                  "%")), color = "#030101", size = 5,
               vjust = -1, fontface = 2) +
@@ -365,9 +366,9 @@ plot3 <- ggplot(genes_samples, aes(x = Sample, y = as.numeric(Percentage))) +
                                             size = 0.2, linetype = "longdash"),
           legend.position = c(0.777, 0.788))
 
-# png(file = paste0(FIGURES, "Unique_genes_MM.png"))
-# plot3
-# dev.off()
+png(file = paste0(FIGURES, "Unique_genes_MM.png"))
+plot3
+dev.off()
 plot3
 # nolint end
 ```
@@ -436,12 +437,13 @@ for (smpl3 in 1:length(grl_synteny)) {
 plot4 <- ggplot(genes_synteny, aes(x = Sample, y = as.numeric(Percentage))) +
     geom_bar(stat = "identity", fill = "#611d02",
             width = .5, color = "#310f01") +
-    labs(title = "", x = "", y = "Genų % D. rerio") +
+    labs(title = "", x = "",
+         y = expression(paste("Genų % ", italic("D. rerio")))) +
     geom_text(aes(label = paste0(round(as.numeric(Percentage), digit = 2),
                                  "%")),
               color = "#030101", size = 5, vjust = -1, fontface = 2) +
     coord_cartesian(ylim = c(0,
-                             as.numeric(max(genes_synteny$Percentage)) + 3)) +
+                             as.numeric(max(genes_synteny$Percentage)) + 1)) +
     theme(axis.text = element_text(size = 10, colour = "black"),
           axis.text.x = element_text(angle = 45, hjust = 1, size = 12,
                                      vjust = 1, face = "bold"),
@@ -462,9 +464,9 @@ plot4 <- ggplot(genes_synteny, aes(x = Sample, y = as.numeric(Percentage))) +
                                             size = 0.2, linetype = "longdash"),
           legend.position = c(0.777, 0.788))
 
-# png(file = paste0(FIGURES, "Unique_genes_DR.png"))
-# plot4
-# dev.off()
+png(file = paste0(FIGURES, "Unique_genes_DR.png"))
+plot4
+dev.off()
 plot4
 # nolint end
 ```
