@@ -1,9 +1,9 @@
-# Homology between *M. musculus* and *D. rerio* determination
+# Analysis of ChIP-seq target search using synteny blocks
 
 The repository stores files that were used to perform analysis of
 homology determination between house mouse and zebrafish. The
 analysis was conducted in order to determine whether the search
-of synteny blocks is a reliable approach for finding homologous
+of synteny blocks is a suitable approach for finding homologous
 regions between genomes.
 
 **Directory descriptions:**
