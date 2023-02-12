@@ -46,12 +46,11 @@
 
 \vskip 90pt
 \begin{center}
-    {\bf \LARGE Homologijos tyrimas tarp \emph{Mus musculus} ir
-     \emph{Danio rerio}, naudojant sintenijos blokus}
+    {\bf \LARGE ChIP sekoskaitos taikinių paieškos, naudojant sintenijos
+     blokus, analizė}
 \end{center}
 \begin{center}
-    {\bf \Large Homology analysis between \emph{Mus musculus} and
-     \emph{Danio rerio} using synteny blocks}
+    {\bf \Large Analysis of ChIP-seq target search using synteny blocks}
 \end{center}
 \vskip 20pt
 \centerline{\bf \large \textbf{Kursinis projektas}}
@@ -96,25 +95,19 @@ faktoriaus tyrimai labai dažnai atliekami su zebražuvėmis (lot.
 \emph{Danio rerio}), kurioms būdingas širdies audinio atsistatymas po širdies
 raumens pažeidimo.
 
-Kartais siekiant atlikti bioinformatinę analizę pritrūksta duomenų arba norima
-patikrinti, ar galima ištirti tam tikrus procesus ar mechanizmus kitame
-modeliniame organizme, turint vieno modelinio organizmo duomenis. Atliekant
-tokius patikrinimus atsižvelgiama į tai, kad tiriami modeliniai organizmai yra
-kilę iš bendro protėvio ir yra sukurtos lyginamosios genomikos metodikos,
-leidžiančios tai įgyvendinti.
-
 Šiame darbe, naudojantis R programavimo kalbos bibliotekomis ir
 bioinformatiniais įrankiais, analizuoti evoliucijos eigoje mažai pakitę genomų
 homologiški regionai - sintenijos blokai. Taip pat analizėje tirti šiems blokams
 priklausantys naminės pelės (lot. \emph{Mus musculus}) ląstelių pikai - ChIP
 sekoskaitos duomenys - ir su anotuotais pikais persidengiantys zebražuvės genai.
 Tuo buvo siekiama išsiaiškinti, ar lyginamosios genomikos metodas - sintenijos
-blokų paieška - yra patikimas ir tinkamas būdas Tbx5 transkripcijos faktoriaus
-poveikio genams mechanizmams analizuoti organizme, kurio duomenys nėra žinomi.
+blokų paieška - yra būdas, galintis suteikti papildomos informacijos Tbx5
+transkripcijos faktoriaus poveikio genams mechanizmams analizuoti organizme,
+kurio duomenys nėra žinomi.
 
 Atliktos analizės rezultatai parodė, kad sintenijos blokų paieška nėra
-tinkamiausias būdas, siekiant įvertinti \emph{Mus musculus} ir
-\emph{Danio rerio} organizmų homologiją, nes šiems blokams priklausė nedidelis
+tinkamiausias būdas, siekiant nustatyti \emph{Mus musculus} ChIP sekoskaitos
+taikinius \emph{Danio rerio} organizme, nes šiems blokams priklausė nedidelis
 ChIP sekoskaitos metu gautų naminės pelės ląstelių pikų procentas. Taip pat
 \emph{Danio rerio} genome buvo nustatytas itin mažas procentas genų, kurie
 sutampa su \emph{Mus musculus} anotuotų pikų genais bei patenka į nustatytus
@@ -122,7 +115,7 @@ sintenijos blokų intervalus.
 
 \hfill \break
 
-\textbf{Raktiniai žodžiai:} homologija, sintenija, lyginamoji genomika,
+\textbf{Raktiniai žodžiai:} homologija, lyginamoji genomika, sintenija,
 transkripcijos faktorius, Tbx5, \emph{Mus musculus}, \emph{Danio rerio}, R.
 
 \newpage
@@ -142,26 +135,19 @@ The research of the Tbx5 transcription factor is often conducted using
 zebrafish (lat. \emph{Danio rerio}), because they are capable of regenerating
 their heart tissue after heart damage.
 
-Occasionally before performing a bioinformatical analysis there is either
-a shortage of available data or it is intended to determine whether some of the
-processes or mechanisms in another model organism can be examined by analyzing
-available data of certain model organism. It is assumed considering the fact
-that the organisms descended from common ancestor and there are methods based
-on comparative genomics that can be used to accomplish the study.
-
 In this work, the genome regions that have a low sequence divergence between
 organisms - synteny blocks - were analyzed using R programming language
 libraries and bioinformatical tools. In addition, during the analysis it was
 studied which house mouse (lat. \emph{Mus musculus}) cell peaks (ChIP sequencing
 data) and zebrafish genes that overlap with annotated house mouse peaks belong
 to synteny blocks. It was done in order to clarify whether the search of synteny
-blocks is a reliable and suitable approach for analysing the mechanisms of Tbx5
-transcription factor gene regulation in target-organism when data is
-unavailable.
+blocks is a an approach that can give extra information for analysing the
+mechanisms of Tbx5 transcription factor gene regulation in target-organism when
+data is unavailable.
 
 The undertaken analysis indicated that synteny block search is not the most
-suitable way to evaluate the homology between \emph{Mus musculus} and
-\emph{Danio rerio} organisms, because there was a small percentage of house
+suitable way to determine \emph{Mus musculus} ChIP sequencing targets in
+\emph{Danio rerio} organism, because there was a small percentage of house
 mouse ChIP sequencing data peaks that belonged to the synteny block regions.
 Furthermore, there was determined a notably small percentage of
 \emph{Danio rerio} genes that both overlap with annotated \emph{Mus musculus}
@@ -169,7 +155,7 @@ peaks and lie between synteny blocks' intervals.
 
 \hfill \break
 
-\textbf{Keywords:} homology, sinteny, comparative genomics, transcription
+\textbf{Keywords:} homology, comparative genomics, sinteny, transcription
 factor, Tbx5, \emph{Mus musculus}, \emph{Danio rerio}, R.
 
 \newpage
@@ -182,28 +168,31 @@ factor, Tbx5, \emph{Mus musculus}, \emph{Danio rerio}, R.
 \subsection*{Darbo temos aktualumas}
 Įvairūs laimėjimai mokslo srityje stipriai patobulino metodus bei priemones,
 leidžiančias laiku diagnozuoti ir išgydyti nuo ligų, kurios anksčiau buvo
-laikomos nepagydomomis. Šie laimėjimai itin prisidėjo prie vienos iš medicinos
-sričių - organizmų bei organų regeneracijos - vystymosi.
+laikomos nepagydomomis\cite{ARTICLE1}. Šie laimėjimai itin prisidėjo prie vienos
+iš medicinos sričių - organizmų bei organų regeneracijos -
+vystymosi\cite{ARTICLE2}.
 
-Šiais laikais regeneracijos tyrimai atliekami su modeliniais organizmais.
-Tyrimai atliekami, siekiant išsiaiškinti ląstelių bei audinių atsistatymo
-mechanizmus bei juose dalyvaujančius faktorius, jog detaliai išanalizuoti ir
-išsiaiškinti regeneracijos mechanizmai galėtų būti pritaikyti žmonių, netekusių
-galūnių arba patyrusių įvairių audinių ar organų pažeidimus, gydymui.
+Šiais laikais regeneracijos tyrimai atliekami su modeliniais
+organizmais\cite{ORGANISMS}. Tyrimai atliekami, siekiant išsiaiškinti ląstelių
+bei audinių atsistatymo mechanizmus bei juose dalyvaujančius faktorius, jog
+detaliai išanalizuoti ir išsiaiškinti regeneracijos mechanizmai galėtų būti
+pritaikyti žmonių, netekusių galūnių arba patyrusių įvairių audinių ar organų
+pažeidimus, gydymui.
 
-Sėkmingam regeneracijos mechanizmų pritaikymui žmonėms reikia žinoti ne tik,
+Sėkmingam regeneracijos mechanizmų pritaikymui žmonėms svarbu žinoti,
 kokie veiksniai (pavyzdžiui, Tbx5 ir kiti kardiogeniniai transkripcijos
 faktoriai) bei kaip jie dalyvauja regeneracijos procesuose tam tikrame
-modeliniame organizme, tačiau taip pat yra labai svarbu išsiaiškinti būdus,
-kurie padėtų žinomą mechanizmo informaciją įvertinti kitame organizme,
-atsižvelgus į organizmo giminingumą bei evoliucijos eigoje įvykusius genomo
-persitvarkymus. Dėl šios priežasties šio darbo metu atlikta analizė, įvertinanti
-sintenijos blokų paieškos metodo, nus\-ta\-tan\-čio homologiją tarp naminės pelės
-ir zebražuvės genomų, tinkamumą mechanizmų tyrimui kituose organizmuose.
+modeliniame organizme. Taip pat yra labai svarbu išsiaiškinti būdus,
+kurie padėtų žinomą mechanizmo informaciją įvertinti kitame organizme.
+Ieškant šių būdų atsižvelgiama į organizmo giminingumą bei evoliucijos
+eigoje įvykusius genomo persitvarkymus. Dėl šios priežasties šio darbo metu
+atlikta analizė, įvertinanti sintenijos blokų paieškos metodo naudingumą
+regeneracijos veiksnių bei mechanizmų tyrimui kituose organizmuose.
 
 \subsection*{Darbo tikslas}
-Nustatyti, ar sintenijos blokų paieška yra tinkamas būdas homologijos tarp
-\emph{Mus musculus} ir \emph{Danio rerio} organizmų nustatymui.
+Nustatyti, ar sintenijos blokų paieška gali suteikti informacijos, atliekant
+\emph{Mus musculus} ChIP sekoskaitos taikinių paiešką \emph{Danio rerio}
+organizme.
 
 \subsection*{Uždaviniai}
 \begin{itemize}
@@ -299,10 +288,10 @@ poveikiais. Šių mėginių charakteristikos pateiktos pirmoje lentelėje.
 \subsection{Sintenijos bloko apibūdinimas}
 \textbf{Sintenijos blokas} - tarp skirtingų genomų identifikuojami chromosomų
 regionai, kuriems būdingi bendri homologiniai genai, išsidėstę nebūtinai vienoda
-tvarka. Sintenijos blokai neretai gali būti vadinami kolineariais blokais.
+tvarka. Vienas iš sintenijos blokų variantų yra kolinearieji blokai.
 Pastarieji blokai nuo sintenijos blokų skiriasi tik tuo, kad kolineariesiems
 blokams būdingas identiškas genų išsidėstymas. Žemiau pateikiamame pirmame
-paveiksle (1 pav.) pavaizduoti galimi sintenijos blokų tipai\cite{ARTICLE1}:
+paveiksle (1 pav.) pavaizduoti galimi sintenijos blokų tipai\cite{ARTICLE3}:
 
 \begin{figure}[htb]
     \begin{center}
@@ -336,14 +325,14 @@ genų produktų (baltymų) sąsajas\cite{FUNC_REF}.
 \newpage
 
 \subsection{Identifikavimo metodai}
-Internete galima rasti ne vieną įrankį\cite{ARTICLE1, ARTICLE2}, leidžiantį
+Internete galima rasti ne vieną įrankį\cite{ARTICLE3, ARTICLE4}, leidžiantį
 vizualizuoti gerai anotuotų genomų sinteniją DNR lygmenyje (pavyzdžiui, Ensembl
 SyntenyView\cite{ENS_SYN}, NCBI MapViewer\cite{NCBI_MAP},
 Genomicus\cite{GENOMICUS}), tačiau nepaisant to, kad taikant šiuos įrankius
 konservatyvius regionus galima vizualizuoti ne vienu būdu, įrankiai pateikia iš
 anksto suskaičiuotus rezultatus. Naudojant šiuos įrankius tyrėjai negali
 pasirinkti parametrų, pavyzdžiui, leidžiančių keisti sintenijos blokų ilgį ar
-minimalų genų skaičių bloke\cite{ARTICLE2}.
+minimalų genų skaičių bloke\cite{ARTICLE4}.
 
 Dėl šių įrankių trūkumų yra sukurta daug įvairių programinių įrankių, 
 leidžiančių atlikti pastarųjų blokų paiešką savarankiškai, tiriant nemodelinių
@@ -368,7 +357,7 @@ metodai išskaidyti pagal lyginamų genomų giminingumą:
 Lyginant genomus, priklausančius itin giminingiems organizmams, sintenijos
 blokai gali būti identifikuojami taikant įrankius, paremtus DNR sekų
 išlyginimais, nes genomų sekų atitikimo laipsnis yra didelis (didelė dalis
-nukleotidų sutampa)\cite{ARTICLE1}.
+nukleotidų sutampa)\cite{ARTICLE3}.
 
 Konservatyvių chromosomų regionų nustatymui naudojami DNR sekų išlyginimu
 paremti metodai yra intuityvūs, tačiau reikalaujantys didelių kompiuterio
@@ -383,7 +372,7 @@ organizmus, kurie kilę iš bendro protėvio ir turi panašią sandarą, metodai
 kurie remiasi DNR sekų išlyginimu, negali būti taikomi, nes lyginamų organizmų
 DNR sekos yra pakitusios (evoliucijos eigoje įvyko daugiau įvairių mutacijų),
 todėl sintenijos blokų paieška turi būti atliekama aminorūgščių
-lygyje\cite{ARTICLE2}.
+lygyje\cite{ARTICLE4}.
 Nepaisant evoliucijos eigoje vykstančių DNR sekų pokyčių, viena aminorūgštis
 gali būti koduojama keliais skirtingais kodonais. Dėl šios priežasties metodo
 taikymas tinka evoliucijos eigoje mutavusių mažai giminingų organizmų genomų
@@ -397,10 +386,10 @@ statistinius modelius.
 Taikant šiuos metodus yra svarbu, kad analizuojamų organizmų genomai būtų kuo
 kokybiškesni: jeigu genome trūksta sekų, gali nebūti tam tikrų genų anotacijų,
 todėl homologinių sąsajų taip pat nebūtų galima tyrinėti - kai kurie sintenijos
-blokai būtų neidentifikuoti\cite{ARTICLE2}.
+blokai būtų neidentifikuoti\cite{ARTICLE4}.
 
 \subsubsection*{Homologinių genų matricos sudarymo metodas}
-Taikant šį metodą\cite{ARTICLE2} sintenijos blokai identifikuojami, naudojant
+Taikant šį metodą\cite{ARTICLE4} sintenijos blokai identifikuojami, naudojant
 kaimyninių genų porų klasterizavimą. Genomų genų atitikimai arba neatitikimai
 fiksuojami matricoje. Jeigu genai homologiniai, matricoje įrašomas '1', jei
 nehomologiniai - įrašomas '0'. Remiantis šiuo metodu sintenijos blokai
@@ -423,7 +412,7 @@ atsirasti tokių sekų fragmentų, kurie iš tiesų neturėtų priklausyti bloku
 (daugiau \emph{false positive} reikšmių), nes nėra aptinkami kitame genome.
 
 \subsubsection*{Godžiųjų algoritmų taikymo metodas}
-Realizuojant šį metodą\cite{ARTICLE2} yra konstruojamos kolinearių genų porų
+Realizuojant šį metodą\cite{ARTICLE4} yra konstruojamos kolinearių genų porų
 grandinės. Metodo į\-gy\-ven\-di\-ni\-mui atliekama daug daugiau skaičiavimų
 nei aprašytame homologinių genų matricos sudarymo metode. Įrankiuose, kurie
 remiasi šiuo metodu, yra naudojami \emph{BLASTP}\cite{BLASTP} rezultatai. Jais
@@ -444,7 +433,7 @@ ieškoti, bei, kokios yra tiriamų genomų bei sintenijos blokų charakteristiko
 \subsubsection*{Grafų konstravimo metodas}
 Kai yra žinomos baltymus koduojančių genų pozicijos ir sekų išlyginimo tikimybė,
 galima konstruoti grafus, surenkančius visas įmanomas homologinių genų poras
-tarp lyginamų genomų\cite{ARTICLE2}.
+tarp lyginamų genomų\cite{ARTICLE4}.
 
 Iš pradžių yra atliekamas lokalus genomų išlyginimas, po kurio gauti išlyginimai
 naudojami grafo konstravimui bei genomų vidinių struktūrų paieškai. Priklausomai
@@ -458,7 +447,7 @@ identifikuoti sintenijos blokai. Šiomis struktūromis gali būti: iš eilės
 einantys ir tarp dviejų genomų sutampantys genų sekų blokai, tarp kurių nėra
 tarpų ir kuriems būdinga vienoda kryptis abiejuose genomuose; mikroblokai -
 blokai, tarp kurių gali būti tarpų; trumpi ciklai, kurie įrodo, kad genomas
-pakito, vykstant persitvarkymo procesams\cite{ARTICLE2}.
+pakito, vykstant persitvarkymo procesams\cite{ARTICLE4}.
 
 \newpage
 
@@ -466,7 +455,7 @@ pakito, vykstant persitvarkymo procesams\cite{ARTICLE2}.
 % KONKREČIŲ ĮRANKIŲ VEIKIMO APRAŠYMAI
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Taikytų įrankių metodų aprašymai}
+\section{Darbe taikytų įrankių metodų aprašymai}
 \subsection{\emph{Cinteny} įrankis}
 Siekiant efektyviai reprezentuoti linijinę genomų markerių tvarką
 \emph{Cinteny}\cite{CINTENY} įrankyje
@@ -560,18 +549,12 @@ genominės pozicijos, kuriose abiejų genomų sekų fragmentai sutapo arba turė
 labai panašią struktūrą - gauti sintenijos blokai.
 
 \subsection{Pikų persidengimas su sintenijos blokais}
-Kursinio darbo metu buvo analizuojami ChIP sekoskaitos duomenys - skirtingais
-poveikiais veiktų naminės pelės širdies ląstelių mėginių pikų failai. Atliktos
-analizės metu nustatyta, kokiuose naminės pelės ląstelių pikų mėginiuose Tbx5
-transkripcijos faktoriaus motyvų yra daugiausiai, todėl šiame Kursinio projekto
-analizės etape sintenijos blokų failas buvo apdorotas R programoje, siekiant
-apskaičiuoti, kiek (kokia procentinė dalis) kiekvieno mėginio pikų patenka į
-sintenijos blokų intervalus. Taip pat tikrinta, ar turint ChIP sekoskaitos
-duomenis bei žinant sintenijos blokus tarp organizmo, kurio ChIP sekoskaitos
-duomenys nėra žinomi, galima įvertinti organizmų homologiją. Šiame etape
-panaudota \emph{rtracklayer}\cite{R_TRACK} bibliotekos funkcija
-\emph{subsetByOverlaps()}. Stulpelinės diagramos sukurtos su
-\emph{ggplot2}\cite{R_GGPLOT} bibliotekos \emph{geom\_bar()} funkcija.
+Sintenijos blokų failas buvo apdorotas R programoje, kurioje apskaičiuota
+kiekvieno naminės pelės širdies ląstelių ChIP sekoskaitos mėginio pikų bei su
+sintenijos blokais persidengiančių pikų dalis, panaudojus
+\emph{rtracklayer}\cite{R_TRACK} bibliotekos funkciją \emph{subsetByOverlaps()}.
+Stulpelinės diagramos sukurtos su \emph{ggplot2}\cite{R_GGPLOT} bibliotekos
+\emph{geom\_bar()} funkcija.
 
 \subsection{Pikų anotavimas}
 Analizuotų mėginių pikai anotuoti (apskaičiavus atstumą iki transkripcijos
@@ -683,7 +666,7 @@ neatsižvelgus į sekų fragmentų ilgį.
 \end{figure}
 
 Pateiktoje stulpelinėje diagramoje išsiskiria trys chromosomos (\emph{Chr1},
-\emph{Chr2} ir \emph{Chr11}) (6 pav. a)). Šių naminės pelės chromosomų
+\emph{Chr2} ir \emph{Chr11}) (6 pav. a). Šių naminės pelės chromosomų
 fragmentai pasitaikydavo zebražuvės genome dažniausiai. Atsižvelgus į šių
 chromosomų dydžius, kur vienuolikta chromosoma yra mažesnė nei kitos išskirtos
 chromosomos (ją sudaro 122 Mbp\cite{MGI}), buvo nustatyta sąlyginai didelė dalis
@@ -750,9 +733,15 @@ išlygintas sekas, pastebėta, kad sekos yra labai panašios.
 \newpage
 
 \subsection{Pikų dalis sintenijos blokuose}
+Kursinio darbo metu buvo analizuojami ChIP sekoskaitos duomenys - skirtingais
+poveikiais veiktų naminės pelės širdies ląstelių mėginių pikų failai. Analizės
+metu siekta nustatyti, kokiuose naminės pelės ląstelių pikų mėginiuose Tbx5
+transkripcijos faktoriaus motyvų yra daugiausiai.
+
 \emph{Cinteny} įrankio pateikta sintenijos blokų informacija buvo panaudota,
-siekiant išsiaiškinti, kokia naminės pelės ChIP sekoskaitos pikų dalis patenka į
-įrankio nustatytų sintenijos blokų intervalus, kurių buvo nustatyta 1403.
+siekiant išsiaiškinti, kokia Kursinio darbo metu analizuotų naminės pelės ChIP
+sekoskaitos mėginių pikų dalis patenka į įrankio nustatytų sintenijos blokų
+intervalus, kurių buvo nustatyta 1403.
 Dešimtame paveiksle (10 pav.) pavaizduota, kiek kiekviename analizuotame
 naminių pelių širdžių ląstelių mėginyje nustatyta pikų, kurie patenka į
 sintenijos blokų intervalą.
@@ -767,22 +756,17 @@ sintenijos blokų intervalą.
     \end{center}
 \end{figure}
 
-Remiantis gautu rezultatu galima pastebėti, kad didžiausias nustatytų sintenijos
-blokų skaičius (34.84\%), palyginus su bendru pikų skaičiumi, būdingas
-\emph{emb\_fibr\_r4\_4} mėginiui, kuriame naminių pelių embrionų fibroblastų
-ląstelės buvo veiktos tik Tbx5 kardiogeniniu transkripcijos faktoriumi.
-Mažiausias sintenijos blokų skaičius (33.27\%) nustatytas
-\emph{emb\_fibr\_r3\_3} mėginyje, kuriame pelių embrionų fibroblastų ląstelės
-veiktos GATA4, MEF2C ir Tbx5 transkripcijos faktorių, ir mėginyje
-\emph{emb\_fibr\_r1\_1}, kur embrionų fibroblastai veikti pilnu kardiogeninių
-trans\-krip\-ci\-jos faktorių komplektu (AHGMT) (33.28\%). Nepaisant to, kad
-pastaruosiuose mėginiuose bendras pikų skaičius skyrėsi daug, bendras sintenijos
-blokams priklausančių pikų procentas skyrėsi vos 0.01\%.
-
-Apibendrinus visus gautus mėginių rezultatus galima daryti išvadą, kad visiems
-mėginiams būdingas panašus skaičius pikų, kurie priklauso sintenijos blokams,
-todėl turint šią informaciją galima detaliau tyrinėti pikus, priklausančius
-sintenijos blokams.
+Remiantis gautu rezultatu galima pastebėti, kad didžiausias sintenijos blokams
+priklausančių pikų skaičius (34.84\%), palyginus su bendru pikų skaičiumi,
+būdingas \emph{emb\_fibr\_r4\_4} mėginiui, kuriame naminių pelių embrionų
+fibroblastų ląstelės buvo veiktos tik Tbx5 kardiogeniniu transkripcijos
+faktoriumi. Mažiausias į sintenijos blokus patenkančių pikų procentas (33.27\%)
+nus\-ta\-ty\-tas \emph{emb\_fibr\_r3\_3} mėginyje, kuriame pelių embrionų
+fibroblastų ląstelės veiktos GATA4, MEF2C ir Tbx5 transkripcijos faktorių, ir
+mėginyje \emph{emb\_fibr\_r1\_1}, kur embrionų fibroblastai veikti pilnu
+kardiogeninių trans\-krip\-ci\-jos faktorių komplektu (AHGMT) (33.28\%).
+Apibendrinus mėginių rezultatus galima teigti, kad visiems mėginiams būdingas
+panašus sintenijos blokams priklausančių pikų procentas ($\sim$34\%).
 
 \subsection{Pikų anotavimas}
 \subsubsection{Artimiausių TSS nustatymas}
@@ -928,20 +912,18 @@ matricos atitikimų anotuotų naminės pelės pikų genuose buvo mažiausiai.
 %%%%%%%%%%%%
 
 \section{Išvados}
-Atlikus homologijos tarp \emph{Mus musculus} ir \emph{Danio rerio} organizmų
-analizę, naudojant sintenijos blokus, gauti rezultatai buvo apibendrinti:
+Atlikus ChIP sekoskaitos taikinių paieškos tarp \emph{Mus musculus} ir
+\emph{Danio rerio} organizmų analizę, naudojant sintenijos blokus, gauti
+rezultatai buvo apibendrinti:
 
 \begin{itemize}
-    \item Išanalizuoti metodai, naudojami sintenijos blokų nustatymui,
-          apibendrinant jų privalumus bei trūkumus.
     \item Sintenijos blokams priklausančių \emph{Mus musculus} ir
-          \emph{Danio rerio} organizmų chromosomų sekos evoliucijos eigoje
-          mutavo, tačiau tarp organizmų pasitaikė chromosomų, kuriose išlaikytas
-          didesnis sekų konservatyvumas.
+          \emph{Danio rerio} organizmų chromosomų sekoms būdingas
+          konservatyvumas.
     \item Sintenijos blokams priklausančių naminės pelės širdies ląstelių pikų
-          dalis visuose mėginiuose neviršijo 35\%.
+          procentinė dalis visuose mėginiuose išlieka panaši.
     \item \emph{Danio rerio} genų, sutampančių su \emph{Mus musculus} genais ir
-          patenkančių į sintenijos blokų intervalą, buvo mažiau nei 4\%.
+          patenkančių į sintenijos blokų intervalą, yra itin nedaug.
     \item Tbx5 transkripcijos faktoriaus motyvo taikinių skaičius, ilgėjant
           \emph{Danio rerio} genų, kurie nustatyti \emph{Mus musculus}
           organizmo genome ir priklausė sintenijos blokams, sekoms, didėjo
@@ -958,12 +940,30 @@ analizę, naudojant sintenijos blokus, gauti rezultatai buvo apibendrinti:
 \normalsize
 \begin{thebibliography}{99}
 
+\bibitem{ARTICLE1} Institute of Medicine (US) Committee on Technological
+Innovation in Medicine; Gelijns AC, editor. Modern Methods of Clinical
+Investigation: Medical Innovation at the Crossroads: Volume I. Washington (DC):
+National Academies Press (US); 1990. 1, Medical Technology Development: An
+Introduction to the Innovation-Evaluation Nexus.
+Available from: \url{https://www.ncbi.nlm.nih.gov/books/NBK235486/}
+
+\bibitem{ARTICLE2} Dzobo K, Thomford NE, Senthebane DA, Shipanga H, Rowe A,
+Dandara C, Pillay M, Motaung KSCM. Advances in Regenerative Medicine and Tissue
+Engineering: Innovation and Transformation of Medicine. Stem Cells Int.
+2018 Jul 30;2018:2495848. doi: 10.1155/2018/2495848. PMID: 30154861;
+PMCID: PMC6091336.
+
+\bibitem{ORGANISMS} Mehta AS, Singh A. Insights into regeneration tool box:
+An animal model approach. Dev Biol. 2019 Sep 15;453(2):111-129.
+doi: 10.1016/j.ydbio.2019.04.006. Epub 2019 Apr 13. PMID: 30986388;
+PMCID: PMC6684456.
+
 \bibitem{GTRD} GTRD: an integrated view of transcription regulation.
 Kolmykov S, Yevshin I, Kulyashov M, Sharipov R, Kondrakhin Y, Makeev VJ,
 Kulakovskiy IV, Kel A, Kolpakov F Nucleic Acids Res. 2021 Jan
 8;49(D1):D104-D111.
 
-\bibitem{ARTICLE1} Liu, D., Hunt, M. \& Tsai, I.J. Inferring synteny between
+\bibitem{ARTICLE3} Liu, D., Hunt, M. \& Tsai, I.J. Inferring synteny between
 genome assemblies: a systematic evaluation. BMC Bioinformatics 19, 26 (2018).
 \url{https://doi.org/10.1186/s12859-018-2026-4}.
 
@@ -975,7 +975,7 @@ conserved since divergence of man and mouse. Proc Nat Acad Sci 1984,
 Cross-species comparisons: a review of methods and available resources.
 Genome Res 2003, 13: 1–12. 10.1101/gr.222003.
 
-\bibitem{ARTICLE2} Lallemand, T.; Leduc, M.; Landès, C.; Rizzon, C.; Lerat, E.
+\bibitem{ARTICLE4} Lallemand, T.; Leduc, M.; Landès, C.; Rizzon, C.; Lerat, E.
 An Overview of Duplicated Gene Detection Methods: Why the Duplication Mechanism
 Has to Be Accounted for in Their Choice. Genes 2020, 11, 1046.
 \url{https://doi.org/10.3390/genes11091046}.
