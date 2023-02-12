@@ -1,33 +1,28 @@
 \documentclass[12pt]{article}
-\usepackage{indentfirst}
+\usepackage[euler]{textgreek}
 \usepackage[utf8x]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english,lithuanian]{babel}
+\usepackage[left=3cm,top=2cm,right=1.5cm,bottom=2cm]{geometry}
+\usepackage[hidelinks, unicode]{hyperref}
+\usepackage{indentfirst}
 \usepackage{array}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{makecell}
-\usepackage[euler]{textgreek}
 \usepackage{multirow}
 \usepackage{boldline}
 \usepackage{floatrow}
-\floatsetup[table]{capposition=top}
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage{graphicx}
 \usepackage{setspace}
 \usepackage{verbatim}
-\usepackage[left=3cm,top=2cm,right=1.5cm,bottom=2cm]{geometry}
 \usepackage{floatrow}
-\newfloatcommand{capbtabbox}{table}[][\FBwidth]
 \usepackage{blindtext}
-\onehalfspacing
-\usepackage[hidelinks, unicode]{hyperref}
 \usepackage{textcomp}
-
-\newcommand{\EE}{\mathbb{E}\,} % Mean
-\newcommand{\ee}{{\mathrm e}}  % nice exponent
-\newcommand{\dd}{{\mathrm d}}
-\newcommand{\RR}{\mathbb{R}}
+\floatsetup[table]{capposition=top}
+\newfloatcommand{capbtabbox}{table}[][\FBwidth]
+\onehalfspacing
 
 \begin{document}
 \selectlanguage{lithuanian}
@@ -103,27 +98,30 @@ raumens pažeidimo.
 
 Kartais siekiant atlikti bioinformatinę analizę pritrūksta duomenų arba norima
 patikrinti, ar galima ištirti tam tikrus procesus ar mechanizmus kitame
-modeliniame organizme, turint duomenis gautus iš kito modelinio organizmo,
-atsižvelgus į tai, kad organizmai yra kilę iš bendro protėvio ir yra sukurtos
-lyginamosios genomikos metodikos, leidžiančios tai įgyvendinti.
+modeliniame organizme, turint vieno modelinio organizmo duomenis. Atliekant
+tokius patikrinimus atsižvelgiama į tai, kad tiriami modeliniai organizmai yra
+kilę iš bendro protėvio ir yra sukurtos lyginamosios genomikos metodikos,
+leidžiančios tai įgyvendinti.
 
-Šiame darbe, naudojantis R programavimo kalbos bibliotekomis, bioinformatiniais
-įrankiais, analizuoti evoliucijos eigoje mažai pakitę genomų homologiški
-regionai - sintenijos blokai. Taip pat analizėje tirti šiems blokams
-priklausantys naminės pelės ląstelių pikai - ChIP sekoskaitos duomenys - ir su
-anotuotais pikais persidengiantys zebražuvės genai. Tuo buvo siekiama
-išsiaiškinti, ar lyginamosios genomikos metodas - sintenijos blokų paieška -
-yra patikimas ir tinkamas būdas Tbx5 transkripcijos faktoriaus poveikio genams
-mechanizmams analizuoti.
+Šiame darbe, naudojantis R programavimo kalbos bibliotekomis ir
+bioinformatiniais įrankiais, analizuoti evoliucijos eigoje mažai pakitę genomų
+homologiški regionai - sintenijos blokai. Taip pat analizėje tirti šiems blokams
+priklausantys naminės pelės (lot. \emph{Mus musculus}) ląstelių pikai - ChIP
+sekoskaitos duomenys - ir su anotuotais pikais persidengiantys zebražuvės genai.
+Tuo buvo siekiama išsiaiškinti, ar lyginamosios genomikos metodas - sintenijos
+blokų paieška - yra patikimas ir tinkamas būdas Tbx5 transkripcijos faktoriaus
+poveikio genams mechanizmams analizuoti organizme, kurio duomenys nėra žinomi.
 
 Atliktos analizės rezultatai parodė, kad sintenijos blokų paieška nėra
 tinkamiausias būdas, siekiant įvertinti \emph{Mus musculus} ir
 \emph{Danio rerio} organizmų homologiją, nes šiems blokams priklausė nedidelis
-ChIP sekoskaitos metu gautų pikų procentas. Taip pat \emph{Danio rerio} genome
-buvo nustatytas itin mažas procentas genų, kurie sutampa su \emph{Mus musculus}
-anotuotų pikų genais bei patenka į nustatytus sintenijos blokų intervalus.
+ChIP sekoskaitos metu gautų naminės pelės ląstelių pikų procentas. Taip pat
+\emph{Danio rerio} genome buvo nustatytas itin mažas procentas genų, kurie
+sutampa su \emph{Mus musculus} anotuotų pikų genais bei patenka į nustatytus
+sintenijos blokų intervalus.
 
 \hfill \break
+
 \textbf{Raktiniai žodžiai:} homologija, sintenija, lyginamoji genomika,
     transkripcijos faktorius, Tbx5, \emph{Mus musculus}, \emph{Danio rerio}, R.
 
@@ -153,12 +151,12 @@ on comparative genomics that can be used to accomplish the study.
 
 In this work, the genome regions that have a low sequence divergence between
 organisms - synteny blocks - were analyzed using R programming language
-libraries, bioinformatical tools and online services. In addition, during the
-analysis it was studied which house mouse cell peaks (ChIP sequencing data) and
-zebrafish genes that overlap with annotated house mouse peaks belong to synteny
-blocks. It was done in order to clarify whether the search of synteny blocks is
-a reliable and suitable approach for analysing the mechanisms of Tbx5
-transcription factor gene regulation.
+libraries and bioinformatical tools. In addition, during the analysis it was
+studied which house mouse (lat. \emph{Mus musculus}) cell peaks (ChIP sequencing
+data) and zebrafish genes that overlap with annotated house mouse peaks belong
+to synteny blocks. It was done in order to clarify whether the search of synteny
+blocks is a reliable and suitable approach for analysing the mechanisms of Tbx5
+transcription factor gene regulation in organism when data is unavailable.
 
 The undertaken analysis indicated that synteny block search is not the most
 suitable way to evaluate the homology between \emph{Mus musculus} and
@@ -169,6 +167,7 @@ Furthermore, there was determined a notably small percentage of
 genes and lie between synteny blocks' intervals.
 
 \hfill \break
+
 \textbf{Keywords:} homology, sinteny, comparative genomics,
     transcription factor, Tbx5, \emph{Mus musculus}, \emph{Danio rerio}, R.
 
@@ -183,7 +182,7 @@ genes and lie between synteny blocks' intervals.
 Spartėjantys laimėjimai mokslo srityje stipriai patobulino įvairias priemones,
 leidžiančias laiku diagnozuoti ir išgydyti nuo ligų, kurios anksčiau buvo
 laikomos nepagydomomis. Šie laimėjimai itin prisidėjo prie vienos iš medicinos
-sričių - organizmų bei organų regeneracijos.
+sričių - organizmų bei organų regeneracijos - vystymosi.
 
 Šiais laikais regeneracijos tyrimai atliekami su modeliniais organizmais.
 Tyrimai atliekami, siekiant išsiaiškinti ląstelių bei audinių atsistatymo
@@ -198,11 +197,10 @@ modeliniame organizme, tačiau taip pat yra labai svarbu išsiaiškinti būdus,
 kurie padėtų žinomą mechanizmo informaciją įvertinti kitame organizme,
 atsižvelgus į organizmo giminingumą bei evoliucijos eigoje įvykusius genomo
 persitvarkymus. Dėl šios priežasties šio darbo metu atlikta analizė, įvertinanti
-sintenijos blokų paieškos metodą, nustatantį homologiją tarp naminės pelės ir
-zebražuvės genomų.
+sintenijos blokų paieškos metodo, nustatančio homologiją tarp naminės pelės ir
+zebražuvės genomų, tinkamumą mechanizmų tyrimui kituose organizmuose.
 
 \subsection*{Darbo tikslas}
-
 Nustatyti, ar sintenijos blokai gali būti naudojami homologijos tarp
 \emph{Mus musculus} ir \emph{Danio rerio} organizmų nustatymui.
 
@@ -304,7 +302,6 @@ lentelėje.
 
 \section{Sintenijos blokai ir jų nustatymo metodai}
 \subsection{Sintenijos bloko apibūdinimas}
-
 \textbf{Sintenijos blokas} - tarp skirtingų genomų identifikuojami chromosomų
 regionai, kuriems būdingi bendri homologiniai genai, išsidėstę nebūtinai vienoda
 tvarka. Sintenijos blokai neretai gali būti vadinami kolineariais blokais.
@@ -320,7 +317,7 @@ paveiksle (1 pav.) pavaizduoti galimi sintenijos blokų tipai\cite{ARTICLE1}:
         %\href{https://bmcbioinformatics.biomedcentral.com/articles/\
         %10.1186/s12859-018-2026-4}{\emph{Inferring synteny between genome assemblies:
         %a systematic evaluation}}}}
-        \label{fig:birds}
+        \label{fig:1}
     \end{center}
 \end{figure}
 
@@ -368,7 +365,7 @@ metodai išskaidyti pagal lyginamų genomų giminingumą:
         \vspace{-2\baselineskip}
         \caption*{\small\textbf{2 pav. Sintenijos blokų identifikavimo
         metodai ir populiariausių įrankių pavyzdžiai}}
-        \label{fig:birds}
+        \label{fig:2}
     \end{center}
 \end{figure}
 
@@ -488,8 +485,8 @@ markerių „perėjimus“. Šie markeriai gali būti apibūdinti kaip ortologin
     \begin{center}
         \includegraphics[width=0.4\linewidth]{../Figures/TTS_data_structure.png}
         \vspace{-0.5\baselineskip}
-        \caption*{\small\textbf{4 pav. TST medžio struktūra su perėjimais}}
-        \label{fig:birds}
+        \caption*{\small\textbf{3 pav. TST medžio struktūra su perėjimais}}
+        \label{fig:3}
     \end{center}
 \end{figure}
 
@@ -528,15 +525,15 @@ filtrai, pavyzdžiui, filtras, kondensuojantis tandemiškai pasikartojančius
 genus ir pašalinantis pasikartojančias sekas. Po šio etapo sukonstruojama
 homologinė genų matrica, kurioje ieškomi sintenijos blokai. Nustačius sintenijos
 blokus, jie vizualizuojami interaktyvioje taškinėje diagramoje. Sintenijos blokų
-pavyzdys pateiktas 5 paveiksle (pažymėta mėlynais stačiakampiais).
+pavyzdys pateiktas 4 paveiksle (pažymėta mėlynais stačiakampiais).
 
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[width=0.8\linewidth]{../Figures/Synteny_dotplot_example.png}
         \vspace{-0.5\baselineskip}
-        \caption*{\small\textbf{5 pav. Nustatytų sintenijos blokų taškinė
+        \caption*{\small\textbf{4 pav. Nustatytų sintenijos blokų taškinė
         diagrama (pavyzdys)}}
-        \label{fig:birds}
+        \label{fig:4}
     \end{center}
 \end{figure}
 
@@ -640,17 +637,16 @@ pritaikius \emph{ggplot} funkciją \emph{geom\_point()}.
 
 \section{Rezultatai ir jų aptarimas}
 \subsection{Sintenijos blokų nustatymas ir vizualizavimas}
-
 Sintenijos blokai tarp \emph{Mus musculus} ir \emph{Danio rerio} organizmų
-genomų vizualizuoti \emph{circo} diagramoje (6 pav.).
+genomų vizualizuoti \emph{circo} diagramoje (5 pav.).
 
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[width=0.8\linewidth]{../Figures/SynCircos.png}
         \vspace{-1\baselineskip}
-        \caption*{\small\textbf{6 pav. Sintenijos blokų \emph{circo}
+        \caption*{\small\textbf{5 pav. Sintenijos blokų \emph{circo}
         diagrama}}
-        \label{fig:birds}
+        \label{fig:5}
     \end{center}
 \end{figure}
 
@@ -685,16 +681,16 @@ neatsižvelgus į sekų fragmentų ilgį.
         \includegraphics[width=\textwidth]{../Figures/Synteny_Chr_DR.png}
         \caption*{\centering\small\textbf{b) Fragmentų skaičius \emph{D. rerio} chromosomose}}
     \end{subfigure}
-    \caption*{\small\textbf{7 pav. Sekų fragmentų pasiskirstymas chromosomose}}
-    \label{fig:birds}
+    \caption*{\small\textbf{6 pav. Sekų fragmentų pasiskirstymas chromosomose}}
+    \label{fig:6}
 \end{figure}
 
 Pateiktoje stulpelinėje diagramoje išsiskiria trys chromosomos (\emph{Chr1},
-\emph{Chr2} ir \emph{Chr11}) (7 pav. a)). Šių naminės pelės chromosomų fragmentai
-pasitaikydavo zebražuvės genome dažniausiai. Atsižvelgus į šių chromosomų
-dydžius, kur vienuolikta chromosoma yra mažesnė nei kitos išskirtos chromosomos
-(ją sudaro 122 Mbp\cite{MGI}), buvo nustatyta sąlyginai didelė dalis fragmentų,
-turinčių homologijų su zebražuvės genomo sekų fragmentais.
+\emph{Chr2} ir \emph{Chr11}) (6 pav. a)). Šių naminės pelės chromosomų
+fragmentai pasitaikydavo zebražuvės genome dažniausiai. Atsižvelgus į šių
+chromosomų dydžius, kur vienuolikta chromosoma yra mažesnė nei kitos išskirtos
+chromosomos (ją sudaro 122 Mbp\cite{MGI}), buvo nustatyta sąlyginai didelė dalis
+fragmentų, turinčių homologijų su zebražuvės genomo sekų fragmentais.
 
 Patikrinus, kiek yra \emph{Danio rerio} chromosomų fragmentų, kurie patenka į
 sintenijos blokus, gauti rezultatai vizualizuoti septinto paveikslo b) dalyje.
@@ -717,9 +713,9 @@ ir zebražuvės devintos chromosomų.
     \begin{center}
         \includegraphics[width=0.8\linewidth]{../Figures/Blocks_Chr2_9.png}
         \vspace{-1\baselineskip}
-        \caption*{\small\textbf{8 pav. Sintenijos blokai tarp \emph{M. musculus}
+        \caption*{\small\textbf{7 pav. Sintenijos blokai tarp \emph{M. musculus}
         ir \emph{D. rerio} chromosomų}}
-        \label{fig:birds}
+        \label{fig:7}
     \end{center}
 \end{figure}
 
@@ -731,8 +727,8 @@ būdingas sekų panašumas.
     \begin{center}
         \includegraphics[width=0.4\linewidth]{../Figures/Chr2_9_synteny.png}
         \vspace{-1\baselineskip}
-        \caption*{\small\textbf{9 pav. Homologiškų regionų vizualizavimas}}
-        \label{fig:birds}
+        \caption*{\small\textbf{8 pav. Homologiškų regionų vizualizavimas}}
+        \label{fig:8}
     \end{center}
 \end{figure}
 
@@ -749,8 +745,8 @@ išlygintas sekas, pastebėta, kad sekos yra labai panašios.
     \begin{center}
         \includegraphics[width=1\linewidth]{../Figures/Sp9_gene_alignment.png}
         \vspace{-1\baselineskip}
-        \caption*{\small\textbf{10 pav. \emph{Sp9} geno sekų išlyginimas}}
-        \label{fig:birds}
+        \caption*{\small\textbf{9 pav. \emph{Sp9} geno sekų išlyginimas}}
+        \label{fig:9}
     \end{center}
 \end{figure}
 
@@ -759,7 +755,7 @@ išlygintas sekas, pastebėta, kad sekos yra labai panašios.
 \subsection{Pikų dalis sintenijos blokuose}
 \emph{Cinteny} įrankio pateikta sintenijos blokų informacija buvo panaudota,
 siekiant išsiaiškinti, kokia pikų dalis patenka į įrankio nustatytų sintenijos
-blokų intervalus, kurių buvo nustatyta 1403. Vienuoliktame paveiksle (11 pav.)
+blokų intervalus, kurių buvo nustatyta 1403. Dešimtame paveiksle (10 pav.)
 pavaizduota, kiek kiekviename analizuotame naminių pelių širdžių ląstelių
 mėginyje nustatyta pikų, kurie patenka į sintenijos blokų intervalą.
 
@@ -767,8 +763,8 @@ mėginyje nustatyta pikų, kurie patenka į sintenijos blokų intervalą.
     \begin{center}
         \includegraphics[width=0.7\linewidth]{../Figures/Synteny_blocks_peaks.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{11 pav. Sintenijos blokų procentinė dalis}}
-        \label{fig:birds}
+        \caption*{\small\textbf{10 pav. Sintenijos blokų procentinė dalis}}
+        \label{fig:10}
     \end{center}
 \end{figure}
 
@@ -791,22 +787,22 @@ blokams.
 
 \subsection{Pikų anotavimas}
 \subsubsection{Artimiausių TSS nustatymas}
-Dvyliktame paveiksle pavaizduotoje diagramoje nurodyta, kiek unikalių genų buvo
-priskirta kiekvieno mėginio pikams (palyginus su pilnu naminės pelės genų
+Vienuoliktame paveiksle pavaizduotoje diagramoje nurodyta, kiek unikalių genų
+buvo priskirta kiekvieno mėginio pikams (palyginus su pilnu naminės pelės genų
 rinkiniu), patenkantiems į sintenijos blokus.
 
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[width=0.7\linewidth]{../Figures/Unique_genes_MM.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{12 pav. Anotuotų pikų dalis mėginiuose}}
-        \label{fig:birds}
+        \caption*{\small\textbf{11 pav. Anotuotų pikų dalis mėginiuose}}
+        \label{fig:11}
     \end{center}
 \end{figure}
 
 Remiantis diagramos duomenimis pastebėta, kad daugiausiai unikalių genų
 nustatyta \emph{emb\_\-fibr\_r1\_1} mėginyje (26.53\%). Ankstesniame paveiksle
-(11 pav.) šiame mėginyje buvo nustatyta nedaug sintenijos blokams priklausančių
+(10 pav.) šiame mėginyje buvo nustatyta nedaug sintenijos blokams priklausančių
 pikų, tačiau nebuvo atsižvelgta į sintenijos blokų ilgį. Gautas rezultatas rodo,
 kad pikai galėjo patekti į ilgesnį sintenijos bloką.
 
@@ -880,9 +876,9 @@ paveiksle.
     \begin{center}
         \includegraphics[width=0.7\linewidth]{../Figures/Unique_genes_DR.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{13 pav. \emph{D.rerio} sintenijos blokams
+        \caption*{\small\textbf{12 pav. \emph{D.rerio} sintenijos blokams
         priklausančių genų dalis}}
-        \label{fig:birds}
+        \label{fig:12}
     \end{center}
 \end{figure}
 
@@ -908,9 +904,9 @@ atitikimų skaičius \emph{Mus musculus} ir \emph{Danio rerio} sekose.
     \begin{center}
         \includegraphics[width=1\linewidth]{../Figures/PWM_matches_all.png}
         \vspace{-2\baselineskip}
-        \caption*{\small\textbf{14 pav. Tbx5 PWM matricos atitikimai
+        \caption*{\small\textbf{13 pav. Tbx5 PWM matricos atitikimai
         \emph{M. musculus} ir \emph{D. rerio} sekose}}
-        \label{fig:birds}
+        \label{fig:13}
     \end{center}
 \end{figure}
 
@@ -922,16 +918,7 @@ nustatyta daugiau nei 30.
 
 Naminės pelės genuose PWM matricos atitikimų buvo nustatyta mažiau. Be to, sekų
 ilgis buvo mažesnis. Mėginyje \emph{emb\_fibr\_r4\_4} Tbx5 pozicinės svorių
-matricos atitikimų anotuotų pikų genuose buvo mažiausiai,
-% todėl tikėtina, kad
-% evoliucijos eigoje šių genų sekose įvyko daugiau mutacijų, lėmusių
-
-% Apibendrinus gautus rezultatus nustatyta sintenijos blokų dalis
-% pikų atžvilgiu buvo maža (neviršijo 20\%), todėl sintenijos blokų paieška
-% nėra tinkamiausias būdas, siekiant įvertinti \emph{Mus musculus} ir
-% \emph{Danio rerio} organizmų homologiją, nes taikomas sintenijos blokų
-% paieškos metodas, tikėtina, nesuranda visų galimų homologiškų
-% \emph{Mus musculus} ir \emph{Danio rerio} organizmų genomų fragmentų.
+matricos atitikimų anotuotų pikų genuose buvo mažiausiai.
 
 \newpage
 
@@ -945,21 +932,20 @@ analizę, naudojant sintenijos blokus, gauti rezultatai buvo apibendrinti:
 
 \begin{itemize}
     \item Išanalizuoti metodai, naudojami sintenijos blokų nustatymui,
-        apibendrinant jų privalumus bei trūkumus.
+    apibendrinant jų privalumus bei trūkumus.
     \item Sintenijos blokams priklausančių \emph{Mus musculus} ir
-        \emph{Danio rerio} organizmų chromosomų sekos evoliucijos eigoje mutavo
-        stipriai, tačiau tarp organizmų pasitaikė chromosomų, kuriose
-        išlaikytas didesnis sekų konservatyvumas.
+    \emph{Danio rerio} organizmų chromosomų sekos evoliucijos eigoje mutavo
+    stipriai, tačiau tarp organizmų pasitaikė chromosomų, kuriose išlaikytas
+    didesnis sekų konservatyvumas.
     \item Sintenijos blokams priklausančių naminės pelės širdies ląstelių pikų
-        dalis visuose mėginiuose neviršijo 35\%.
+    dalis visuose mėginiuose neviršijo 35\%.
     \item \emph{Danio rerio} genų, sutampančių su \emph{Mus musculus} genais ir
-        patenkančių į sintenijos blokų intervalą, buvo itin nedaug.
+    patenkančių į sintenijos blokų intervalą, buvo itin nedaug.
     \item Tbx5 transkripcijos faktoriaus motyvo taikinių skaičius
-        \emph{Danio rerio} genuose, kurie nustatomi \emph{Mus musculus}
-        organizmo genome ir priklauso sintenijos blokams, didėjant
-        genų sekų ilgiams didėja visais analizuotais atvejais.
+    \emph{Danio rerio} genuose, kurie nustatomi \emph{Mus musculus} organizmo
+    genome ir priklauso sintenijos blokams, didėjant genų sekų ilgiams didėja
+    visais analizuotais atvejais.
 \end{itemize}
-
 
 \newpage
 
@@ -1120,6 +1106,7 @@ https://www.ncbi.nlm.nih.gov/
 \bibitem{MGI} Bult CJ, Blake JA, Smith CL, Kadin JA, Richardson JE, the
 Mouse Genome Database Group. 2019. Mouse Genome Database (MGD) 2019.
 Nucleic Acids Res. 2019 Jan. 8;47 (D1): D801–D806.
+
 \end{thebibliography}
 
 \newpage
